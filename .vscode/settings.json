@@ -1,0 +1,16 @@
+{
+  // Mismos tipos de archivo que `npm run format` (ts, html, scss). Prettier lee
+  // .editorconfig, así que el editor y el script dan siempre el mismo resultado.
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  }
+}

@@ -37,6 +37,9 @@ yarn-error.log
 testem.log
 /typings
 
+# Claude Code: los enlaces de .claude/skills apuntan a rutas absolutas de cada equipo
+/.claude/skills
+
 # System files
 .DS_Store
 Thumbs.db
