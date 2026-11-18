@@ -1,12 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AppUser } from '@interfaces';
-import { apiErrorMessage, UserService } from '@services';
+import { AppUser, Sucursal } from '@interfaces';
+import { SucursalService, apiErrorMessage, UserService } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
@@ -23,8 +23,8 @@ export interface UsuarioDialogData {
 
 /**
  * Crear o editar un usuario (`POST /api/crear-usuario`,
- * `PATCH /api/editar-usuario/{id}`). `branch_id` es un campo numérico simple
- * por ahora: el módulo de sucursales todavía no existe.
+ * `PATCH /api/editar-usuario/{id}`). `branch_id` se elige del catálogo de
+ * sucursales (`GET /api/branches`), cargado al abrir el diálogo.
  */
 @Component({
   selector: 'app-usuario-dialog',
@@ -32,15 +32,18 @@ export interface UsuarioDialogData {
   templateUrl: './usuario-dialog.html',
   styleUrl: './usuario-dialog.scss',
 })
-export class UsuarioDialog {
+export class UsuarioDialog implements OnInit {
   private readonly dialogRef =
     inject<MatDialogRef<UsuarioDialog, AppUser | undefined>>(MatDialogRef);
   private readonly userService = inject(UserService);
+  private readonly sucursalService = inject(SucursalService);
 
   protected readonly data = inject<UsuarioDialogData>(MAT_DIALOG_DATA);
   protected readonly isEdit = !!this.data.user;
   protected readonly icons = { warning: faTriangleExclamation };
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly sucursales = signal<Sucursal[]>([]);
+  protected readonly loadingSucursales = signal(true);
 
   protected readonly form = inject(NonNullableFormBuilder).group({
     name: [this.data.user?.name ?? '', Validators.required],
@@ -56,6 +59,19 @@ export class UsuarioDialog {
     authorized: [this.data.user?.authorized ?? false],
     is_active: [this.data.user?.is_active ?? true],
   });
+
+  ngOnInit(): void {
+    this.sucursalService.list().subscribe({
+      next: (sucursales) => {
+        this.sucursales.set(sucursales);
+        this.loadingSucursales.set(false);
+      },
+      error: (error: unknown) => {
+        this.errorMessage.set(apiErrorMessage(error));
+        this.loadingSucursales.set(false);
+      },
+    });
+  }
 
   protected readonly submit = (): SubmitResult => {
     this.errorMessage.set(null);

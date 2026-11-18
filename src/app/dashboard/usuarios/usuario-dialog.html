@@ -44,9 +44,15 @@
 
     <mat-form-field>
       <mat-label>Sucursal</mat-label>
-      <input matInput type="number" min="1" formControlName="branch_id" />
-      @if (form.controls.branch_id.invalid) {
-        <mat-error>Ingresa el identificador de la sucursal.</mat-error>
+      <mat-select formControlName="branch_id">
+        @for (sucursal of sucursales(); track sucursal.id) {
+          <mat-option [value]="sucursal.id">{{ sucursal.name }}</mat-option>
+        }
+      </mat-select>
+      @if (loadingSucursales()) {
+        <mat-hint>Cargando sucursales…</mat-hint>
+      } @else if (form.controls.branch_id.invalid) {
+        <mat-error>Elige una sucursal.</mat-error>
       }
     </mat-form-field>
 

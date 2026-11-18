@@ -29,7 +29,13 @@ describe('Layout', () => {
       (a) => a.textContent?.trim(),
     );
 
-    expect(links).toEqual(['Inicio', 'Usuarios', 'Roles y permisos']);
+    expect(links).toEqual([
+      'Inicio',
+      'Usuarios',
+      'Roles y permisos',
+      'Empresas',
+      'Sucursales',
+    ]);
   });
 
   it('marca el riel con el nombre de la app', () => {

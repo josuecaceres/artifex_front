@@ -1,6 +1,7 @@
 // Riel de navegación lateral. Es azul medianoche en ambos temas: toma sus
-// colores de las variables `--app-rail-*`. La sección activa se marca con un
-// relleno redondeado (`--app-rail-selected`) y la estación llena. Los grupos
+// colores de las variables `--app-rail-*`. La sección activa se marca solo
+// con un relleno redondeado (`--app-rail-selected`) y texto blanco, sin
+// ningún símbolo adicional (nada de puntos ni círculos por enlace). Los grupos
 // del menú (`MenuGroup` en `@shared/menu-items`) se muestran como acordeón
 // (`mat-accordion` + `mat-expansion-panel`): esta hoja solo retoca sus tokens
 // para que, dentro del riel, se vean igual que el resto de los enlaces.
@@ -74,35 +75,18 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-
-      // Estación: círculo vacío; la sección activa lo llena.
-      &::before {
-        content: "";
-        flex: none;
-        width: 10px;
-        height: 10px;
-        border: 2px solid var(--app-rail-ink);
-        border-radius: 50%;
-        opacity: 0.7;
-      }
     }
 
     .mdc-list-item.is-active,
     .mdc-list-item.mdc-list-item--activated {
       .mdc-list-item__primary-text {
         color: #fff;
-
-        &::before {
-          background: var(--app-rail-accent);
-          border-color: #fff;
-          opacity: 1;
-        }
       }
     }
   }
 
-  // Grupo del menú (acordeón): la cabecera se ve como un enlace más, con la
-  // misma estación como marca; se rellena mientras el grupo está abierto.
+  // Grupo del menú (acordeón): la cabecera se ve como un enlace más, con el
+  // mismo relleno mientras el grupo está abierto.
   &__group {
     background: transparent;
     box-shadow: none !important;
@@ -124,32 +108,11 @@
       align-items: center;
       gap: 12px;
       text-transform: uppercase;
-
-      &::before {
-        content: "";
-        flex: none;
-        width: 10px;
-        height: 10px;
-        border: 2px solid var(--app-rail-ink);
-        border-radius: 50%;
-        opacity: 0.7;
-      }
     }
 
     &.mat-expanded mat-panel-title {
       color: #fff;
-
-      &::before {
-        background: var(--app-rail-accent);
-        border-color: #fff;
-        opacity: 1;
-      }
     }
-  }
-
-  &__sublink .mdc-list-item__primary-text::before {
-    width: 8px;
-    height: 8px;
   }
 
   &__footer {

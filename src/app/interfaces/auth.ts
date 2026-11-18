@@ -1,4 +1,10 @@
-/** Cuerpo de `POST /api/login`. */
+/**
+ * Cuerpo de `POST /api/login`. El backend confirmó que `user_name` acepta el
+ * correo o el acrónimo (sin distinguir mayúsculas) y que `password` es
+ * nullable (se puede omitir o enviar `null`); aquí sigue como obligatorio
+ * porque el formulario de login todavía no ofrece ese acceso sin contraseña
+ * (pendiente de decidir con el usuario, ver CLAUDE.md).
+ */
 export interface LoginRequest {
   user_name: string;
   password: string;

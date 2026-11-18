@@ -29,6 +29,18 @@ export const DASHBOARD_ROUTES: Routes = [
         title: 'Roles y permisos',
         loadComponent: () => import('./roles/roles').then((m) => m.Roles),
       },
+      {
+        path: 'empresas',
+        title: 'Empresas',
+        loadComponent: () =>
+          import('./empresas/empresas').then((m) => m.Empresas),
+      },
+      {
+        path: 'sucursales',
+        title: 'Sucursales',
+        loadComponent: () =>
+          import('./sucursales/sucursales').then((m) => m.Sucursales),
+      },
     ],
   },
 ];

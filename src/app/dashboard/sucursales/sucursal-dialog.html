@@ -1,0 +1,142 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? "Editar sucursal" : "Nueva sucursal" }}
+</h2>
+
+<form
+  [formGroup]="form"
+  [appSubmitLock]="submit"
+  #lock="appSubmitLock"
+  novalidate
+>
+  <mat-dialog-content>
+    @if (errorMessage(); as message) {
+      <div class="app-alert" role="alert">
+        <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <mat-form-field>
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError("required")) {
+        <mat-error>Ingresa el nombre.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" />
+      @if (form.controls.phone.hasError("required")) {
+        <mat-error>Ingresa el teléfono.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError("required")) {
+        <mat-error>Ingresa el correo.</mat-error>
+      } @else if (form.controls.email.hasError("email")) {
+        <mat-error>Escribe un correo válido.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Dirección</mat-label>
+      <input matInput formControlName="complemento_direccion" />
+      @if (form.controls.complemento_direccion.hasError("required")) {
+        <mat-error>Ingresa la dirección.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="app-field-group-label">Ubicación</div>
+    <div class="field-row">
+      <mat-form-field>
+        <mat-label>Departamento</mat-label>
+        <input
+          matInput
+          type="number"
+          min="1"
+          formControlName="departamento_id"
+        />
+        @if (form.controls.departamento_id.invalid) {
+          <mat-error>Ingresa el departamento.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Municipio</mat-label>
+        <input matInput type="number" min="1" formControlName="municipio_id" />
+        @if (form.controls.municipio_id.invalid) {
+          <mat-error>Ingresa el municipio.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="app-field-group-label">Facturación electrónica (opcional)</div>
+    <div class="field-row">
+      <mat-form-field>
+        <mat-label>Tipo de establecimiento</mat-label>
+        <input matInput type="number" formControlName="tipo_establecimiento" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Gerente (id de usuario)</mat-label>
+        <input matInput type="number" formControlName="manager_id" />
+      </mat-form-field>
+    </div>
+
+    <div class="field-row">
+      <mat-form-field>
+        <mat-label>Código de sucursal</mat-label>
+        <input matInput formControlName="branch_code" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>UUID de impresora</mat-label>
+        <input matInput formControlName="printer_uuid" />
+      </mat-form-field>
+    </div>
+
+    <div class="field-row">
+      <mat-form-field>
+        <mat-label>Cód. establecimiento (MH)</mat-label>
+        <input matInput formControlName="cod_estable_mh" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Cód. establecimiento</mat-label>
+        <input matInput formControlName="cod_estable" />
+      </mat-form-field>
+    </div>
+
+    <div class="field-row">
+      <mat-form-field>
+        <mat-label>Cód. punto de venta (MH)</mat-label>
+        <input matInput formControlName="cod_pventa_mh" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Cód. punto de venta</mat-label>
+        <input matInput formControlName="cod_pventa" />
+      </mat-form-field>
+    </div>
+
+    @if (isEdit) {
+      <mat-slide-toggle formControlName="is_active">Activa</mat-slide-toggle>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close>Cancelar</button>
+    <button
+      mat-flat-button
+      type="submit"
+      disabledInteractive
+      [disabled]="lock.pending()"
+    >
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</form>

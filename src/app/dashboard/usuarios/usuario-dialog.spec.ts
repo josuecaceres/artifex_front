@@ -6,6 +6,7 @@ import {
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Sucursal } from '@interfaces';
 import { apiUrl } from '@services';
 import { UsuarioDialog } from './usuario-dialog';
 
@@ -15,12 +16,47 @@ describe('UsuarioDialog', () => {
   let http: HttpTestingController;
   let dialogRef: jasmine.SpyObj<MatDialogRef<UsuarioDialog>>;
 
+  const sucursales: Sucursal[] = [
+    {
+      id: 1,
+      name: 'Sucursal Central',
+      phone: '98765432',
+      email: 'central@ejemplo.com',
+      tipo_establecimiento: 1,
+      departamento_id: 8,
+      municipio_id: 801,
+      complemento_direccion: 'Barrio El Centro',
+      manager_id: null,
+      branch_code: null,
+      cod_estable_mh: null,
+      cod_estable: null,
+      cod_pventa_mh: null,
+      cod_pventa: null,
+      printer_uuid: null,
+      is_active: true,
+    },
+  ];
+
   function setValue(field: string, value: string): void {
     const input = element.querySelector<HTMLInputElement>(
       `[formcontrolname="${field}"]`,
     )!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
+  }
+
+  async function selectSucursal(name: string): Promise<void> {
+    const select = element.querySelector<HTMLElement>(
+      '[formcontrolname="branch_id"]',
+    )!;
+    select.click();
+    await fixture.whenStable();
+
+    const option = Array.from(
+      document.querySelectorAll<HTMLElement>('mat-option'),
+    ).find((candidate) => candidate.textContent?.trim() === name)!;
+    option.click();
+    await fixture.whenStable();
   }
 
   function submit(): void {
@@ -46,6 +82,8 @@ describe('UsuarioDialog', () => {
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(UsuarioDialog);
     await fixture.whenStable();
+    http.expectOne(apiUrl('api/branches')).flush(sucursales);
+    await fixture.whenStable();
     element = fixture.nativeElement as HTMLElement;
   }
 
@@ -70,8 +108,7 @@ describe('UsuarioDialog', () => {
     setValue('name', 'Nuevo usuario');
     setValue('acronym', 'NUSR');
     setValue('email', 'nuevo@ejemplo.com');
-    setValue('branch_id', '1');
-    await fixture.whenStable();
+    await selectSucursal('Sucursal Central');
 
     submit();
 

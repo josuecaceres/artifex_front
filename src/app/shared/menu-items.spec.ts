@@ -23,4 +23,16 @@ describe('menu-items', () => {
       'Roles y permisos',
     ]);
   });
+
+  it('agrupa Empresas y Sucursales bajo "Empresa"', () => {
+    const group = MENU_ITEMS.find(
+      (item) => isMenuGroup(item) && item.label === 'Empresa',
+    ) as MenuGroup | undefined;
+
+    expect(group).toBeTruthy();
+    expect(group?.children.map((child) => child.label)).toEqual([
+      'Empresas',
+      'Sucursales',
+    ]);
+  });
 });

@@ -1,0 +1,115 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? "Editar empresa" : "Nueva empresa" }}
+</h2>
+
+<form
+  [formGroup]="form"
+  [appSubmitLock]="submit"
+  #lock="appSubmitLock"
+  novalidate
+>
+  <mat-dialog-content>
+    @if (errorMessage(); as message) {
+      <div class="app-alert" role="alert">
+        <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <mat-form-field>
+      <mat-label>Nombre legal</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError("required")) {
+        <mat-error>Ingresa el nombre.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Nombre comercial</mat-label>
+      <input matInput formControlName="comercial_name" />
+      @if (form.controls.comercial_name.hasError("required")) {
+        <mat-error>Ingresa el nombre comercial.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>NIT</mat-label>
+      <input matInput formControlName="nit" />
+      @if (form.controls.nit.hasError("required")) {
+        <mat-error>Ingresa el NIT.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>NRC</mat-label>
+      <input matInput formControlName="nrc" />
+      @if (form.controls.nrc.hasError("required")) {
+        <mat-error>Ingresa el NRC.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Código de actividad</mat-label>
+      <input matInput formControlName="activity_code" />
+      @if (form.controls.activity_code.hasError("required")) {
+        <mat-error>Ingresa el código de actividad.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Descripción de actividad</mat-label>
+      <input matInput formControlName="activity_description" />
+      @if (form.controls.activity_description.hasError("required")) {
+        <mat-error>Ingresa la descripción de la actividad.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError("required")) {
+        <mat-error>Ingresa el correo.</mat-error>
+      } @else if (form.controls.email.hasError("email")) {
+        <mat-error>Escribe un correo válido.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" />
+      @if (form.controls.phone.hasError("required")) {
+        <mat-error>Ingresa el teléfono.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (isEdit) {
+      <div class="app-field-group-label">
+        Certificado de facturación electrónica (opcional)
+      </div>
+
+      <mat-form-field>
+        <mat-label>Llave de la API</mat-label>
+        <input matInput type="password" formControlName="api_key" />
+        <mat-hint>Vacío: no se cambia.</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contraseña privada</mat-label>
+        <input matInput type="password" formControlName="private_password" />
+        <mat-hint>Vacío: no se cambia.</mat-hint>
+      </mat-form-field>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close>Cancelar</button>
+    <button
+      mat-flat-button
+      type="submit"
+      disabledInteractive
+      [disabled]="lock.pending()"
+    >
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</form>

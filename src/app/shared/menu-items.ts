@@ -33,4 +33,11 @@ export const MENU_ITEMS: readonly MenuEntry[] = [
       { label: 'Roles y permisos', path: '/dashboard/roles' },
     ],
   },
+  {
+    label: 'Empresa',
+    children: [
+      { label: 'Empresas', path: '/dashboard/empresas' },
+      { label: 'Sucursales', path: '/dashboard/sucursales' },
+    ],
+  },
 ];
