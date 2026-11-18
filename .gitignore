@@ -40,6 +40,12 @@ testem.log
 # Claude Code: los enlaces de .claude/skills apuntan a rutas absolutas de cada equipo
 /.claude/skills
 
+# Variables de entorno de las pruebas e2e (la plantilla .env.e2e.example sí se versiona)
+.env.e2e
+
+# Credenciales de desarrollo para el acceso automático (la plantilla dev-login.example.ts sí se versiona)
+/src/environments/dev-login.ts
+
 # System files
 .DS_Store
 Thumbs.db

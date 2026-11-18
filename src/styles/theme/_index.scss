@@ -1,0 +1,45 @@
+@use "palette";
+
+// Emite una variable `--app-<clave>` por cada color del mapa.
+@mixin emit-palette($colors) {
+  @each $name, $value in $colors {
+    --app-#{$name}: #{$value};
+  }
+}
+
+// Valores que no son color y no cambian entre temas.
+:root {
+  --app-font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --app-font-body: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+  --app-radius-control: 6px;
+  --app-radius-panel: 8px;
+  --app-control-height: 44px;
+  --app-focus-ring: 3px;
+}
+
+// Tema claro (por defecto).
+:root {
+  color-scheme: light;
+  @include emit-palette(palette.$light);
+  // Opacidad del velo negro detrás de los diálogos.
+  --app-backdrop-opacity: 0.32;
+}
+
+@mixin dark-theme {
+  color-scheme: dark;
+  @include emit-palette(palette.$dark);
+  // En oscuro el velo es más denso para que el diálogo se despegue del fondo.
+  --app-backdrop-opacity: 0.75;
+}
+
+// Tema oscuro elegido de forma explícita.
+:root[data-theme="dark"] {
+  @include dark-theme;
+}
+
+// Tema oscuro cuando el sistema lo pide y no hay elección explícita.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    @include dark-theme;
+  }
+}

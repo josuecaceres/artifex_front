@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.app-shell {
+  height: 100%;
+}
+
+.app-topbar {
+  gap: 12px;
+}
+
+.app-topbar__spacer {
+  flex: 1;
+}
+
+.app-shell__main {
+  box-sizing: border-box;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.app-rail__logout {
+  justify-content: flex-start;
+  gap: 10px;
+  padding-inline: 8px;
+  color: var(--app-rail-ink);
+
+  &:hover {
+    color: #fff;
+  }
+}

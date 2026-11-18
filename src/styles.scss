@@ -1,1 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+// Estilos globales. El orden importa: primero la paleta y su enlace con
+// Angular Material, luego la base y por último los componentes.
+@use "./styles/theme";
+@use "./styles/theme/material";
+@use "./styles/base";
+@use "./styles/components";

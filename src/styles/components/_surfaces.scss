@@ -1,0 +1,162 @@
+@use "@angular/material" as mat;
+
+// Paneles y superficies: contorno fino en vez de sombra para los que están
+// en la página; sombra con desplazamiento y desenfoque solo en lo flotante
+// (diálogos, menús, calendario).
+$floating-shadow:
+  0 12px 32px -8px rgb(0 0 0 / 0.35),
+  0 2px 6px rgb(0 0 0 / 0.18);
+
+html {
+  @include mat.card-overrides(
+    (
+      elevated-container-shape: var(--app-radius-panel),
+      outlined-container-shape: var(--app-radius-panel),
+      filled-container-shape: var(--app-radius-panel),
+      elevated-container-color: var(--app-surface),
+      outlined-container-color: var(--app-surface),
+      filled-container-color: var(--app-surface-2),
+      elevated-container-elevation: none,
+      outlined-outline-color: var(--app-border),
+      title-text-font: var(--app-font-display),
+      title-text-size: 16px,
+      title-text-weight: 600,
+      title-text-tracking: 0.12em,
+      subtitle-text-size: 14px,
+      subtitle-text-color: var(--app-muted),
+    )
+  );
+
+  @include mat.dialog-overrides(
+    (
+      container-shape: var(--app-radius-panel),
+      container-color: var(--app-surface),
+      container-elevation-shadow: $floating-shadow,
+      subhead-font: var(--app-font-display),
+      subhead-size: 22px,
+      subhead-weight: 600,
+      subhead-tracking: 0.08em,
+      subhead-color: var(--app-ink),
+      supporting-text-size: 15px,
+      supporting-text-color: var(--app-ink),
+      actions-padding: 16px 24px 24px,
+    )
+  );
+
+  @include mat.menu-overrides(
+    (
+      container-shape: var(--app-radius-control),
+      container-color: var(--app-surface),
+      container-elevation-shadow: $floating-shadow,
+      item-label-text-font: var(--app-font-body),
+      item-label-text-size: 15px,
+      item-hover-state-layer-color: var(--app-selected),
+      item-focus-state-layer-color: var(--app-selected),
+      divider-color: var(--app-border),
+    )
+  );
+
+  // Opciones de las listas desplegables (select, autocompletar): la señalada se
+  // rellena igual que en los menús; la ya elegida, con un relleno más suave
+  // (además de su marca) para no fundirse con la señalada.
+  @include mat.option-overrides(
+    (
+      hover-state-layer-color: var(--app-selected),
+      focus-state-layer-color: var(--app-selected),
+      selected-state-layer-color: color-mix(
+          in srgb,
+          var(--app-selected) 50%,
+          var(--app-surface)
+        ),
+      selected-state-label-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.tooltip-overrides(
+    (
+      container-shape: 4px,
+      supporting-text-size: 13px,
+      supporting-text-weight: 500,
+    )
+  );
+
+  @include mat.snack-bar-overrides(
+    (
+      container-shape: var(--app-radius-control),
+      supporting-text-size: 15px,
+    )
+  );
+
+  // La barra superior es del mismo marino que el riel (ver `--app-rail-*`),
+  // así se leen como una sola pieza en vez de dos superficies distintas.
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--app-rail),
+      container-text-color: var(--app-rail-ink),
+      standard-height: 64px,
+      title-text-font: var(--app-font-display),
+      title-text-size: 20px,
+      title-text-weight: 600,
+      title-text-tracking: 0.08em,
+    )
+  );
+
+  @include mat.sidenav-overrides(
+    (
+      container-width: 240px,
+      container-shape: 0,
+      container-background-color: var(--app-rail),
+      container-text-color: var(--app-rail-ink),
+      container-divider-color: var(--app-rail-border),
+      container-elevation-shadow: none,
+      content-background-color: var(--app-bg),
+      content-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.divider-overrides(
+    (
+      color: var(--app-border),
+    )
+  );
+}
+
+// Contorno fino y sin sombra para las tarjetas elevadas.
+.mat-mdc-card:not(.mat-mdc-card-outlined):not(.mdc-card--filled) {
+  border: 1px solid var(--app-border);
+}
+
+.mat-mdc-card-title {
+  text-transform: uppercase;
+}
+
+// Los diálogos y menús flotantes llevan además un contorno para leerse sobre
+// el fondo en ambos temas.
+.mat-mdc-dialog-surface,
+.mat-mdc-menu-panel {
+  border: 1px solid var(--app-border);
+}
+
+// Velo detrás de los diálogos: su densidad depende del tema
+// (`--app-backdrop-opacity`). La doble clase gana a la hoja del CDK, que se
+// inyecta después.
+.cdk-overlay-backdrop.cdk-overlay-dark-backdrop {
+  background: rgb(0 0 0 / var(--app-backdrop-opacity));
+}
+
+.mat-mdc-dialog-title {
+  text-transform: uppercase;
+}
+
+.mat-mdc-dialog-actions {
+  gap: 8px;
+}
+
+.mat-toolbar {
+  border-bottom: 1px solid var(--app-rail-border);
+}
+
+.mat-mdc-card-actions {
+  gap: 8px;
+  padding: 8px 16px 16px;
+}

@@ -1,0 +1,73 @@
+@use "@angular/material" as mat;
+
+// Botones: 44 px de alto, esquinas de 6 px, etiqueta en Source Sans 600 sin
+// mayúsculas. El primario es cobalto; el secundario es de contorno.
+html {
+  @include mat.button-overrides(
+    (
+      filled-container-height: var(--app-control-height),
+      outlined-container-height: var(--app-control-height),
+      text-container-height: var(--app-control-height),
+      tonal-container-height: var(--app-control-height),
+      protected-container-height: var(--app-control-height),
+      filled-container-shape: var(--app-radius-control),
+      outlined-container-shape: var(--app-radius-control),
+      text-container-shape: var(--app-radius-control),
+      tonal-container-shape: var(--app-radius-control),
+      protected-container-shape: var(--app-radius-control),
+      filled-horizontal-padding: 20px,
+      outlined-horizontal-padding: 20px,
+      tonal-horizontal-padding: 20px,
+      text-horizontal-padding: 12px,
+      filled-label-text-font: var(--app-font-body),
+      outlined-label-text-font: var(--app-font-body),
+      text-label-text-font: var(--app-font-body),
+      tonal-label-text-font: var(--app-font-body),
+      filled-label-text-size: 15px,
+      outlined-label-text-size: 15px,
+      text-label-text-size: 15px,
+      tonal-label-text-size: 15px,
+      filled-label-text-weight: 600,
+      outlined-label-text-weight: 600,
+      text-label-text-weight: 600,
+      tonal-label-text-weight: 600,
+      filled-label-text-tracking: 0,
+      outlined-label-text-tracking: 0,
+      text-label-text-tracking: 0,
+      tonal-label-text-tracking: 0,
+      outlined-outline-color: var(--app-border-strong),
+      outlined-outline-width: 1px,
+      outlined-label-text-color: var(--app-ink),
+      text-label-text-color: var(--app-link),
+      tonal-container-color: color-mix(
+          in srgb,
+          var(--app-action) 12%,
+          var(--app-surface)
+        ),
+      tonal-label-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.icon-button-overrides(
+    (
+      icon-color: var(--app-muted),
+    )
+  );
+}
+
+// Los botones con ícono (Font Awesome) alinean ícono y texto con un espacio fijo.
+.mdc-button .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mat-mdc-icon-button fa-icon {
+  font-size: 18px;
+}
+
+.mat-mdc-menu-item .mat-mdc-menu-item-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}

@@ -1,0 +1,94 @@
+// =============================================================================
+// PALETA DE LA APLICACIÓN
+//
+// Este es el ÚNICO archivo que hay que tocar para cambiar los colores. Los dos
+// mapas (claro y oscuro) deben tener exactamente las mismas claves. De aquí se
+// generan las variables CSS `--app-<clave>` y se enlazan a las de Angular
+// Material (`--mat-sys-*`) en `_material.scss`.
+//
+// Después de cambiar un color, ejecutar `npm run check:contrast`: verifica que
+// los pares de texto y fondo sigan cumpliendo WCAG AA (4,5:1 texto, 3:1 bordes).
+//
+// Un color, un significado:
+//   action / link  acción, selección, enlaces y estado "en curso"
+//   ok             completado
+//   warn           demora o atención
+//   crit           crítico, vencido y errores
+//
+// IMPORTANTE: el script `scripts/check-contrast.mjs` lee este archivo con una
+// expresión regular. Mantener el formato `clave: #rrggbb,` en una línea por
+// color, sin funciones de Sass dentro de los valores.
+// =============================================================================
+
+// Tema claro: porcelana. Sus neutros comparten el tono marino acero del
+// oscuro (≈213°), así los dos temas son de la misma familia de azul.
+$light: (
+  // Fondos y superficies
+  bg: #e5e9ef,
+  surface: #ffffff,
+  surface-2: #f6f9fc,
+  // Texto
+  ink: #0b213b,
+  muted: #4e647e,
+  // Contornos: `border` separa paneles; `border-strong` delimita controles.
+  border: #cbd5e1,
+  border-strong: #71849c,
+  // Acción: el mismo marino del riel; los enlaces van un tono más claro para
+  // distinguirse del texto.
+  action: #041223,
+  on-action: #ffffff,
+  link: #1f5596,
+  // Estados
+  ok: #137a45,
+  warn: #8a5a00,
+  crit: #c8102e,
+  on-crit: #ffffff,
+  // Relleno del elemento activo o señalado en menús y listas desplegables.
+  selected: #dde9f7,
+  // Enlace sobre superficies inversas (aviso y tooltip): claro sobre fondo oscuro y viceversa.
+  inverse-link: #7db8ff,
+  // Riel de navegación: el mismo marino en ambos temas (también el panel del
+  // dibujo de la pantalla de acceso).
+  rail: #041223,
+  rail-ink: #c3d3e6,
+  rail-border: #101c2c,
+  rail-accent: #3b8ffb,
+  // Relleno del enlace activo del riel.
+  rail-selected: #0d2844,
+  // Líneas del dibujo de la pantalla de acceso (sobre el riel, iguales en ambos temas).
+  line-crit: #ff6b7d,
+  line-ok: #3bc17a,
+  line-warn: #f6a800,
+  line-action: #4f86f0
+);
+
+// Tema oscuro: marino profundo. Fondo casi negro; tarjetas, diálogos y menús
+// apenas más claros y separados por un contorno fino; el elemento activo se
+// rellena de azul oscuro.
+$dark: (
+  bg: #050f1b,
+  surface: #081729,
+  surface-2: #0c1a2c,
+  ink: #eaf2fc,
+  muted: #8d9aab,
+  border: #172537,
+  border-strong: #4f6683,
+  action: #2f6fd8,
+  on-action: #ffffff,
+  link: #7db8ff,
+  ok: #3bc17a,
+  warn: #f6a800,
+  crit: #ff6b7d,
+  on-crit: #050f1b,
+  selected: #0e3655,
+  inverse-link: #1f5596,
+  rail: #041223,
+  rail-ink: #c3d3e6,
+  rail-border: #101c2c,
+  rail-accent: #3b8ffb,
+  rail-selected: #0d2844,
+  line-crit: #ff6b7d,
+  line-ok: #3bc17a,
+  line-warn: #f6a800,
+  line-action: #4f86f0,
+);

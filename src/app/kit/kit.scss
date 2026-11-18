@@ -1,0 +1,105 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.kit {
+  height: 100%;
+}
+
+.kit__spacer {
+  flex: 1;
+}
+
+.kit__main {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 1040px;
+  padding: 32px;
+}
+
+.kit__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-margin-top: 80px;
+}
+
+.kit__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.kit__form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px 24px;
+  align-items: start;
+}
+
+.kit__wide {
+  grid-column: 1 / -1;
+}
+
+.kit__group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.kit__icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.kit__icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 8px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+  background: var(--app-surface);
+  font-size: 20px;
+}
+
+.kit__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.kit__table {
+  overflow-x: auto;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+  background: var(--app-surface);
+
+  table {
+    min-width: 720px;
+  }
+}
+
+.kit__tab {
+  padding: 16px 0;
+}
+
+.kit__calendar {
+  width: 320px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+  background: var(--app-surface);
+}
+
+// La barra superior queda fija mientras se desplaza el contenido.
+.kit__content mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}

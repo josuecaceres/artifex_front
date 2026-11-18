@@ -1,0 +1,19 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 360px;
+  max-width: 420px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+}

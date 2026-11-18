@@ -1,0 +1,75 @@
+<mat-sidenav-container class="app-shell">
+  <mat-sidenav class="app-rail" mode="side" opened disableClose>
+    <div class="app-rail__brand">Artifex</div>
+
+    <mat-accordion class="app-rail__accordion" displayMode="flat">
+      <mat-nav-list class="app-rail__nav" aria-label="Navegación principal">
+        @for (item of menuItems; track item.label) {
+          @if (isMenuGroup(item)) {
+            <mat-expansion-panel
+              class="app-rail__group"
+              [expanded]="isGroupActive(item)"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ item.label }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              @for (child of item.children; track child.path) {
+                <a
+                  mat-list-item
+                  class="app-rail__sublink"
+                  [routerLink]="child.path"
+                  routerLinkActive="is-active"
+                >
+                  {{ child.label }}
+                </a>
+              }
+            </mat-expansion-panel>
+          } @else {
+            <a
+              mat-list-item
+              [routerLink]="item.path"
+              routerLinkActive="is-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              {{ item.label }}
+            </a>
+          }
+        }
+      </mat-nav-list>
+    </mat-accordion>
+
+    <div class="app-rail__footer">
+      <span class="app-label">Sesión</span>
+      <button
+        mat-button
+        type="button"
+        class="app-rail__logout"
+        (click)="logout()"
+      >
+        <fa-icon [icon]="icons.logout" />
+        Cerrar sesión
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="app-shell__content">
+    <mat-toolbar class="app-topbar">
+      <span class="app-topbar__spacer"></span>
+      <mat-button-toggle-group
+        aria-label="Tema de la aplicación"
+        [value]="theme.mode()"
+        (change)="theme.setMode($event.value)"
+      >
+        @for (mode of themeModes; track mode.value) {
+          <mat-button-toggle [value]="mode.value">{{
+            mode.label
+          }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </mat-toolbar>
+
+    <main class="app-shell__main">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

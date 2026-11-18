@@ -1,0 +1,92 @@
+@use "@angular/material" as mat;
+
+// Enlaza Angular Material con la paleta de la aplicación (`_palette.scss`).
+//
+// `mat.theme` genera la base (tipografía y los tokens que no se sobrescriben);
+// `mat.theme-overrides` apunta cada rol de color de Material a una variable
+// `--app-*`. Así el cambio de tema es solo cambiar esas variables en `:root`,
+// sin duplicar la hoja de estilos de Material.
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        theme-type: light,
+      ),
+      typography: (
+        plain-family: "Source Sans 3 Variable",
+        brand-family: "Barlow Condensed",
+        bold-weight: 700,
+        medium-weight: 600,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      // Acción
+      primary: var(--app-action),
+      on-primary: var(--app-on-action),
+      primary-container: color-mix(
+          in srgb,
+          var(--app-action) 16%,
+          var(--app-surface)
+        ),
+      on-primary-container: var(--app-ink),
+      secondary: var(--app-link),
+      on-secondary: var(--app-surface),
+      secondary-container: color-mix(
+          in srgb,
+          var(--app-action) 12%,
+          var(--app-surface)
+        ),
+      on-secondary-container: var(--app-ink),
+      tertiary: var(--app-muted),
+      on-tertiary: var(--app-surface),
+      tertiary-container: var(--app-surface-2),
+      on-tertiary-container: var(--app-ink),
+      // Error: usa el color crítico de la paleta.
+      error: var(--app-crit),
+      on-error: var(--app-on-crit),
+      error-container: color-mix(
+          in srgb,
+          var(--app-crit) 14%,
+          var(--app-surface)
+        ),
+      on-error-container: var(--app-ink),
+      // Fondos y superficies
+      background: var(--app-bg),
+      on-background: var(--app-ink),
+      surface: var(--app-surface),
+      on-surface: var(--app-ink),
+      surface-variant: var(--app-surface-2),
+      on-surface-variant: var(--app-muted),
+      surface-dim: var(--app-bg),
+      surface-bright: var(--app-surface),
+      surface-container-lowest: var(--app-surface),
+      surface-container-low: var(--app-surface),
+      surface-container: var(--app-surface),
+      surface-container-high: var(--app-surface-2),
+      surface-container-highest: var(--app-surface-2),
+      surface-tint: transparent,
+      // Contornos
+      outline: var(--app-border-strong),
+      outline-variant: var(--app-border),
+      // Inversos (snackbar y tooltip)
+      inverse-surface: var(--app-ink),
+      inverse-on-surface: var(--app-bg),
+      inverse-primary: var(--app-inverse-link),
+      scrim: #000000,
+      shadow: #000000,
+      // Esquinas: 4 px en elementos pequeños, 6 px en controles, 8 px en paneles.
+      corner-extra-small: 4px,
+      corner-small: 6px,
+      corner-medium: 8px,
+      corner-large: 8px,
+      corner-extra-large: 8px,
+      corner-full: 999px
+    )
+  );
+}

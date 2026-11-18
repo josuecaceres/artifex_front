@@ -1,0 +1,195 @@
+// Riel de navegación lateral. Es azul medianoche en ambos temas: toma sus
+// colores de las variables `--app-rail-*`. La sección activa se marca con un
+// relleno redondeado (`--app-rail-selected`) y la estación llena. Los grupos
+// del menú (`MenuGroup` en `@shared/menu-items`) se muestran como acordeón
+// (`mat-accordion` + `mat-expansion-panel`): esta hoja solo retoca sus tokens
+// para que, dentro del riel, se vean igual que el resto de los enlaces.
+//
+// Uso: ver `src/app/dashboard/layout/layout.html`.
+.app-rail {
+  --mat-list-list-item-label-text-color: var(--app-rail-ink);
+  --mat-list-list-item-hover-label-text-color: #fff;
+  --mat-list-list-item-focus-label-text-color: #fff;
+  --mat-list-list-item-hover-state-layer-color: #fff;
+  --mat-list-list-item-hover-state-layer-opacity: 0.08;
+  --mat-list-list-item-focus-state-layer-color: #fff;
+  --mat-list-list-item-focus-state-layer-opacity: 0.12;
+  --mat-list-active-indicator-color: transparent;
+  --mat-list-list-item-container-shape: var(--app-radius-control);
+  --mat-list-list-item-one-line-container-height: 44px;
+
+  // Acordeón de los grupos del menú (`menu-items.ts`): mismos tokens que la
+  // lista, para que se vea como un enlace más del riel.
+  --mat-expansion-container-shape: var(--app-radius-control);
+  --mat-expansion-container-elevation-shadow: none;
+  --mat-expansion-container-background-color: transparent;
+  --mat-expansion-container-text-color: var(--app-rail-ink);
+  --mat-expansion-header-text-color: var(--app-rail-ink);
+  --mat-expansion-header-description-color: var(--app-rail-ink);
+  --mat-expansion-header-indicator-color: var(--app-rail-ink);
+  --mat-expansion-header-hover-state-layer-color: #fff;
+  --mat-expansion-header-focus-state-layer-color: #fff;
+  --mat-expansion-header-collapsed-state-height: 44px;
+  --mat-expansion-header-expanded-state-height: 44px;
+  --mat-expansion-header-text-font: var(--app-font-display);
+  --mat-expansion-header-text-size: 14px;
+  --mat-expansion-header-text-weight: 600;
+  --mat-expansion-header-text-tracking: 0.12em;
+
+  padding: 24px 16px;
+  border-right: 0;
+
+  .mat-drawer-inner-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__brand {
+    padding: 0 8px 20px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--app-rail-border);
+    color: #fff;
+    font-family: var(--app-font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  &__nav {
+    padding: 0;
+
+    .mdc-list-item {
+      padding-inline: 8px;
+      margin-bottom: 2px;
+    }
+
+    .mdc-list-item__primary-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--app-font-display);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+
+      // Estación: círculo vacío; la sección activa lo llena.
+      &::before {
+        content: "";
+        flex: none;
+        width: 10px;
+        height: 10px;
+        border: 2px solid var(--app-rail-ink);
+        border-radius: 50%;
+        opacity: 0.7;
+      }
+    }
+
+    .mdc-list-item.is-active,
+    .mdc-list-item.mdc-list-item--activated {
+      .mdc-list-item__primary-text {
+        color: #fff;
+
+        &::before {
+          background: var(--app-rail-accent);
+          border-color: #fff;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  // Grupo del menú (acordeón): la cabecera se ve como un enlace más, con la
+  // misma estación como marca; se rellena mientras el grupo está abierto.
+  &__group {
+    background: transparent;
+    box-shadow: none !important;
+
+    .mat-expansion-panel-header {
+      padding: 0 8px;
+      border-radius: var(--app-radius-control);
+    }
+
+    .mat-expansion-panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 0 0 2px 22px;
+    }
+
+    mat-panel-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-transform: uppercase;
+
+      &::before {
+        content: "";
+        flex: none;
+        width: 10px;
+        height: 10px;
+        border: 2px solid var(--app-rail-ink);
+        border-radius: 50%;
+        opacity: 0.7;
+      }
+    }
+
+    &.mat-expanded mat-panel-title {
+      color: #fff;
+
+      &::before {
+        background: var(--app-rail-accent);
+        border-color: #fff;
+        opacity: 1;
+      }
+    }
+  }
+
+  &__sublink .mdc-list-item__primary-text::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding: 12px 8px 0;
+    border-top: 1px solid var(--app-rail-border);
+    color: var(--app-rail-ink);
+    font-size: 13px;
+  }
+}
+
+// Los elementos de la lista del riel ocupan todo el ancho y no heredan el
+// aspecto de botón del navegador.
+.app-rail .app-rail__nav .mat-mdc-list-item.mdc-list-item {
+  width: 100%;
+  border-radius: var(--app-radius-control);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.app-rail__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .app-label {
+    color: var(--app-rail-ink);
+  }
+
+  strong {
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.app-rail .app-rail__nav .mat-mdc-list-item.mdc-list-item.is-active,
+.app-rail
+  .app-rail__nav
+  .mat-mdc-list-item.mdc-list-item.mdc-list-item--activated {
+  background: var(--app-rail-selected);
+}

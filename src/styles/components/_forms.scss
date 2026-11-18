@@ -1,0 +1,178 @@
+@use "@angular/material" as mat;
+
+// Formularios: campo de contorno de 48 px con esquinas de 6 px. El borde usa
+// `border-strong` (3:1 mínimo contra su fondo); el foco sube a 2 px de cobalto.
+html {
+  @include mat.form-field-overrides(
+    (
+      container-height: 48px,
+      container-vertical-padding: 12px,
+      outlined-container-shape: var(--app-radius-control),
+      outlined-outline-width: 1px,
+      outlined-focus-outline-width: 2px,
+      outlined-outline-color: var(--app-border-strong),
+      outlined-hover-outline-color: var(--app-ink),
+      outlined-focus-outline-color: var(--app-action),
+      outlined-error-outline-color: var(--app-crit),
+      outlined-error-hover-outline-color: var(--app-crit),
+      outlined-error-focus-outline-color: var(--app-crit),
+      outlined-label-text-color: var(--app-muted),
+      outlined-hover-label-text-color: var(--app-muted),
+      outlined-focus-label-text-color: var(--app-link),
+      outlined-error-label-text-color: var(--app-crit),
+      outlined-error-hover-label-text-color: var(--app-crit),
+      outlined-error-focus-label-text-color: var(--app-crit),
+      outlined-input-text-color: var(--app-ink),
+      outlined-input-text-placeholder-color: var(--app-muted),
+      outlined-caret-color: var(--app-action),
+      outlined-error-caret-color: var(--app-crit),
+      error-text-color: var(--app-crit),
+      container-text-font: var(--app-font-body),
+      container-text-size: 16px,
+      subscript-text-font: var(--app-font-body),
+      subscript-text-size: 13px,
+      outlined-label-text-font: var(--app-font-body),
+      outlined-label-text-size: 16px,
+      outlined-label-text-weight: 500,
+      leading-icon-color: var(--app-muted),
+      trailing-icon-color: var(--app-muted),
+      enabled-select-arrow-color: var(--app-muted),
+      focus-select-arrow-color: var(--app-link),
+      error-trailing-icon-color: var(--app-crit),
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      panel-background-color: var(--app-surface),
+      container-elevation-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35),
+      enabled-trigger-text-color: var(--app-ink),
+      placeholder-text-color: var(--app-muted),
+      enabled-arrow-color: var(--app-muted),
+      focused-arrow-color: var(--app-link),
+      invalid-arrow-color: var(--app-crit),
+    )
+  );
+
+  @include mat.checkbox-overrides(
+    (
+      unselected-icon-color: var(--app-border-strong),
+      unselected-hover-icon-color: var(--app-ink),
+      unselected-focus-icon-color: var(--app-ink),
+      selected-icon-color: var(--app-action),
+      selected-checkmark-color: var(--app-on-action),
+      label-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.radio-overrides(
+    (
+      unselected-icon-color: var(--app-border-strong),
+      unselected-hover-icon-color: var(--app-ink),
+      selected-icon-color: var(--app-action),
+      selected-hover-icon-color: var(--app-action),
+      selected-focus-icon-color: var(--app-action),
+      label-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.slide-toggle-overrides(
+    (
+      unselected-track-color: var(--app-surface-2),
+      unselected-handle-color: var(--app-border-strong),
+      unselected-hover-handle-color: var(--app-ink),
+      unselected-focus-handle-color: var(--app-ink),
+      unselected-pressed-handle-color: var(--app-ink),
+      selected-track-color: var(--app-action),
+      selected-handle-color: var(--app-on-action),
+      selected-hover-handle-color: var(--app-on-action),
+      selected-focus-handle-color: var(--app-on-action),
+      selected-pressed-handle-color: var(--app-on-action),
+      label-text-color: var(--app-ink),
+    )
+  );
+
+  // Calendario del selector de fecha.
+  @include mat.datepicker-overrides(
+    (
+      calendar-container-shape: var(--app-radius-panel),
+      calendar-container-background-color: var(--app-surface),
+      calendar-container-text-color: var(--app-ink),
+      calendar-container-elevation-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.35),
+      calendar-header-text-color: var(--app-muted),
+      calendar-header-divider-color: var(--app-border),
+      calendar-body-label-text-color: var(--app-muted),
+      calendar-date-text-color: var(--app-ink),
+      calendar-date-outline-color: transparent,
+      calendar-date-today-outline-color: var(--app-action),
+      calendar-date-today-selected-state-outline-color: var(--app-on-action),
+      calendar-date-selected-state-background-color: var(--app-action),
+      calendar-date-selected-state-text-color: var(--app-on-action),
+      calendar-date-in-range-state-background-color: color-mix(
+          in srgb,
+          var(--app-action) 16%,
+          var(--app-surface)
+        ),
+      calendar-date-preview-state-outline-color: var(--app-action),
+      calendar-period-button-text-color: var(--app-ink),
+      calendar-period-button-icon-color: var(--app-muted),
+      calendar-navigation-button-icon-color: var(--app-muted),
+      calendar-text-font: var(--app-font-body),
+      calendar-body-label-text-weight: 600,
+      calendar-header-text-weight: 600,
+    )
+  );
+}
+
+// Etiquetas de grupo (radio, checkbox) con el estilo de rótulo.
+.app-field-group-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--app-muted);
+  font-family: var(--app-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+// Aviso de error de un formulario: contorno completo de 1 px (sin borde
+// lateral de color), para usar sobre cualquier superficie.
+.app-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--app-crit);
+  border-radius: var(--app-radius-control);
+  background: var(--app-surface);
+  color: var(--app-ink);
+
+  strong,
+  span {
+    display: block;
+  }
+
+  strong {
+    color: var(--app-crit);
+  }
+}
+
+.app-alert__icon {
+  margin-top: 3px;
+  color: var(--app-crit);
+}
+
+// Variante de éxito: el mismo aviso, en verde. Siempre sobre una superficie
+// (tarjeta), nunca directamente sobre el fondo de página.
+.app-alert--ok {
+  border-color: var(--app-ok);
+
+  strong {
+    color: var(--app-ok);
+  }
+}
+
+.app-alert--ok .app-alert__icon {
+  color: var(--app-ok);
+}

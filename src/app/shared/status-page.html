@@ -1,0 +1,7 @@
+<main class="status">
+  <fa-icon class="status__icon" [icon]="icon()" size="2x" />
+  <p class="status__code app-figure">{{ code() }}</p>
+  <h1>{{ title() }}</h1>
+  <p>{{ message() }}</p>
+  <a mat-flat-button [routerLink]="actionLink()">{{ actionLabel() }}</a>
+</main>

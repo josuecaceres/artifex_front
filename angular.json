@@ -27,6 +27,10 @@
               }
             ],
             "styles": [
+              "@fontsource/barlow-condensed/latin-500.css",
+              "@fontsource/barlow-condensed/latin-600.css",
+              "@fontsource/barlow-condensed/latin-700.css",
+              "@fontsource-variable/source-sans-3/wght.css",
               "src/styles.scss"
             ]
           },
@@ -48,6 +52,14 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "src/app/dev.routes.ts",
+                  "with": "src/app/dev.routes.prod.ts"
+                },
+                {
+                  "replace": "src/environments/dev-login.ts",
+                  "with": "src/environments/dev-login.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -87,6 +99,10 @@
               }
             ],
             "styles": [
+              "@fontsource/barlow-condensed/latin-500.css",
+              "@fontsource/barlow-condensed/latin-600.css",
+              "@fontsource/barlow-condensed/latin-700.css",
+              "@fontsource-variable/source-sans-3/wght.css",
               "src/styles.scss"
             ]
           }

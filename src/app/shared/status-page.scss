@@ -1,0 +1,30 @@
+:host {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 32px 24px;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.status__icon {
+  color: var(--app-muted);
+}
+
+.status__code {
+  margin: 0;
+  color: var(--app-muted);
+  font-size: 72px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+a {
+  margin-top: 8px;
+}

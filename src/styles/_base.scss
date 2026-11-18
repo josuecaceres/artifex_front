@@ -1,0 +1,114 @@
+// Estilos globales que dependen solo de las variables `--app-*`.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+// El componente raíz es un elemento personalizado (display: inline por
+// defecto): sin esto, un layout con riel a pantalla completa (`/dashboard`)
+// no tiene de dónde tomar su altura.
+app-root {
+  display: block;
+  height: 100%;
+}
+
+body {
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font-family: var(--app-font-body);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  // Pares de cifras alineadas en tablas, KPI y formularios.
+  font-variant-numeric: tabular-nums;
+  caret-color: var(--app-action);
+  scrollbar-color: var(--app-border-strong) transparent;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--app-font-display);
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+p {
+  max-width: 68ch;
+  margin: 0;
+}
+
+a {
+  color: var(--app-link);
+  text-underline-offset: 0.18em;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--app-action) 32%, transparent);
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--app-focus-ring) solid var(--app-action);
+  outline-offset: 2px;
+}
+
+// Etiqueta de campo, encabezado de columna y rótulo pequeño.
+.app-label {
+  font-family: var(--app-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--app-muted);
+}
+
+// Cifras grandes (KPI).
+.app-figure {
+  font-family: var(--app-font-display);
+  font-size: 44px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

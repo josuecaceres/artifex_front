@@ -1,0 +1,127 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.login {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+// Panel de marca: siempre azul medianoche, igual que el riel, en ambos temas.
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 48px;
+  background: var(--app-rail);
+  color: var(--app-rail-ink);
+}
+
+.hero__brand {
+  margin: 0;
+  color: var(--app-on-action);
+  font-family: var(--app-font-display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero__lines {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+}
+
+.hero__text {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 17px;
+}
+
+.line--crit {
+  stroke: var(--app-line-crit);
+}
+
+.line--ok {
+  stroke: var(--app-line-ok);
+}
+
+.line--warn {
+  stroke: var(--app-line-warn);
+}
+
+.line--action {
+  stroke: var(--app-line-action);
+}
+
+.station {
+  fill: var(--app-rail);
+  stroke: var(--app-on-action);
+}
+
+.hub {
+  fill: var(--app-on-action);
+  stroke: var(--app-rail);
+}
+
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: var(--app-bg);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 420px;
+
+  h1 {
+    font-size: 40px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.submit {
+  --mat-button-filled-container-height: 52px;
+  width: 100%;
+}
+
+// El indicador de carga toma el color del texto del botón (blanco sobre cobalto).
+.submit__spinner {
+  --mat-progress-spinner-active-indicator-color: currentColor;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@media (max-width: 900px) {
+  .login {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  // En pantallas angostas el panel de marca se reduce a la barra superior.
+  .hero {
+    padding: 20px 24px;
+  }
+
+  .hero__lines,
+  .hero__text {
+    display: none;
+  }
+
+  .panel {
+    padding: 32px 24px 48px;
+  }
+}

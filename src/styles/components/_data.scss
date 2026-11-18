@@ -1,0 +1,198 @@
+@use "@angular/material" as mat;
+
+// Datos: tabla, paginador, pestañas, chips y estados.
+html {
+  @include mat.table-overrides(
+    (
+      background-color: transparent,
+      header-container-height: 44px,
+      row-item-container-height: 52px,
+      footer-container-height: 52px,
+      header-headline-color: var(--app-muted),
+      header-headline-font: var(--app-font-display),
+      header-headline-size: 13px,
+      header-headline-weight: 600,
+      header-headline-tracking: 0.12em,
+      row-item-label-text-color: var(--app-ink),
+      row-item-label-text-font: var(--app-font-body),
+      row-item-label-text-size: 15px,
+      row-item-outline-color: var(--app-border),
+      row-item-outline-width: 1px,
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: transparent,
+      container-text-color: var(--app-muted),
+      container-text-font: var(--app-font-body),
+      container-text-size: 14px,
+      enabled-icon-color: var(--app-muted),
+      container-size: 52px,
+      form-field-container-height: 40px,
+      form-field-container-vertical-padding: 8px,
+    )
+  );
+
+  @include mat.tabs-overrides(
+    (
+      container-height: 48px,
+      divider-color: var(--app-border),
+      divider-height: 1px,
+      active-indicator-color: var(--app-action),
+      active-focus-indicator-color: var(--app-action),
+      active-hover-indicator-color: var(--app-action),
+      active-indicator-height: 3px,
+      active-indicator-shape: 0,
+      active-label-text-color: var(--app-ink),
+      active-focus-label-text-color: var(--app-ink),
+      active-hover-label-text-color: var(--app-ink),
+      inactive-label-text-color: var(--app-muted),
+      inactive-focus-label-text-color: var(--app-ink),
+      inactive-hover-label-text-color: var(--app-ink),
+      label-text-font: var(--app-font-display),
+      label-text-size: 15px,
+      label-text-weight: 600,
+      label-text-tracking: 0.12em,
+    )
+  );
+
+  @include mat.chips-overrides(
+    (
+      container-height: 32px,
+      container-shape-radius: 999px,
+      outline-color: var(--app-border-strong),
+      outline-width: 1px,
+      label-text-color: var(--app-ink),
+      label-text-font: var(--app-font-body),
+      label-text-size: 14px,
+      label-text-weight: 600,
+      label-text-tracking: 0,
+      elevated-container-color: var(--app-surface),
+      elevated-selected-container-color: color-mix(
+          in srgb,
+          var(--app-action) 16%,
+          var(--app-surface)
+        ),
+      selected-label-text-color: var(--app-ink),
+    )
+  );
+
+  @include mat.list-overrides(
+    (
+      list-item-label-text-color: var(--app-ink),
+      list-item-label-text-font: var(--app-font-body),
+      list-item-label-text-size: 15px,
+      list-item-leading-icon-color: var(--app-muted),
+    )
+  );
+}
+
+.mat-mdc-header-row .mat-mdc-header-cell {
+  text-transform: uppercase;
+}
+
+// Ordenamiento: el encabezado activo se lee más fuerte.
+.mat-sort-header-sorted .mat-sort-header-content {
+  color: var(--app-ink);
+}
+
+// Columnas numéricas alineadas a la derecha.
+.mat-mdc-cell.app-num,
+.mat-mdc-header-cell.app-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+// Fila vencida o que exige atención: se marca con un fondo tenue (el contorno
+// y el símbolo del estado ya la distinguen sin depender del color).
+.mat-mdc-row.app-row-attention {
+  background: color-mix(in srgb, var(--app-crit) 8%, transparent);
+}
+
+// -----------------------------------------------------------------------------
+// Estado de un registro: color + símbolo dibujado + texto. Nunca solo color.
+// Uso: <span class="app-status app-status--ok">Completado</span>
+// -----------------------------------------------------------------------------
+.app-status {
+  --app-status-color: var(--app-link);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
+  border: 1px solid var(--app-status-color);
+  border-radius: 999px;
+  color: var(--app-status-color);
+  font-family: var(--app-font-body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    flex: none;
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    mask: var(--app-status-glyph) center / contain no-repeat;
+  }
+}
+
+// En curso: círculo lleno.
+.app-status--active {
+  --app-status-color: var(--app-link);
+  --app-status-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5'/%3E%3C/svg%3E");
+}
+
+// Completado: marca de verificación.
+.app-status--ok {
+  --app-status-color: var(--app-ok);
+  --app-status-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+// Demora o atención: círculo medio lleno.
+.app-status--warn {
+  --app-status-color: var(--app-warn);
+  --app-status-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='5.4' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M8 2.6a5.4 5.4 0 0 1 0 10.8z'/%3E%3C/svg%3E");
+}
+
+// Crítico o vencido: triángulo.
+.app-status--crit {
+  --app-status-color: var(--app-crit);
+  --app-status-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 2.6l5.8 10.2H2.2z' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+// Selector segmentado (tema, vistas): vive en la barra superior, del mismo
+// marino que el riel (ver `--app-rail-*` en `_surfaces.scss`); activo con el
+// mismo relleno que el enlace activo del riel, sin marca de verificación.
+html {
+  @include mat.button-toggle-overrides(
+    (
+      shape: var(--app-radius-control),
+      height: 40px,
+      background-color: transparent,
+      text-color: var(--app-rail-ink),
+      state-layer-color: #fff,
+      selected-state-background-color: var(--app-rail-selected),
+      selected-state-text-color: #fff,
+      divider-color: var(--app-rail-border),
+      label-text-font: var(--app-font-body),
+      label-text-size: 14px,
+      label-text-weight: 600,
+      label-text-tracking: 0,
+    )
+  );
+}
+
+.mat-button-toggle-group {
+  border-color: var(--app-rail-border);
+}
+
+table.mat-mdc-table {
+  width: 100%;
+}
+
+.mat-mdc-tab .mdc-tab__text-label {
+  text-transform: uppercase;
+}

@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>{{ isEdit ? "Editar rol" : "Nuevo rol" }}</h2>
+
+<form
+  [formGroup]="form"
+  [appSubmitLock]="submit"
+  #lock="appSubmitLock"
+  novalidate
+>
+  <mat-dialog-content>
+    @if (errorMessage(); as message) {
+      <div class="app-alert" role="alert">
+        <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <mat-form-field>
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError("required")) {
+        <mat-error>Ingresa el nombre del rol.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="app-field-group-label">Permisos</div>
+    @if (loadingPermissions()) {
+      <mat-spinner diameter="24" />
+    } @else {
+      <div class="permissions">
+        @for (permission of permissions(); track permission.id) {
+          <mat-checkbox
+            [checked]="isSelected(permission.id)"
+            (change)="toggle(permission.id, $event.checked)"
+          >
+            {{ permission.name }}
+          </mat-checkbox>
+        } @empty {
+          <p>No hay permisos en el catálogo todavía.</p>
+        }
+      </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close>Cancelar</button>
+    <button
+      mat-flat-button
+      type="submit"
+      disabledInteractive
+      [disabled]="lock.pending()"
+    >
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</form>
