@@ -1,0 +1,100 @@
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { apiUrl } from '@services';
+import { CategoriaDialog } from './categoria-dialog';
+
+describe('CategoriaDialog', () => {
+  let fixture: ComponentFixture<CategoriaDialog>;
+  let element: HTMLElement;
+  let http: HttpTestingController;
+  let dialogRef: jasmine.SpyObj<MatDialogRef<CategoriaDialog>>;
+
+  function setValue(field: string, value: string): void {
+    const input = element.querySelector<HTMLInputElement>(
+      `[formcontrolname="${field}"]`,
+    )!;
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+  }
+
+  function submit(): void {
+    element
+      .querySelector('form')!
+      .dispatchEvent(new Event('submit', { cancelable: true }));
+  }
+
+  async function createComponent(
+    data: { categoria?: unknown } = {},
+  ): Promise<void> {
+    dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+
+    await TestBed.configureTestingModule({
+      imports: [CategoriaDialog],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: MatDialogRef, useValue: dialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: data },
+      ],
+    }).compileComponents();
+
+    http = TestBed.inject(HttpTestingController);
+    fixture = TestBed.createComponent(CategoriaDialog);
+    await fixture.whenStable();
+    element = fixture.nativeElement as HTMLElement;
+  }
+
+  afterEach(() => http.verify());
+
+  it('muestra el título de creación sin categoría en los datos', async () => {
+    await createComponent();
+
+    expect(element.querySelector('h2')?.textContent).toContain(
+      'Nueva categoría',
+    );
+  });
+
+  it('no envía la petición si el formulario es inválido', async () => {
+    await createComponent();
+
+    submit();
+
+    http.expectNone(apiUrl('api/crear-categorias'));
+  });
+
+  it('crea la categoría y cierra el diálogo con el resultado', async () => {
+    await createComponent();
+    setValue('name', 'Productos Varios');
+    await fixture.whenStable();
+
+    submit();
+
+    const request = http.expectOne(apiUrl('api/crear-categorias'));
+    expect(request.request.body).toEqual({ name: 'Productos Varios' });
+    const created = { id: 2, ...request.request.body, is_active: true };
+    request.flush(created);
+
+    expect(dialogRef.close).toHaveBeenCalledWith(created);
+  });
+
+  it('precarga los datos de la categoría en modo edición', async () => {
+    await createComponent({
+      categoria: { id: 1, name: 'Productos Varios', is_active: true },
+    });
+
+    expect(element.querySelector('h2')?.textContent).toContain(
+      'Editar categoría',
+    );
+    expect(
+      element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
+        ?.value,
+    ).toBe('Productos Varios');
+  });
+});

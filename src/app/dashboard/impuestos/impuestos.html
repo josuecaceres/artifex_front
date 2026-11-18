@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="page__head">
+    <h1>Impuestos</h1>
+    <button mat-flat-button type="button" (click)="openCreate()">
+      <fa-icon [icon]="icons.add" />
+      Nuevo impuesto
+    </button>
+  </div>
+
+  @if (errorMessage(); as message) {
+    <div class="app-alert" role="alert">
+      <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+      <span>{{ message }}</span>
+    </div>
+  } @else if (loading()) {
+    <mat-spinner diameter="32" />
+  } @else if (dataSource.data.length === 0) {
+    <p>No hay impuestos todavía.</p>
+  }
+
+  <div
+    class="page__table"
+    [class.page__table--hidden]="dataSource.data.length === 0"
+  >
+    <table mat-table matSort [dataSource]="dataSource" aria-label="Impuestos">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+        <td mat-cell *matCellDef="let row">{{ row.code }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="rate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="app-num">
+          Tasa
+        </th>
+        <td mat-cell *matCellDef="let row" class="app-num">
+          {{ row.rate }}{{ row.is_percentage ? "%" : "" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="is_active">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.is_active ? "Sí" : "No" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button
+            mat-icon-button
+            type="button"
+            [attr.aria-label]="'Editar ' + row.name"
+            (click)="openEdit(row)"
+          >
+            <fa-icon [icon]="icons.edit" />
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+  <mat-paginator
+    [class.page__table--hidden]="dataSource.data.length === 0"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 25, 50]"
+    aria-label="Paginación de impuestos"
+  />
+</div>

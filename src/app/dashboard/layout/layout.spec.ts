@@ -35,6 +35,11 @@ describe('Layout', () => {
       'Roles y permisos',
       'Empresas',
       'Sucursales',
+      'Proveedores',
+      'Marcas',
+      'Impuestos',
+      'Categorías',
+      'Unidades de medida',
     ]);
   });
 

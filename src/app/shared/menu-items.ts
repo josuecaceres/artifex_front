@@ -40,4 +40,14 @@ export const MENU_ITEMS: readonly MenuEntry[] = [
       { label: 'Sucursales', path: '/dashboard/sucursales' },
     ],
   },
+  {
+    label: 'Inventario',
+    children: [
+      { label: 'Proveedores', path: '/dashboard/proveedores' },
+      { label: 'Marcas', path: '/dashboard/marcas' },
+      { label: 'Impuestos', path: '/dashboard/impuestos' },
+      { label: 'Categorías', path: '/dashboard/categorias' },
+      { label: 'Unidades de medida', path: '/dashboard/unidades' },
+    ],
+  },
 ];

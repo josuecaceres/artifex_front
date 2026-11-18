@@ -1,0 +1,30 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page__table {
+  overflow-x: auto;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-panel);
+}
+
+table {
+  width: 100%;
+}
+
+// La tabla y el paginador quedan siempre en el DOM (matSort y mat-paginator
+// los necesita `ngAfterViewInit`); se ocultan solo mientras no hay filas que
+// mostrar (cargando, con error, o lista vacía).
+.page__table--hidden {
+  display: none;
+}

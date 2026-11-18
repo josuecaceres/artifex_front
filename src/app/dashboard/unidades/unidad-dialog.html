@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>{{ isEdit ? "Editar unidad" : "Nueva unidad" }}</h2>
+
+<form
+  [formGroup]="form"
+  [appSubmitLock]="submit"
+  #lock="appSubmitLock"
+  novalidate
+>
+  <mat-dialog-content>
+    @if (errorMessage(); as message) {
+      <div class="app-alert" role="alert">
+        <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+        <span>{{ message }}</span>
+      </div>
+    }
+
+    <mat-form-field>
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError("required")) {
+        <mat-error>Ingresa el nombre de la unidad.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="code" />
+      @if (form.controls.code.hasError("required")) {
+        <mat-error>Ingresa el código.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (isEdit) {
+      <mat-slide-toggle formControlName="is_active">Activa</mat-slide-toggle>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close>Cancelar</button>
+    <button
+      mat-flat-button
+      type="submit"
+      disabledInteractive
+      [disabled]="lock.pending()"
+    >
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</form>

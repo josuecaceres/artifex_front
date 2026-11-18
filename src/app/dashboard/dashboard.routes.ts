@@ -41,6 +41,35 @@ export const DASHBOARD_ROUTES: Routes = [
         loadComponent: () =>
           import('./sucursales/sucursales').then((m) => m.Sucursales),
       },
+      {
+        path: 'proveedores',
+        title: 'Proveedores',
+        loadComponent: () =>
+          import('./proveedores/proveedores').then((m) => m.Proveedores),
+      },
+      {
+        path: 'marcas',
+        title: 'Marcas',
+        loadComponent: () => import('./marcas/marcas').then((m) => m.Marcas),
+      },
+      {
+        path: 'impuestos',
+        title: 'Impuestos',
+        loadComponent: () =>
+          import('./impuestos/impuestos').then((m) => m.Impuestos),
+      },
+      {
+        path: 'categorias',
+        title: 'Categorías',
+        loadComponent: () =>
+          import('./categorias/categorias').then((m) => m.Categorias),
+      },
+      {
+        path: 'unidades',
+        title: 'Unidades de medida',
+        loadComponent: () =>
+          import('./unidades/unidades').then((m) => m.Unidades),
+      },
     ],
   },
 ];

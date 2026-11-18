@@ -35,4 +35,19 @@ describe('menu-items', () => {
       'Sucursales',
     ]);
   });
+
+  it('agrupa los catálogos de inventario bajo "Inventario"', () => {
+    const group = MENU_ITEMS.find(
+      (item) => isMenuGroup(item) && item.label === 'Inventario',
+    ) as MenuGroup | undefined;
+
+    expect(group).toBeTruthy();
+    expect(group?.children.map((child) => child.label)).toEqual([
+      'Proveedores',
+      'Marcas',
+      'Impuestos',
+      'Categorías',
+      'Unidades de medida',
+    ]);
+  });
 });
