@@ -5,6 +5,7 @@ import {
   ChangePasswordRequest,
   CreateUserRequest,
   UpdateUserRequest,
+  SaveResult,
 } from '@interfaces';
 import { Observable, map } from 'rxjs';
 import { apiUrl } from './api';
@@ -25,13 +26,16 @@ export class UserService {
   }
 
   /** `POST /api/crear-usuario`. */
-  create(body: CreateUserRequest): Observable<AppUser> {
-    return this.http.post<AppUser>(apiUrl('api/crear-usuario'), body);
+  create(body: CreateUserRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-usuario'), body);
   }
 
   /** `PATCH /api/editar-usuario/{id}`. */
-  update(id: number, body: UpdateUserRequest): Observable<AppUser> {
-    return this.http.patch<AppUser>(apiUrl(`api/editar-usuario/${id}`), body);
+  update(id: number, body: UpdateUserRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
+      apiUrl(`api/editar-usuario/${id}`),
+      body,
+    );
   }
 
   /**

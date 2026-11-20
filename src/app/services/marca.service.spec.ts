@@ -39,11 +39,11 @@ describe('MarcaService', () => {
     expect(result).toEqual(marcas);
   });
 
-  it('crea una marca con POST /api/crear-marcas', () => {
+  it('crea una marca con POST /api/crear-marca', () => {
     const body = { name: 'La Guangara' };
 
     service.create(body).subscribe();
-    const request = http.expectOne(apiUrl('api/crear-marcas'));
+    const request = http.expectOne(apiUrl('api/crear-marca'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
     request.flush({ id: 2, ...body, is_active: true });

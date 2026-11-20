@@ -1,3 +1,4 @@
+export * from './api';
 export * from './auth';
 export * from './categoria';
 export * from './empresa';
@@ -6,5 +7,6 @@ export * from './marca';
 export * from './proveedor';
 export * from './role';
 export * from './sucursal';
+export * from './ubicacion';
 export * from './unidad';
 export * from './user';

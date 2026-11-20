@@ -92,13 +92,13 @@ describe('EmpresaDialog', () => {
       email: 'contacto@empresa.com',
       phone: '1234567890',
     });
-    const created = { id: 2, ...request.request.body };
-    request.flush(created);
+    const result = { message: 'Company created successfully' };
+    request.flush(result);
 
-    expect(dialogRef.close).toHaveBeenCalledWith(created);
+    expect(dialogRef.close).toHaveBeenCalledWith(result);
   });
 
-  it('no envía api_key ni private_password si se dejan vacíos al editar', async () => {
+  it('no precarga ni envía api_key ni private_password si se dejan vacíos al editar (el listado las trae en claro)', async () => {
     await createComponent({
       empresa: {
         id: 1,
@@ -110,8 +110,15 @@ describe('EmpresaDialog', () => {
         comercial_name: 'Tu empresa',
         email: 'contacto@empresa.com',
         phone: '1234567890',
+        api_key: 'clave-en-claro-del-listado',
+        private_password: 'pass-en-claro-del-listado',
       },
     });
+
+    expect(
+      element.querySelector<HTMLInputElement>('[formcontrolname="api_key"]')
+        ?.value,
+    ).toBe('');
 
     submit();
 
@@ -126,6 +133,6 @@ describe('EmpresaDialog', () => {
       email: 'contacto@empresa.com',
       phone: '1234567890',
     });
-    request.flush(request.request.body);
+    request.flush({ message: 'Company updated successfully' });
   });
 });

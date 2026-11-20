@@ -34,6 +34,8 @@ describe('UserService', () => {
         name: 'M. Rojas',
         acronym: 'MROJAS',
         email: 'm.rojas@ejemplo.com',
+        roles: ['Company Admin'],
+        branch: 'Sucursal Central',
         branch_id: 1,
         authorized: true,
         is_active: true,
@@ -55,13 +57,18 @@ describe('UserService', () => {
       acronym: 'NUSR',
       email: 'nuevo@ejemplo.com',
       branch_id: 1,
+      rol_id: 2,
+      authorized: false,
     };
 
     service.create(body).subscribe();
     const request = http.expectOne(apiUrl('api/crear-usuario'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 2, ...body, authorized: false, is_active: true });
+    request.flush({
+      message: 'User Nuevo usuario created successfully',
+      data: { id: 2 },
+    });
   });
 
   it('edita un usuario con PATCH /api/editar-usuario/{id}', () => {
@@ -70,6 +77,7 @@ describe('UserService', () => {
       acronym: 'MROJAS',
       email: 'm.rojas@ejemplo.com',
       branch_id: 1,
+      rol_id: 2,
       authorized: true,
       is_active: true,
     };
@@ -78,7 +86,7 @@ describe('UserService', () => {
     const request = http.expectOne(apiUrl('api/editar-usuario/2'));
     expect(request.request.method).toBe('PATCH');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 2, ...body });
+    request.flush({ message: 'User updated successfully', data: { id: 2 } });
   });
 
   it('pide el cambio de contraseña con POST /api/change-password', () => {
@@ -94,7 +102,7 @@ describe('UserService', () => {
     const request = http.expectOne(apiUrl('api/change-password'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
-    request.flush({ message: 'Contraseña actualizada' });
+    request.flush({ message: 'User password updated successfully' });
 
     expect(done).toBeTrue();
   });

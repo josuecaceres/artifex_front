@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Categoria } from '@interfaces';
+import { Categoria, SaveResult } from '@interfaces';
 import { CategoriaService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
@@ -21,7 +21,7 @@ export interface CategoriaDialogData {
   categoria?: Categoria;
 }
 
-/** Crear o editar una categoría (`POST /api/crear-categorias`, `PATCH /api/actualizar-categoria/{id}`). */
+/** Crear o editar una categoría (`POST /api/crear-categoria`, `PATCH /api/actualizar-categoria/{id}`). */
 @Component({
   selector: 'app-categoria-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
@@ -30,7 +30,7 @@ export interface CategoriaDialogData {
 })
 export class CategoriaDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<CategoriaDialog, Categoria | undefined>>(MatDialogRef);
+    inject<MatDialogRef<CategoriaDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly categoriaService = inject(CategoriaService);
 
   protected readonly data = inject<CategoriaDialogData>(MAT_DIALOG_DATA);

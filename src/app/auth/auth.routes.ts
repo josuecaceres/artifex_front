@@ -10,7 +10,7 @@ export const AUTH_ROUTES: Routes = [
   },
   {
     path: 'forgot-password',
-    title: 'Recuperar contraseña',
+    title: 'Crear o recuperar contraseña',
     loadComponent: () =>
       import('./forgot-password/forgot-password').then((m) => m.ForgotPassword),
   },

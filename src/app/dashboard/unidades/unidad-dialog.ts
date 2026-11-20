@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Unidad } from '@interfaces';
+import { SaveResult, Unidad } from '@interfaces';
 import { UnidadService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
@@ -30,7 +30,7 @@ export interface UnidadDialogData {
 })
 export class UnidadDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<UnidadDialog, Unidad | undefined>>(MatDialogRef);
+    inject<MatDialogRef<UnidadDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly unidadService = inject(UnidadService);
 
   protected readonly data = inject<UnidadDialogData>(MAT_DIALOG_DATA);

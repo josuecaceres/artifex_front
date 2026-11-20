@@ -104,6 +104,29 @@ describe('AuthService', () => {
       expect(service.user()?.name).toBe('M. Rojas');
     });
 
+    it('un usuario sin contraseña recibe 200 sin token: no inicia sesión y no es un error', () => {
+      const service = createService();
+      let result: unknown;
+      let failed = false;
+
+      service.login({ user_name: 'nuevo', password: 'x' }).subscribe({
+        next: (response) => (result = response),
+        error: () => (failed = true),
+      });
+      http.expectOne(apiUrl('api/login')).flush({
+        require_password_setup: true,
+        user_id: 9,
+        message: 'Debe crear su contraseña',
+      });
+
+      expect(failed).toBeFalse();
+      expect(result).toEqual(
+        jasmine.objectContaining({ require_password_setup: true }),
+      );
+      expect(service.isAuthenticated()).toBeFalse();
+      expect(localStorage.getItem('app-token')).toBeNull();
+    });
+
     it('falla y no inicia sesión si la respuesta no trae token', () => {
       const service = createService();
       let failed = false;

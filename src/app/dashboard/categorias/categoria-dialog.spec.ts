@@ -66,7 +66,7 @@ describe('CategoriaDialog', () => {
 
     submit();
 
-    http.expectNone(apiUrl('api/crear-categorias'));
+    http.expectNone(apiUrl('api/crear-categoria'));
   });
 
   it('crea la categoría y cierra el diálogo con el resultado', async () => {
@@ -76,7 +76,7 @@ describe('CategoriaDialog', () => {
 
     submit();
 
-    const request = http.expectOne(apiUrl('api/crear-categorias'));
+    const request = http.expectOne(apiUrl('api/crear-categoria'));
     expect(request.request.body).toEqual({ name: 'Productos Varios' });
     const created = { id: 2, ...request.request.body, is_active: true };
     request.flush(created);

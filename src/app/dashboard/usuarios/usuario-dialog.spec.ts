@@ -6,7 +6,7 @@ import {
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Sucursal } from '@interfaces';
+import { AppUser, Role, Sucursal } from '@interfaces';
 import { apiUrl } from '@services';
 import { UsuarioDialog } from './usuario-dialog';
 
@@ -16,26 +16,24 @@ describe('UsuarioDialog', () => {
   let http: HttpTestingController;
   let dialogRef: jasmine.SpyObj<MatDialogRef<UsuarioDialog>>;
 
-  const sucursales: Sucursal[] = [
-    {
-      id: 1,
-      name: 'Sucursal Central',
-      phone: '98765432',
-      email: 'central@ejemplo.com',
-      tipo_establecimiento: 1,
-      departamento_id: 8,
-      municipio_id: 801,
-      complemento_direccion: 'Barrio El Centro',
-      manager_id: null,
-      branch_code: null,
-      cod_estable_mh: null,
-      cod_estable: null,
-      cod_pventa_mh: null,
-      cod_pventa: null,
-      printer_uuid: null,
-      is_active: true,
-    },
+  const sucursales = [{ id: 1, name: 'Sucursal Central' }] as Sucursal[];
+  const roles: Role[] = [
+    { id: 1, name: 'System Admin', guard_name: 'api' },
+    { id: 2, name: 'Company Admin', guard_name: 'api' },
   ];
+  const user: AppUser = {
+    id: 3,
+    name: 'M. Rojas',
+    acronym: 'MROJAS',
+    email: 'm.rojas@ejemplo.com',
+    roles: ['Company Admin'],
+    branch: 'Sucursal Central',
+    branch_id: 1,
+    authorized: true,
+    is_active: true,
+  };
+
+  const form = () => fixture.componentInstance['form'];
 
   function setValue(field: string, value: string): void {
     const input = element.querySelector<HTMLInputElement>(
@@ -45,16 +43,13 @@ describe('UsuarioDialog', () => {
     input.dispatchEvent(new Event('input'));
   }
 
-  async function selectSucursal(name: string): Promise<void> {
-    const select = element.querySelector<HTMLElement>(
-      '[formcontrolname="branch_id"]',
-    )!;
-    select.click();
+  async function select(field: string, label: string): Promise<void> {
+    element.querySelector<HTMLElement>(`[formcontrolname="${field}"]`)!.click();
     await fixture.whenStable();
 
     const option = Array.from(
       document.querySelectorAll<HTMLElement>('mat-option'),
-    ).find((candidate) => candidate.textContent?.trim() === name)!;
+    ).find((candidate) => candidate.textContent?.trim() === label)!;
     option.click();
     await fixture.whenStable();
   }
@@ -65,7 +60,7 @@ describe('UsuarioDialog', () => {
       .dispatchEvent(new Event('submit', { cancelable: true }));
   }
 
-  async function createComponent(data: { user?: unknown } = {}): Promise<void> {
+  async function createComponent(data: { user?: AppUser } = {}): Promise<void> {
     dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
 
     await TestBed.configureTestingModule({
@@ -83,6 +78,7 @@ describe('UsuarioDialog', () => {
     fixture = TestBed.createComponent(UsuarioDialog);
     await fixture.whenStable();
     http.expectOne(apiUrl('api/branches')).flush(sucursales);
+    http.expectOne(apiUrl('api/lista-roles')).flush(roles);
     await fixture.whenStable();
     element = fixture.nativeElement as HTMLElement;
   }
@@ -93,22 +89,27 @@ describe('UsuarioDialog', () => {
     await createComponent();
 
     expect(element.querySelector('h2')?.textContent).toContain('Nuevo usuario');
+    expect(element.textContent).toContain('crea su contraseña');
   });
 
-  it('no envía la petición si el formulario es inválido', async () => {
+  it('no envía la petición si falta sucursal o rol', async () => {
     await createComponent();
+    setValue('name', 'Nuevo usuario');
+    setValue('acronym', 'NUSR');
+    setValue('email', 'nuevo@ejemplo.com');
 
     submit();
 
     http.expectNone(apiUrl('api/crear-usuario'));
   });
 
-  it('crea el usuario y cierra el diálogo con el resultado', async () => {
+  it('crea el usuario con rol_id y authorized: false, y cierra el diálogo con el resultado', async () => {
     await createComponent();
     setValue('name', 'Nuevo usuario');
     setValue('acronym', 'NUSR');
     setValue('email', 'nuevo@ejemplo.com');
-    await selectSucursal('Sucursal Central');
+    await select('branch_id', 'Sucursal Central');
+    await select('rol_id', 'Company Admin');
 
     submit();
 
@@ -118,25 +119,17 @@ describe('UsuarioDialog', () => {
       acronym: 'NUSR',
       email: 'nuevo@ejemplo.com',
       branch_id: 1,
+      rol_id: 2,
+      authorized: false,
     });
-    const created = { id: 2, ...request.request.body };
-    request.flush(created);
+    const result = { message: 'User Nuevo usuario created successfully' };
+    request.flush(result);
 
-    expect(dialogRef.close).toHaveBeenCalledWith(created);
+    expect(dialogRef.close).toHaveBeenCalledWith(result);
   });
 
-  it('precarga los datos del usuario en modo edición', async () => {
-    await createComponent({
-      user: {
-        id: 2,
-        name: 'M. Rojas',
-        acronym: 'MROJAS',
-        email: 'm.rojas@ejemplo.com',
-        branch_id: 1,
-        authorized: true,
-        is_active: true,
-      },
-    });
+  it('en edición precarga los datos y busca el id del rol por su nombre', async () => {
+    await createComponent({ user });
 
     expect(element.querySelector('h2')?.textContent).toContain(
       'Editar usuario',
@@ -145,5 +138,58 @@ describe('UsuarioDialog', () => {
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,
     ).toBe('M. Rojas');
+    expect(form().controls.rol_id.value).toBe(2);
+    expect(form().controls.branch_id.value).toBe(1);
+  });
+
+  it('al editar envía todos los campos, incluido rol_id', async () => {
+    await createComponent({ user });
+
+    submit();
+
+    const request = http.expectOne(apiUrl('api/editar-usuario/3'));
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({
+      name: 'M. Rojas',
+      acronym: 'MROJAS',
+      email: 'm.rojas@ejemplo.com',
+      branch_id: 1,
+      rol_id: 2,
+      authorized: true,
+      is_active: true,
+    });
+    request.flush({ message: 'User updated successfully' });
+  });
+
+  it('un usuario de sistema sin sucursal no recibe una sucursal inventada: obliga a elegir una', async () => {
+    await createComponent({
+      user: { ...user, branch: null, branch_id: null, roles: ['System Admin'] },
+    });
+
+    expect(form().controls.branch_id.value).toBeNull();
+    expect(form().controls.rol_id.value).toBe(1);
+
+    submit();
+
+    http.expectNone(apiUrl('api/editar-usuario/3'));
+  });
+
+  it('muestra un texto entendible cuando el nombre ya existe', async () => {
+    await createComponent({ user });
+
+    submit();
+    http.expectOne(apiUrl('api/editar-usuario/3')).flush(
+      {
+        message: 'Error updating user',
+        error:
+          'SQLSTATE[23505]: Unique violation: 7 ERROR: duplicate key value violates unique constraint "users_name_unique"',
+      },
+      { status: 500, statusText: 'Server Error' },
+    );
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(element.textContent).toContain('Ya existe un registro');
+    expect(element.textContent).not.toContain('SQLSTATE');
   });
 });

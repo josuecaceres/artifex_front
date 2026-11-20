@@ -4,6 +4,7 @@ import {
   Categoria,
   CreateCategoriaRequest,
   UpdateCategoriaRequest,
+  SaveResult,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
@@ -21,14 +22,14 @@ export class CategoriaService {
     return this.http.get<Categoria[]>(apiUrl('api/lista-categorias'));
   }
 
-  /** `POST /api/crear-categorias`. */
-  create(body: CreateCategoriaRequest): Observable<Categoria> {
-    return this.http.post<Categoria>(apiUrl('api/crear-categorias'), body);
+  /** `POST /api/crear-categoria`. */
+  create(body: CreateCategoriaRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-categoria'), body);
   }
 
   /** `PATCH /api/actualizar-categoria/{id}`. */
-  update(id: number, body: UpdateCategoriaRequest): Observable<Categoria> {
-    return this.http.patch<Categoria>(
+  update(id: number, body: UpdateCategoriaRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
       apiUrl(`api/actualizar-categoria/${id}`),
       body,
     );

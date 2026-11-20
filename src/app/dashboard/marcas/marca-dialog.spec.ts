@@ -64,7 +64,7 @@ describe('MarcaDialog', () => {
 
     submit();
 
-    http.expectNone(apiUrl('api/crear-marcas'));
+    http.expectNone(apiUrl('api/crear-marca'));
   });
 
   it('crea la marca y cierra el diálogo con el resultado', async () => {
@@ -74,7 +74,7 @@ describe('MarcaDialog', () => {
 
     submit();
 
-    const request = http.expectOne(apiUrl('api/crear-marcas'));
+    const request = http.expectOne(apiUrl('api/crear-marca'));
     expect(request.request.body).toEqual({ name: 'La Guangara' });
     const created = { id: 2, ...request.request.body, is_active: true };
     request.flush(created);

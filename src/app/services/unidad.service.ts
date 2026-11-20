@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreateUnidadRequest, Unidad, UpdateUnidadRequest } from '@interfaces';
+import {
+  CreateUnidadRequest,
+  Unidad,
+  UpdateUnidadRequest,
+  SaveResult,
+} from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
 
@@ -19,12 +24,15 @@ export class UnidadService {
   }
 
   /** `POST /api/crear-unidades`. */
-  create(body: CreateUnidadRequest): Observable<Unidad> {
-    return this.http.post<Unidad>(apiUrl('api/crear-unidades'), body);
+  create(body: CreateUnidadRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-unidades'), body);
   }
 
   /** `PATCH /api/actualizar-unidad/{id}`. */
-  update(id: number, body: UpdateUnidadRequest): Observable<Unidad> {
-    return this.http.patch<Unidad>(apiUrl(`api/actualizar-unidad/${id}`), body);
+  update(id: number, body: UpdateUnidadRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
+      apiUrl(`api/actualizar-unidad/${id}`),
+      body,
+    );
   }
 }

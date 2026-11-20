@@ -25,6 +25,8 @@ describe('Empresas', () => {
       comercial_name: 'Tu empresa',
       email: 'contacto@empresa.com',
       phone: '1234567890',
+      api_key: null,
+      private_password: null,
     },
   ];
 

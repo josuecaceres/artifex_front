@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
   CreateSucursalRequest,
+  SaveResult,
   Sucursal,
   UpdateSucursalRequest,
 } from '@interfaces';
@@ -9,9 +10,8 @@ import { Observable } from 'rxjs';
 import { apiUrl } from './api';
 
 /**
- * Sucursales o establecimientos. Los cuerpos de petición y sus validaciones
- * los confirmó el backend directamente; la forma de la respuesta no está
- * confirmada todavía contra la API real.
+ * Sucursales o establecimientos. Cuerpos y respuestas comprobados contra la
+ * API real (ver `@interfaces`).
  */
 @Injectable({ providedIn: 'root' })
 export class SucursalService {
@@ -23,13 +23,13 @@ export class SucursalService {
   }
 
   /** `POST /api/crear-sucursal`. */
-  create(body: CreateSucursalRequest): Observable<Sucursal> {
-    return this.http.post<Sucursal>(apiUrl('api/crear-sucursal'), body);
+  create(body: CreateSucursalRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-sucursal'), body);
   }
 
   /** `PUT /api/actualizar-sucursal/{id}`. */
-  update(id: number, body: UpdateSucursalRequest): Observable<Sucursal> {
-    return this.http.put<Sucursal>(
+  update(id: number, body: UpdateSucursalRequest): Observable<SaveResult> {
+    return this.http.put<SaveResult>(
       apiUrl(`api/actualizar-sucursal/${id}`),
       body,
     );

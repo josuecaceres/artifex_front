@@ -8,7 +8,7 @@ export interface Categoria {
   is_active: boolean;
 }
 
-/** Cuerpo de `POST /api/crear-categorias`. */
+/** Cuerpo de `POST /api/crear-categoria`. */
 export interface CreateCategoriaRequest {
   name: string;
 }

@@ -4,6 +4,7 @@ import {
   CreateProveedorRequest,
   Proveedor,
   UpdateProveedorRequest,
+  SaveResult,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
@@ -22,13 +23,13 @@ export class ProveedorService {
   }
 
   /** `POST /api/crear-proveedor`. */
-  create(body: CreateProveedorRequest): Observable<Proveedor> {
-    return this.http.post<Proveedor>(apiUrl('api/crear-proveedor'), body);
+  create(body: CreateProveedorRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-proveedor'), body);
   }
 
   /** `PATCH /api/actualizar-proveedor/{id}`. */
-  update(id: number, body: UpdateProveedorRequest): Observable<Proveedor> {
-    return this.http.patch<Proveedor>(
+  update(id: number, body: UpdateProveedorRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
       apiUrl(`api/actualizar-proveedor/${id}`),
       body,
     );

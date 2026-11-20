@@ -35,6 +35,9 @@ export class Sucursales implements AfterViewInit {
 
   protected readonly columns = [
     'name',
+    'tipo_establecimiento_name',
+    'departamento_name',
+    'municipio_name',
     'phone',
     'email',
     'is_active',

@@ -18,19 +18,22 @@ describe('Sucursales', () => {
     {
       id: 1,
       name: 'Sucursal Central',
-      phone: '98765432',
       email: 'central@ejemplo.com',
-      tipo_establecimiento: 1,
-      departamento_id: 8,
-      municipio_id: 801,
-      complemento_direccion: 'Barrio El Centro',
-      manager_id: 5,
+      phone: '98765432',
+      manager: null,
+      manager_id: null,
       branch_code: 'SPS001',
+      tipo_establecimiento: 1,
+      tipo_establecimiento_name: 'Sucursal',
+      departamento_id: 8,
+      departamento_name: 'Cuscatlán',
+      municipio_id: 20,
+      municipio_name: 'Cuscatlán Norte',
+      complemento_direccion: 'Barrio El Centro',
       cod_estable_mh: '0001',
       cod_estable: '001',
       cod_pventa_mh: '0001',
       cod_pventa: '001',
-      printer_uuid: null,
       is_active: true,
     },
   ];
@@ -62,6 +65,8 @@ describe('Sucursales', () => {
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.textContent).toContain('Sucursal Central');
+    expect(element.textContent).toContain('Cuscatlán Norte');
+    expect(element.textContent).toContain('Sucursal');
   });
 
   it('muestra el mensaje de error si la lista falla', async () => {

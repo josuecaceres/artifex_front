@@ -74,7 +74,7 @@ describe('rutas base', () => {
       await harness.navigateByUrl('/auth/forgot-password');
 
       expect(router.url).toBe('/auth/forgot-password');
-      expect(heading()).toBe('Recuperar contraseña');
+      expect(heading()).toBe('Crear o recuperar contraseña');
     });
 
     it('/not-found y /not-authorized están en la raíz y son accesibles sin sesión', async () => {

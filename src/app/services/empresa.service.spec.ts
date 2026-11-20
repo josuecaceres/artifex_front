@@ -39,6 +39,8 @@ describe('EmpresaService', () => {
         comercial_name: 'Tu empresa',
         email: 'contacto@empresa.com',
         phone: '1234567890',
+        api_key: null,
+        private_password: null,
       },
     ];
     let result: Empresa[] | undefined;
@@ -67,7 +69,7 @@ describe('EmpresaService', () => {
     const request = http.expectOne(apiUrl('api/crear-empresa'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 2, ...body });
+    request.flush({ message: 'Company created successfully', data: { id: 2 } });
   });
 
   it('edita una empresa con PUT /api/actualizar-empresa/{id}', () => {
@@ -86,6 +88,6 @@ describe('EmpresaService', () => {
     const request = http.expectOne(apiUrl('api/actualizar-empresa/1'));
     expect(request.request.method).toBe('PUT');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 1, ...body });
+    request.flush({ message: 'Company updated successfully', data: { id: 1 } });
   });
 });

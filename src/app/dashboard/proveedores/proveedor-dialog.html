@@ -79,28 +79,10 @@
     </mat-form-field>
 
     <div class="app-field-group-label">Ubicación</div>
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Departamento</mat-label>
-        <input
-          matInput
-          type="number"
-          min="1"
-          formControlName="departmento_id"
-        />
-        @if (form.controls.departmento_id.invalid) {
-          <mat-error>Ingresa el departamento.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Municipio</mat-label>
-        <input matInput type="number" min="1" formControlName="municipio_id" />
-        @if (form.controls.municipio_id.invalid) {
-          <mat-error>Ingresa el municipio.</mat-error>
-        }
-      </mat-form-field>
-    </div>
+    <app-ubicacion-fields
+      [departamento]="form.controls.departmento_id"
+      [municipio]="form.controls.municipio_id"
+    />
 
     <div class="app-field-group-label">Pago y retención</div>
     <mat-form-field>

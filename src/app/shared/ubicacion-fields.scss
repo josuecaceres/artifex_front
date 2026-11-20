@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.load-error {
+  margin: 0 0 8px;
+  color: var(--app-crit);
+}

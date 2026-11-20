@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, Injectable, computed, inject, signal } from '@angular/core';
-import { AuthUser, LoginRequest, LoginResponse } from '@interfaces';
+import {
+  AuthUser,
+  LoginRequest,
+  LoginResponse,
+  isLoginSuccess,
+} from '@interfaces';
 import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 import { apiUrl } from './api';
 
@@ -23,16 +28,22 @@ export class AuthService {
   readonly user = this.userState.asReadonly();
   readonly isAuthenticated = computed(() => this.tokenState() !== null);
 
-  /** `POST /api/login`. Si responde bien, deja la sesión iniciada. */
+  /**
+   * `POST /api/login`. Si responde con token, deja la sesión iniciada. Un
+   * usuario que aún no creó su contraseña recibe 200 **sin token**
+   * (`PasswordSetupRequired`): no se inicia sesión y quien llama decide qué
+   * mostrar (ver `isLoginSuccess` en `@interfaces`).
+   */
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(apiUrl('api/login'), credentials).pipe(
       tap((response) => {
-        if (!response?.token) {
+        if (isLoginSuccess(response)) {
+          this.setToken(response.token);
+          if (response.user) {
+            this.setUser(response.user);
+          }
+        } else if (!response?.require_password_setup) {
           throw new Error('La respuesta de login no incluye el token.');
-        }
-        this.setToken(response.token);
-        if (response.user) {
-          this.setUser(response.user);
         }
       }),
     );

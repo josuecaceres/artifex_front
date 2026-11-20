@@ -20,6 +20,10 @@ if (runsProd && !prodUrl) {
 export default defineConfig({
   testDir: 'e2e',
   outputDir: 'tmp/playwright/results',
+  // El backend permite una sola sesión por usuario (un login nuevo invalida el token anterior con
+  // 401 "Sesión inválida") y las pruebas contra la API real comparten la cuenta E2E_USER: en paralelo
+  // se invalidarían entre sí.
+  workers: 1,
   reporter: [['list'], ['html', { outputFolder: 'tmp/playwright/report', open: 'never' }]],
   use: {
     ...devices['Desktop Chrome'],

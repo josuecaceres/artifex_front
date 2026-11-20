@@ -8,7 +8,7 @@ export interface Marca {
   is_active: boolean;
 }
 
-/** Cuerpo de `POST /api/crear-marcas`. */
+/** Cuerpo de `POST /api/crear-marca`. */
 export interface CreateMarcaRequest {
   name: string;
 }

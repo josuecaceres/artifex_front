@@ -8,3 +8,8 @@ mat-dialog-content {
 mat-form-field {
   width: 100%;
 }
+
+.hint {
+  margin: 4px 0 0;
+  color: var(--app-muted);
+}

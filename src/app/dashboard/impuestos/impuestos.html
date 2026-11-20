@@ -38,7 +38,7 @@
           Tasa
         </th>
         <td mat-cell *matCellDef="let row" class="app-num">
-          {{ row.rate }}{{ row.is_percentage ? "%" : "" }}
+          {{ rate(row) }}{{ row.is_percentage ? "%" : "" }}
         </td>
       </ng-container>
 

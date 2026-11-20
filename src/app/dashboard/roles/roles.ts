@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Role } from '@interfaces';
+import { RoleWithPermissions } from '@interfaces';
 import { apiErrorMessage, RoleService } from '@services';
 import {
   FaIconComponent,
@@ -39,7 +39,9 @@ export class Roles implements AfterViewInit {
     edit: faPen,
     warning: faTriangleExclamation,
   };
-  protected readonly dataSource = new MatTableDataSource<Role>([]);
+  protected readonly dataSource = new MatTableDataSource<RoleWithPermissions>(
+    [],
+  );
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -53,7 +55,7 @@ export class Roles implements AfterViewInit {
     this.openDialog({});
   }
 
-  protected openEdit(role: Role): void {
+  protected openEdit(role: RoleWithPermissions): void {
     this.openDialog({ role });
   }
 
@@ -71,7 +73,7 @@ export class Roles implements AfterViewInit {
   private load(): void {
     this.loading.set(true);
     this.errorMessage.set(null);
-    this.roleService.list().subscribe({
+    this.roleService.listWithPermissions().subscribe({
       next: (roles) => {
         this.dataSource.data = roles;
         this.loading.set(false);

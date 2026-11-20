@@ -56,6 +56,19 @@
         </div>
       }
 
+      @if (passwordSetupRequired()) {
+        <div class="app-alert" role="status">
+          <fa-icon class="app-alert__icon" [icon]="icons.warning" />
+          <div>
+            <strong>Aún no creaste tu contraseña.</strong>
+            <span>
+              <a routerLink="/auth/forgot-password">Créala aquí</a> para poder
+              entrar.
+            </span>
+          </div>
+        </div>
+      }
+
       <mat-form-field>
         <mat-label>Usuario</mat-label>
         <input

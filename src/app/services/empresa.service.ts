@@ -4,6 +4,7 @@ import {
   CreateEmpresaRequest,
   Empresa,
   UpdateEmpresaRequest,
+  SaveResult,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
@@ -22,11 +23,14 @@ export class EmpresaService {
     return this.http.get<Empresa[]>(apiUrl('api/info-empresa'));
   }
 
-  create(body: CreateEmpresaRequest): Observable<Empresa> {
-    return this.http.post<Empresa>(apiUrl('api/crear-empresa'), body);
+  create(body: CreateEmpresaRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-empresa'), body);
   }
 
-  update(id: number, body: UpdateEmpresaRequest): Observable<Empresa> {
-    return this.http.put<Empresa>(apiUrl(`api/actualizar-empresa/${id}`), body);
+  update(id: number, body: UpdateEmpresaRequest): Observable<SaveResult> {
+    return this.http.put<SaveResult>(
+      apiUrl(`api/actualizar-empresa/${id}`),
+      body,
+    );
   }
 }

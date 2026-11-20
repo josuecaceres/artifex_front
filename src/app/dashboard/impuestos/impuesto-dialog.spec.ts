@@ -66,7 +66,7 @@ describe('ImpuestoDialog', () => {
 
     submit();
 
-    http.expectNone(apiUrl('api/crear-impuestos'));
+    http.expectNone(apiUrl('api/crear-impuesto'));
   });
 
   it('crea el impuesto con el code incluido', async () => {
@@ -78,23 +78,23 @@ describe('ImpuestoDialog', () => {
 
     submit();
 
-    const request = http.expectOne(apiUrl('api/crear-impuestos'));
+    const request = http.expectOne(apiUrl('api/crear-impuesto'));
     expect(request.request.body).toEqual({
       name: 'Impuesto sobre ventas',
       code: 'A01',
       rate: 0.15,
       is_percentage: true,
     });
-    request.flush({ id: 2, ...request.request.body, is_active: true });
+    request.flush({ message: 'Tax created successfully', data: { id: 2 } });
   });
 
-  it('edita el impuesto sin enviar el code (deshabilitado)', async () => {
+  it('al editar, convierte la tasa de texto a número y envía el code (el backend lo exige)', async () => {
     await createComponent({
       impuesto: {
         id: 1,
         name: 'Impuesto sobre ventas',
         code: 'A01',
-        rate: 0.15,
+        rate: '13.0000',
         is_percentage: true,
         is_active: true,
       },
@@ -103,17 +103,43 @@ describe('ImpuestoDialog', () => {
     expect(
       element.querySelector<HTMLInputElement>('[formcontrolname="code"]')
         ?.disabled,
-    ).toBeTrue();
+    ).toBeFalse();
+    expect(
+      element.querySelector<HTMLInputElement>('[formcontrolname="rate"]')
+        ?.value,
+    ).toBe('13');
 
     submit();
 
     const request = http.expectOne(apiUrl('api/actualizar-impuesto/1'));
+    expect(request.request.method).toBe('PATCH');
     expect(request.request.body).toEqual({
       name: 'Impuesto sobre ventas',
-      rate: 0.15,
+      code: 'A01',
+      rate: 13,
       is_percentage: true,
       is_active: true,
     });
-    request.flush({ id: 1, code: 'A01', ...request.request.body });
+    request.flush({ message: 'Tax updated successfully', data: { id: 1 } });
+  });
+
+  it('permite cambiar el code al editar', async () => {
+    await createComponent({
+      impuesto: {
+        id: 1,
+        name: 'IVA',
+        code: 'A01',
+        rate: '13.0000',
+        is_percentage: true,
+        is_active: true,
+      },
+    });
+    setValue('code', 'A02');
+
+    submit();
+
+    const request = http.expectOne(apiUrl('api/actualizar-impuesto/1'));
+    expect(request.request.body.code).toBe('A02');
+    request.flush({ message: 'Tax updated successfully' });
   });
 });

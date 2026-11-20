@@ -20,8 +20,21 @@ describe('Usuarios', () => {
       name: 'M. Rojas',
       acronym: 'MROJAS',
       email: 'm.rojas@ejemplo.com',
+      roles: ['Company Admin'],
+      branch: 'Sucursal Central',
       branch_id: 1,
       authorized: true,
+      is_active: true,
+    },
+    {
+      id: 2,
+      name: 'system admin',
+      acronym: 'SysAdmin',
+      email: 'sys@ejemplo.com',
+      roles: ['System Admin'],
+      branch: null,
+      branch_id: null,
+      authorized: false,
       is_active: true,
     },
   ];
@@ -53,6 +66,9 @@ describe('Usuarios', () => {
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.textContent).toContain('M. Rojas');
+    expect(element.textContent).toContain('Company Admin');
+    expect(element.textContent).toContain('Sucursal Central');
+    expect(element.textContent).toContain('Pendiente');
   });
 
   it('muestra el mensaje de error si la lista falla', async () => {

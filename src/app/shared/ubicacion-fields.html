@@ -1,0 +1,38 @@
+<div class="field-row">
+  <mat-form-field>
+    <mat-label>Departamento</mat-label>
+    <mat-select [formControl]="departamento()">
+      @for (item of departamentos(); track item.id) {
+        <mat-option [value]="item.id">{{ item.name }}</mat-option>
+      }
+    </mat-select>
+    @if (loadingDepartamentos()) {
+      <mat-hint>Cargando…</mat-hint>
+    } @else if (departamento().invalid) {
+      <mat-error>Elige el departamento.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Municipio</mat-label>
+    <mat-select [formControl]="municipio()">
+      @for (item of municipios(); track item.id) {
+        <mat-option [value]="item.id">{{ item.name }}</mat-option>
+      }
+    </mat-select>
+    @if (loadingMunicipios()) {
+      <mat-hint>Cargando…</mat-hint>
+    } @else if (departamento().value === null) {
+      <mat-hint>Elige primero el departamento.</mat-hint>
+    } @else if (municipio().invalid) {
+      <mat-error>Elige el municipio.</mat-error>
+    }
+  </mat-form-field>
+</div>
+
+@if (loadError()) {
+  <p class="load-error" role="alert">
+    No pudimos cargar los departamentos o municipios. Cierra y vuelve a abrir
+    este diálogo.
+  </p>
+}

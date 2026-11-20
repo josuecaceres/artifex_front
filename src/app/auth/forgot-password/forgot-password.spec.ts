@@ -49,7 +49,7 @@ describe('ForgotPassword', () => {
 
   it('muestra el título y el enlace para volver al login', () => {
     expect(element.querySelector('h1')?.textContent).toContain(
-      'Recuperar contraseña',
+      'Crear o recuperar contraseña',
     );
     expect(element.querySelector('a')?.getAttribute('href')).toBe(
       '/auth/login',
@@ -71,6 +71,21 @@ describe('ForgotPassword', () => {
     expect(element.textContent).toContain('Las contraseñas no coinciden');
   });
 
+  it('no envía la petición si la contraseña tiene menos de 8 caracteres (mínimo del backend)', async () => {
+    setValue('name', 'M. Rojas');
+    setValue('acronym', 'MROJAS');
+    setValue('email', 'm.rojas@ejemplo.com');
+    setValue('password', 'corta');
+    setValue('confirmPassword', 'corta');
+    await fixture.whenStable();
+
+    submit();
+    await fixture.whenStable();
+
+    http.expectNone(apiUrl('api/change-password'));
+    expect(element.textContent).toContain('al menos 8 caracteres');
+  });
+
   it('pide el cambio de contraseña y muestra el mensaje de éxito', async () => {
     setValue('name', 'M. Rojas');
     setValue('acronym', 'MROJAS');
@@ -88,10 +103,12 @@ describe('ForgotPassword', () => {
       email: 'm.rojas@ejemplo.com',
       password: 'nueva-contraseña',
     });
-    request.flush({ message: 'Contraseña actualizada' });
+    request.flush({ message: 'User password updated successfully' });
     await fixture.whenStable();
 
-    expect(element.textContent).toContain('Contraseña actualizada');
+    expect(element.textContent).toContain('Solicitud recibida');
+    // Tras fijar la contraseña el backend deja al usuario sin autorizar.
+    expect(element.textContent).toContain('administrador debe autorizar');
   });
 
   it('muestra el error del backend si el cambio falla', async () => {

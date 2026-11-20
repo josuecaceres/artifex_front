@@ -5,3 +5,4 @@ export * from './menu-items';
 export * from './spanish-paginator-intl';
 export * from './status-page';
 export * from './submit-lock';
+export * from './ubicacion-fields';

@@ -2,6 +2,7 @@ export * from './api';
 export * from './api-error';
 export * from './api.interceptor';
 export * from './auth.service';
+export * from './catalogo.service';
 export * from './categoria.service';
 export * from './dev-login';
 export * from './empresa.service';

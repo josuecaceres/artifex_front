@@ -51,39 +51,38 @@
     </mat-form-field>
 
     <div class="app-field-group-label">Ubicación</div>
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Departamento</mat-label>
-        <input
-          matInput
-          type="number"
-          min="1"
-          formControlName="departamento_id"
-        />
-        @if (form.controls.departamento_id.invalid) {
-          <mat-error>Ingresa el departamento.</mat-error>
-        }
-      </mat-form-field>
+    <app-ubicacion-fields
+      [departamento]="form.controls.departamento_id"
+      [municipio]="form.controls.municipio_id"
+    />
 
-      <mat-form-field>
-        <mat-label>Municipio</mat-label>
-        <input matInput type="number" min="1" formControlName="municipio_id" />
-        @if (form.controls.municipio_id.invalid) {
-          <mat-error>Ingresa el municipio.</mat-error>
-        }
-      </mat-form-field>
+    <div class="app-field-group-label">
+      Establecimiento y facturación electrónica
     </div>
-
-    <div class="app-field-group-label">Facturación electrónica (opcional)</div>
     <div class="field-row">
       <mat-form-field>
-        <mat-label>Tipo de establecimiento</mat-label>
-        <input matInput type="number" formControlName="tipo_establecimiento" />
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="tipo_establecimiento">
+          @if (!isEdit) {
+            <mat-option [value]="null">Sin especificar</mat-option>
+          }
+          @for (tipo of tipos(); track tipo.id) {
+            <mat-option [value]="tipo.id">{{ tipo.name }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.tipo_establecimiento.invalid) {
+          <mat-error>Elige el tipo de establecimiento.</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Gerente (id de usuario)</mat-label>
-        <input matInput type="number" formControlName="manager_id" />
+        <mat-label>Gerente</mat-label>
+        <mat-select formControlName="manager_id">
+          <mat-option [value]="null">Sin gerente</mat-option>
+          @for (usuario of usuarios(); track usuario.id) {
+            <mat-option [value]="usuario.id">{{ usuario.name }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
     </div>
 
@@ -96,6 +95,9 @@
       <mat-form-field>
         <mat-label>UUID de impresora</mat-label>
         <input matInput formControlName="printer_uuid" />
+        @if (isEdit) {
+          <mat-hint>Vacío conserva el actual.</mat-hint>
+        }
       </mat-form-field>
     </div>
 

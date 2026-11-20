@@ -5,13 +5,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Proveedor } from '@interfaces';
+import { Proveedor, SaveResult } from '@interfaces';
 import { ProveedorService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
   SubmitLock,
   SubmitResult,
+  UbicacionFields,
   faTriangleExclamation,
 } from '@shared';
 import { EMPTY, catchError, tap } from 'rxjs';
@@ -23,18 +24,24 @@ export interface ProveedorDialogData {
 
 /**
  * Crear o editar un proveedor (`POST /api/crear-proveedor`, `PATCH
- * /api/actualizar-proveedor/{id}`). `departmento_id`/`municipio_id` quedan
- * como campos numéricos simples por ahora, igual que en Sucursales.
+ * /api/actualizar-proveedor/{id}`). Departamento y municipio salen de los
+ * catálogos de la API (`UbicacionFields`), igual que en Sucursales.
  */
 @Component({
   selector: 'app-proveedor-dialog',
-  imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  imports: [
+    ReactiveFormsModule,
+    MaterialModule,
+    FaIconComponent,
+    SubmitLock,
+    UbicacionFields,
+  ],
   templateUrl: './proveedor-dialog.html',
   styleUrl: './proveedor-dialog.scss',
 })
 export class ProveedorDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<ProveedorDialog, Proveedor | undefined>>(MatDialogRef);
+    inject<MatDialogRef<ProveedorDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly proveedorService = inject(ProveedorService);
 
   protected readonly data = inject<ProveedorDialogData>(MAT_DIALOG_DATA);
@@ -42,7 +49,9 @@ export class ProveedorDialog {
   protected readonly icons = { warning: faTriangleExclamation };
   protected readonly errorMessage = signal<string | null>(null);
 
-  protected readonly form = inject(NonNullableFormBuilder).group({
+  private readonly fb = inject(NonNullableFormBuilder);
+
+  protected readonly form = this.fb.group({
     name: [this.data.proveedor?.name ?? '', Validators.required],
     nit: [this.data.proveedor?.nit ?? '', Validators.required],
     nrc: [this.data.proveedor?.nrc ?? '', Validators.required],
@@ -63,14 +72,14 @@ export class ProveedorDialog {
       this.data.proveedor?.address_complement ?? '',
       Validators.required,
     ],
-    departmento_id: [
-      this.data.proveedor?.departmento_id ?? 1,
-      [Validators.required, Validators.min(1)],
-    ],
-    municipio_id: [
-      this.data.proveedor?.municipio_id ?? 1,
-      [Validators.required, Validators.min(1)],
-    ],
+    departmento_id: this.fb.control<number | null>(
+      this.data.proveedor?.departmento_id ?? null,
+      Validators.required,
+    ),
+    municipio_id: this.fb.control<number | null>(
+      this.data.proveedor?.municipio_id ?? null,
+      Validators.required,
+    ),
     has_withholding: [this.data.proveedor?.has_withholding ?? false],
     withholding_percent: [
       this.data.proveedor?.withholding_percent ?? 0,
@@ -110,8 +119,8 @@ export class ProveedorDialog {
       contact_person,
       payment_name,
       address_complement,
-      departmento_id,
-      municipio_id,
+      departmento_id: departmento_id!,
+      municipio_id: municipio_id!,
       has_withholding,
       withholding_percent,
     };

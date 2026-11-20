@@ -56,9 +56,16 @@ describe('RolDialog', () => {
 
     http.expectOne(apiUrl('api/lista-permisos')).flush(catalog);
     if (data.role) {
-      http
-        .expectOne(apiUrl(`api/permisos-del-rol/${data.role.id}`))
-        .flush([{ id: 1, name: 'ver usuarios' }]);
+      http.expectOne(apiUrl(`api/permisos-del-rol/${data.role.id}`)).flush([
+        {
+          id: data.role.id,
+          name: data.role.name,
+          permissions: [
+            { id: 1, name: 'ver usuarios', granted: true },
+            { id: 2, name: 'editar usuarios', granted: false },
+          ],
+        },
+      ]);
     }
     await fixture.whenStable();
   }
@@ -76,13 +83,15 @@ describe('RolDialog', () => {
 
   it('precarga los permisos ya asignados en modo edición', async () => {
     await createComponent({
-      role: { id: 1, name: 'Administrador', permissions: [] },
+      role: { id: 1, name: 'Administrador', guard_name: 'api' },
     });
 
-    const checkbox = element.querySelector(
-      'mat-checkbox input',
-    ) as HTMLInputElement | null;
-    expect(checkbox?.checked).toBeTrue();
+    const checked = Array.from(
+      element.querySelectorAll<HTMLInputElement>('mat-checkbox input'),
+    ).map((checkbox) => checkbox.checked);
+    // Solo el permiso concedido queda marcado: el id del rol (1) no debe
+    // confundirse con el de un permiso.
+    expect(checked).toEqual([true, false]);
   });
 
   it('crea el rol con los permisos marcados', async () => {
@@ -98,10 +107,13 @@ describe('RolDialog', () => {
       name: 'Cajero',
       permissions: [{ permission_id: 1 }],
     });
-    const created = { id: 3, ...request.request.body };
-    request.flush(created);
+    const result = {
+      message: 'Rol creado con permisos asignados',
+      role: { id: 3, name: 'Cajero', permissions: ['ver usuarios'] },
+    };
+    request.flush(result);
 
-    expect(dialogRef.close).toHaveBeenCalledWith(created);
+    expect(dialogRef.close).toHaveBeenCalledWith(result);
   });
 
   it('permite guardar sin ningún permiso marcado', async () => {
@@ -115,6 +127,9 @@ describe('RolDialog', () => {
       name: 'Solo lectura',
       permissions: [],
     });
-    request.flush({ id: 4, name: 'Solo lectura', permissions: [] });
+    request.flush({
+      message: 'Rol creado con permisos asignados',
+      role: { id: 4, name: 'Solo lectura', permissions: [] },
+    });
   });
 });

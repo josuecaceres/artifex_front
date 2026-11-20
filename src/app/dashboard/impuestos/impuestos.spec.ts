@@ -19,8 +19,16 @@ describe('Impuestos', () => {
       id: 1,
       name: 'Impuesto sobre ventas',
       code: 'A01',
-      rate: 0.15,
+      rate: '13.0000',
       is_percentage: true,
+      is_active: true,
+    },
+    {
+      id: 2,
+      name: 'Contribución por galón',
+      code: 'D1',
+      rate: '0.2000',
+      is_percentage: false,
       is_active: true,
     },
   ];
@@ -52,6 +60,10 @@ describe('Impuestos', () => {
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.textContent).toContain('Impuesto sobre ventas');
+    // La tasa llega como texto con cuatro decimales y se muestra como número.
+    expect(element.textContent).toContain('13%');
+    expect(element.textContent).not.toContain('13.0000');
+    expect(element.textContent).toContain('0.2');
   });
 
   it('muestra el mensaje de error si la lista falla', async () => {

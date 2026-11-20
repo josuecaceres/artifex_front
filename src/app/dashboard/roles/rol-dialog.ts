@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Permission, Role } from '@interfaces';
+import { Permission, Role, SaveResult } from '@interfaces';
 import { apiErrorMessage, RoleService } from '@services';
 import {
   FaIconComponent,
@@ -35,7 +35,7 @@ export interface RolDialogData {
 })
 export class RolDialog implements OnInit {
   private readonly dialogRef =
-    inject<MatDialogRef<RolDialog, Role | undefined>>(MatDialogRef);
+    inject<MatDialogRef<RolDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly roleService = inject(RoleService);
 
   protected readonly data = inject<RolDialogData>(MAT_DIALOG_DATA);

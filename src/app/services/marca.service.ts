@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CreateMarcaRequest, Marca, UpdateMarcaRequest } from '@interfaces';
+import {
+  CreateMarcaRequest,
+  Marca,
+  UpdateMarcaRequest,
+  SaveResult,
+} from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
 
@@ -17,13 +22,16 @@ export class MarcaService {
     return this.http.get<Marca[]>(apiUrl('api/lista-marcas'));
   }
 
-  /** `POST /api/crear-marcas`. */
-  create(body: CreateMarcaRequest): Observable<Marca> {
-    return this.http.post<Marca>(apiUrl('api/crear-marcas'), body);
+  /** `POST /api/crear-marca`. */
+  create(body: CreateMarcaRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-marca'), body);
   }
 
   /** `PATCH /api/actualizar-marca/{id}`. */
-  update(id: number, body: UpdateMarcaRequest): Observable<Marca> {
-    return this.http.patch<Marca>(apiUrl(`api/actualizar-marca/${id}`), body);
+  update(id: number, body: UpdateMarcaRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
+      apiUrl(`api/actualizar-marca/${id}`),
+      body,
+    );
   }
 }

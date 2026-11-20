@@ -51,10 +51,26 @@ describe('ProveedorDialog', () => {
     element = fixture.nativeElement as HTMLElement;
   }
 
+  const form = () => fixture.componentInstance['form'];
+
+  /** Responde los catálogos de ubicación que el diálogo pide al abrirse. */
+  async function flushCatalogs(municipiosDe?: number): Promise<void> {
+    http
+      .expectOne(apiUrl('api/departamentos'))
+      .flush([{ id: 1, code: '08', name: 'La Paz' }]);
+    if (municipiosDe !== undefined) {
+      http
+        .expectOne(apiUrl(`api/departamentos/${municipiosDe}/municipios`))
+        .flush([{ id: 5, name: 'La Paz Oeste' }]);
+    }
+    await fixture.whenStable();
+  }
+
   afterEach(() => http.verify());
 
   it('muestra el título de creación sin proveedor en los datos', async () => {
     await createComponent();
+    await flushCatalogs();
 
     expect(element.querySelector('h2')?.textContent).toContain(
       'Nuevo proveedor',
@@ -63,6 +79,7 @@ describe('ProveedorDialog', () => {
 
   it('no envía la petición si el formulario es inválido', async () => {
     await createComponent();
+    await flushCatalogs();
 
     submit();
 
@@ -71,6 +88,7 @@ describe('ProveedorDialog', () => {
 
   it('crea el proveedor y cierra el diálogo con el resultado', async () => {
     await createComponent();
+    await flushCatalogs();
     setValue('name', 'Proveedor de Insumos S.A.');
     setValue('nit', '08011999123456');
     setValue('nrc', '123456-7');
@@ -78,8 +96,11 @@ describe('ProveedorDialog', () => {
     setValue('email', 'contacto@proveedor.com');
     setValue('contact_person', 'Juan Pérez');
     setValue('address_complement', 'Col. Centro, 2da avenida, bloque A');
-    setValue('departmento_id', '1');
-    setValue('municipio_id', '5');
+    form().controls.departmento_id.setValue(1);
+    http
+      .expectOne(apiUrl('api/departamentos/1/municipios'))
+      .flush([{ id: 5, name: 'La Paz Oeste' }]);
+    form().controls.municipio_id.setValue(5);
     setValue('payment_name', 'Transferencia Bancaria');
     setValue('withholding_percent', '10');
     await fixture.whenStable();
@@ -101,10 +122,10 @@ describe('ProveedorDialog', () => {
       has_withholding: false,
       withholding_percent: 10,
     });
-    const created = { id: 2, ...request.request.body, is_active: true };
-    request.flush(created);
+    const result = { message: 'Provider created successfully' };
+    request.flush(result);
 
-    expect(dialogRef.close).toHaveBeenCalledWith(created);
+    expect(dialogRef.close).toHaveBeenCalledWith(result);
   });
 
   it('precarga los datos del proveedor en modo edición', async () => {
@@ -127,9 +148,13 @@ describe('ProveedorDialog', () => {
       },
     });
 
+    await flushCatalogs(1);
+
     expect(element.querySelector('h2')?.textContent).toContain(
       'Editar proveedor',
     );
+    expect(form().controls.departmento_id.value).toBe(1);
+    expect(form().controls.municipio_id.value).toBe(5);
     expect(
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,

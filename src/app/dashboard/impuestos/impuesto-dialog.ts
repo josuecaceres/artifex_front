@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Impuesto } from '@interfaces';
+import { Impuesto, SaveResult } from '@interfaces';
 import { ImpuestoService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
@@ -22,10 +22,11 @@ export interface ImpuestoDialogData {
 }
 
 /**
- * Crear o editar un impuesto (`POST /api/crear-impuestos`, `PATCH
- * /api/actualizar-impuesto/{id}`). `code` solo se puede fijar al crear: el
- * body de editar de Postman no lo trae, así que al editar el campo se
- * muestra deshabilitado y no se envía.
+ * Crear o editar un impuesto (`POST /api/crear-impuesto`, `PATCH
+ * /api/actualizar-impuesto/{id}`), comprobados contra la API real. Al editar,
+ * `code` también se envía (el backend lo exige) y se puede cambiar, pero es
+ * único. `rate` llega del listado como texto con decimales: se convierte a
+ * número para el formulario.
  */
 @Component({
   selector: 'app-impuesto-dialog',
@@ -35,7 +36,7 @@ export interface ImpuestoDialogData {
 })
 export class ImpuestoDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<ImpuestoDialog, Impuesto | undefined>>(MatDialogRef);
+    inject<MatDialogRef<ImpuestoDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly impuestoService = inject(ImpuestoService);
 
   protected readonly data = inject<ImpuestoDialogData>(MAT_DIALOG_DATA);
@@ -45,12 +46,9 @@ export class ImpuestoDialog {
 
   protected readonly form = inject(NonNullableFormBuilder).group({
     name: [this.data.impuesto?.name ?? '', Validators.required],
-    code: [
-      { value: this.data.impuesto?.code ?? '', disabled: this.isEdit },
-      Validators.required,
-    ],
+    code: [this.data.impuesto?.code ?? '', Validators.required],
     rate: [
-      this.data.impuesto?.rate ?? 0,
+      this.data.impuesto ? Number(this.data.impuesto.rate) : 0,
       [Validators.required, Validators.min(0)],
     ],
     is_percentage: [this.data.impuesto?.is_percentage ?? true],
@@ -69,6 +67,7 @@ export class ImpuestoDialog {
     const request = this.isEdit
       ? this.impuestoService.update(this.data.impuesto!.id, {
           name,
+          code,
           rate,
           is_percentage,
           is_active,

@@ -32,19 +32,22 @@ describe('SucursalService', () => {
       {
         id: 1,
         name: 'Sucursal Central',
-        phone: '98765432',
         email: 'central@ejemplo.com',
-        tipo_establecimiento: 1,
-        departamento_id: 8,
-        municipio_id: 801,
-        complemento_direccion: 'Barrio El Centro',
-        manager_id: 5,
+        phone: '98765432',
+        manager: null,
+        manager_id: null,
         branch_code: 'SPS001',
+        tipo_establecimiento: 1,
+        tipo_establecimiento_name: 'Sucursal',
+        departamento_id: 8,
+        departamento_name: 'Cuscatlán',
+        municipio_id: 20,
+        municipio_name: 'Cuscatlán Norte',
+        complemento_direccion: 'Barrio El Centro',
         cod_estable_mh: '0001',
         cod_estable: '001',
         cod_pventa_mh: '0001',
         cod_pventa: '001',
-        printer_uuid: null,
         is_active: true,
       },
     ];
@@ -80,7 +83,10 @@ describe('SucursalService', () => {
     const request = http.expectOne(apiUrl('api/crear-sucursal'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 2, ...body, is_active: true });
+    request.flush({
+      message: 'Branch created successfully',
+      data: { id: 2, ...body },
+    });
   });
 
   it('edita una sucursal con PUT /api/actualizar-sucursal/{id}', () => {
@@ -98,7 +104,6 @@ describe('SucursalService', () => {
       cod_estable: '001',
       cod_pventa_mh: '0001',
       cod_pventa: '001',
-      printer_uuid: null,
       is_active: false,
     };
 
@@ -106,6 +111,9 @@ describe('SucursalService', () => {
     const request = http.expectOne(apiUrl('api/actualizar-sucursal/1'));
     expect(request.request.method).toBe('PUT');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 1, ...body });
+    request.flush({
+      message: 'Branch updated successfully',
+      data: { id: 1, ...body },
+    });
   });
 });

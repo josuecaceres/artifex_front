@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Empresa } from '@interfaces';
+import { Empresa, SaveResult } from '@interfaces';
 import { apiErrorMessage, EmpresaService } from '@services';
 import {
   FaIconComponent,
@@ -34,7 +34,7 @@ export interface EmpresaDialogData {
 })
 export class EmpresaDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<EmpresaDialog, Empresa | undefined>>(MatDialogRef);
+    inject<MatDialogRef<EmpresaDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly empresaService = inject(EmpresaService);
 
   protected readonly data = inject<EmpresaDialogData>(MAT_DIALOG_DATA);

@@ -5,7 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Marca } from '@interfaces';
+import { Marca, SaveResult } from '@interfaces';
 import { MarcaService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
@@ -21,7 +21,7 @@ export interface MarcaDialogData {
   marca?: Marca;
 }
 
-/** Crear o editar una marca (`POST /api/crear-marcas`, `PATCH /api/actualizar-marca/{id}`). */
+/** Crear o editar una marca (`POST /api/crear-marca`, `PATCH /api/actualizar-marca/{id}`). */
 @Component({
   selector: 'app-marca-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
@@ -30,7 +30,7 @@ export interface MarcaDialogData {
 })
 export class MarcaDialog {
   private readonly dialogRef =
-    inject<MatDialogRef<MarcaDialog, Marca | undefined>>(MatDialogRef);
+    inject<MatDialogRef<MarcaDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly marcaService = inject(MarcaService);
 
   protected readonly data = inject<MarcaDialogData>(MAT_DIALOG_DATA);

@@ -37,6 +37,8 @@ export class Usuarios implements AfterViewInit {
     'name',
     'acronym',
     'email',
+    'roles',
+    'branch',
     'authorized',
     'is_active',
     'actions',
@@ -51,6 +53,10 @@ export class Usuarios implements AfterViewInit {
   protected readonly errorMessage = signal<string | null>(null);
 
   ngAfterViewInit(): void {
+    this.dataSource.sortingDataAccessor = (user, column) =>
+      column === 'roles'
+        ? user.roles.join(', ')
+        : String(user[column as keyof AppUser] ?? '');
     this.dataSource.sort = this.sort();
     this.dataSource.paginator = this.paginator();
     this.load();

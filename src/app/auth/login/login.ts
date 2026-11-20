@@ -14,6 +14,7 @@ import {
   SubmitLock,
   SubmitResult,
 } from '@shared';
+import { isLoginSuccess } from '@interfaces';
 import { AuthService, apiErrorMessage } from '@services';
 import { EMPTY, catchError, tap } from 'rxjs';
 
@@ -47,10 +48,13 @@ export class Login {
   });
   protected readonly passwordVisible = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  /** El usuario existe pero aún no creó su contraseña (el login responde 200 sin token). */
+  protected readonly passwordSetupRequired = signal(false);
 
   /** Acción del formulario, protegida contra el doble envío por `appSubmitLock`. */
   protected readonly submit = (): SubmitResult => {
     this.errorMessage.set(null);
+    this.passwordSetupRequired.set(false);
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -62,7 +66,13 @@ export class Login {
 
     const { user_name, password } = this.form.getRawValue();
     return this.auth.login({ user_name: user_name.trim(), password }).pipe(
-      tap(() => void this.router.navigateByUrl(this.returnUrl())),
+      tap((response) => {
+        if (isLoginSuccess(response)) {
+          void this.router.navigateByUrl(this.returnUrl());
+        } else {
+          this.passwordSetupRequired.set(true);
+        }
+      }),
       catchError((error: unknown) => {
         this.errorMessage.set(apiErrorMessage(error));
         return EMPTY;

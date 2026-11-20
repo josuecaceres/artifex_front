@@ -28,13 +28,30 @@ describe('RoleService', () => {
   afterEach(() => http.verify());
 
   it('lista los roles con GET /api/lista-roles', () => {
-    const roles: Role[] = [
-      { id: 1, name: 'Administrador', permissions: [{ permission_id: 1 }] },
-    ];
+    const roles: Role[] = [{ id: 1, name: 'Administrador', guard_name: 'api' }];
     let result: Role[] | undefined;
 
     service.list().subscribe((response) => (result = response));
     const request = http.expectOne(apiUrl('api/lista-roles'));
+    expect(request.request.method).toBe('GET');
+    request.flush(roles);
+
+    expect(result).toEqual(roles);
+  });
+
+  it('lista los roles con sus permisos con GET /api/roles-permisos', () => {
+    const roles = [
+      {
+        id: 1,
+        name: 'Administrador',
+        guard_name: 'api',
+        permissions: [{ id: 1, name: 'ver usuarios' }],
+      },
+    ];
+    let result: unknown;
+
+    service.listWithPermissions().subscribe((response) => (result = response));
+    const request = http.expectOne(apiUrl('api/roles-permisos'));
     expect(request.request.method).toBe('GET');
     request.flush(roles);
 
@@ -53,16 +70,37 @@ describe('RoleService', () => {
     expect(result).toEqual(permissions);
   });
 
-  it('lista los permisos de un rol con GET /api/permisos-del-rol/{id}', () => {
-    const permissions: Permission[] = [{ id: 1, name: 'ver usuarios' }];
+  it('permisos-del-rol devuelve todo el catálogo con granted: se reduce a los concedidos', () => {
     let result: Permission[] | undefined;
 
     service.rolePermissions(1).subscribe((response) => (result = response));
     const request = http.expectOne(apiUrl('api/permisos-del-rol/1'));
     expect(request.request.method).toBe('GET');
-    request.flush(permissions);
+    request.flush([
+      {
+        id: 1,
+        name: 'Administrador',
+        permissions: [
+          { id: 1, name: 'ver usuarios', granted: true },
+          { id: 2, name: 'crear usuarios', granted: false },
+          { id: 3, name: 'ver roles', granted: true },
+        ],
+      },
+    ]);
 
-    expect(result).toEqual(permissions);
+    expect(result).toEqual([
+      { id: 1, name: 'ver usuarios' },
+      { id: 3, name: 'ver roles' },
+    ]);
+  });
+
+  it('permisos-del-rol de un rol inexistente (arreglo vacío) no concede nada', () => {
+    let result: Permission[] | undefined;
+
+    service.rolePermissions(999).subscribe((response) => (result = response));
+    http.expectOne(apiUrl('api/permisos-del-rol/999')).flush([]);
+
+    expect(result).toEqual([]);
   });
 
   it('crea un rol con POST /api/crear-roles, permitiendo una lista vacía de permisos', () => {
@@ -72,7 +110,10 @@ describe('RoleService', () => {
     const request = http.expectOne(apiUrl('api/crear-roles'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 3, ...body });
+    request.flush({
+      message: 'Rol creado con permisos asignados',
+      role: { id: 3, name: 'Cajero', permissions: [] },
+    });
   });
 
   it('edita un rol con PATCH /api/actualizar-roles/{id}', () => {
@@ -82,6 +123,9 @@ describe('RoleService', () => {
     const request = http.expectOne(apiUrl('api/actualizar-roles/3'));
     expect(request.request.method).toBe('PATCH');
     expect(request.request.body).toEqual(body);
-    request.flush({ id: 3, ...body });
+    request.flush({
+      message: 'Rol actualizado correctamente',
+      role: { id: 3, name: 'Cajero', permissions: ['ver usuarios'] },
+    });
   });
 });

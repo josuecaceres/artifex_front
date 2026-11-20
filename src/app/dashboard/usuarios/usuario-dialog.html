@@ -49,10 +49,24 @@
           <mat-option [value]="sucursal.id">{{ sucursal.name }}</mat-option>
         }
       </mat-select>
-      @if (loadingSucursales()) {
-        <mat-hint>Cargando sucursales…</mat-hint>
+      @if (loadingCatalogs()) {
+        <mat-hint>Cargando…</mat-hint>
       } @else if (form.controls.branch_id.invalid) {
         <mat-error>Elige una sucursal.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Rol</mat-label>
+      <mat-select formControlName="rol_id">
+        @for (role of roles(); track role.id) {
+          <mat-option [value]="role.id">{{ role.name }}</mat-option>
+        }
+      </mat-select>
+      @if (loadingCatalogs()) {
+        <mat-hint>Cargando…</mat-hint>
+      } @else if (form.controls.rol_id.invalid) {
+        <mat-error>Elige un rol.</mat-error>
       }
     </mat-form-field>
 
@@ -61,6 +75,11 @@
         Autorizado
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
+    } @else {
+      <p class="hint">
+        El usuario crea su contraseña desde «¿Olvidaste tu contraseña?» en el
+        inicio de sesión. Después podrás autorizarlo editándolo aquí.
+      </p>
     }
   </mat-dialog-content>
 

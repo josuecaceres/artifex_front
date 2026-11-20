@@ -41,11 +41,11 @@ describe('CategoriaService', () => {
     expect(result).toEqual(categorias);
   });
 
-  it('crea una categoría con POST /api/crear-categorias', () => {
+  it('crea una categoría con POST /api/crear-categoria', () => {
     const body = { name: 'Productos Varios' };
 
     service.create(body).subscribe();
-    const request = http.expectOne(apiUrl('api/crear-categorias'));
+    const request = http.expectOne(apiUrl('api/crear-categoria'));
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(body);
     request.flush({ id: 2, ...body, is_active: true });

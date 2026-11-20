@@ -17,13 +17,13 @@ import {
 import { EMPTY, catchError, tap } from 'rxjs';
 
 /**
- * Recuperar contraseña (`/auth/forgot-password`), contra `POST
- * /api/change-password` (pública). El cuerpo es el que trae la colección de
- * Postman del backend: pide nombre, siglas y correo además de la contraseña
- * nueva, una forma atípica para un flujo sin sesión (no pide la contraseña
- * actual ni un código de verificación). Sin confirmar todavía contra la API
- * real ni contra el equipo de backend; ver la nota en `ChangePasswordRequest`
- * (`@interfaces`).
+ * Crear o recuperar la contraseña (`/auth/forgot-password`), contra `POST
+ * /api/change-password` (pública). Comprobado contra la API real: es también
+ * el paso con el que un usuario recién creado fija su primera contraseña; el
+ * backend pide nombre, siglas y correo además de la contraseña (mínimo 8
+ * caracteres), responde 200 aunque los datos no coincidan (no revela si el
+ * usuario existe) y deja al usuario pendiente de autorización por un
+ * administrador.
  */
 @Component({
   selector: 'app-forgot-password',
@@ -49,7 +49,7 @@ export class ForgotPassword {
     name: ['', Validators.required],
     acronym: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required],
   });
   protected readonly errorMessage = signal<string | null>(null);

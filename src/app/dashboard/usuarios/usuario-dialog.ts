@@ -5,8 +5,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AppUser, Sucursal } from '@interfaces';
-import { SucursalService, apiErrorMessage, UserService } from '@services';
+import { AppUser, Role, SaveResult, Sucursal } from '@interfaces';
+import {
+  RoleService,
+  SucursalService,
+  UserService,
+  apiErrorMessage,
+} from '@services';
 import {
   FaIconComponent,
   MaterialModule,
@@ -14,7 +19,7 @@ import {
   SubmitResult,
   faTriangleExclamation,
 } from '@shared';
-import { EMPTY, catchError, tap } from 'rxjs';
+import { EMPTY, catchError, forkJoin, tap } from 'rxjs';
 
 /** Datos del diálogo: sin `user`, crea; con `user`, edita ese usuario. */
 export interface UsuarioDialogData {
@@ -23,8 +28,11 @@ export interface UsuarioDialogData {
 
 /**
  * Crear o editar un usuario (`POST /api/crear-usuario`,
- * `PATCH /api/editar-usuario/{id}`). `branch_id` se elige del catálogo de
- * sucursales (`GET /api/branches`), cargado al abrir el diálogo.
+ * `PATCH /api/editar-usuario/{id}`). Comprobado contra la API real: ambos
+ * exigen `rol_id` y `branch_id`. `GET /api/users` solo trae el nombre del rol,
+ * así que al editar el rol actual se busca por nombre en `GET
+ * /api/lista-roles`. Al crear, el backend ignora `authorized`: el usuario nace
+ * sin contraseña y sin autorizar (ver `CreateUserRequest`).
  */
 @Component({
   selector: 'app-usuario-dialog',
@@ -34,41 +42,54 @@ export interface UsuarioDialogData {
 })
 export class UsuarioDialog implements OnInit {
   private readonly dialogRef =
-    inject<MatDialogRef<UsuarioDialog, AppUser | undefined>>(MatDialogRef);
+    inject<MatDialogRef<UsuarioDialog, SaveResult | undefined>>(MatDialogRef);
   private readonly userService = inject(UserService);
   private readonly sucursalService = inject(SucursalService);
+  private readonly roleService = inject(RoleService);
+  private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly data = inject<UsuarioDialogData>(MAT_DIALOG_DATA);
   protected readonly isEdit = !!this.data.user;
   protected readonly icons = { warning: faTriangleExclamation };
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly sucursales = signal<Sucursal[]>([]);
-  protected readonly loadingSucursales = signal(true);
+  protected readonly roles = signal<Role[]>([]);
+  protected readonly loadingCatalogs = signal(true);
 
-  protected readonly form = inject(NonNullableFormBuilder).group({
+  protected readonly form = this.fb.group({
     name: [this.data.user?.name ?? '', Validators.required],
     acronym: [this.data.user?.acronym ?? '', Validators.required],
     email: [
       this.data.user?.email ?? '',
       [Validators.required, Validators.email],
     ],
-    branch_id: [
-      this.data.user?.branch_id ?? 1,
-      [Validators.required, Validators.min(1)],
-    ],
+    branch_id: this.fb.control<number | null>(
+      this.data.user?.branch_id ?? null,
+      Validators.required,
+    ),
+    rol_id: this.fb.control<number | null>(null, Validators.required),
     authorized: [this.data.user?.authorized ?? false],
     is_active: [this.data.user?.is_active ?? true],
   });
 
   ngOnInit(): void {
-    this.sucursalService.list().subscribe({
-      next: (sucursales) => {
+    forkJoin({
+      sucursales: this.sucursalService.list(),
+      roles: this.roleService.list(),
+    }).subscribe({
+      next: ({ sucursales, roles }) => {
         this.sucursales.set(sucursales);
-        this.loadingSucursales.set(false);
+        this.roles.set(roles);
+        const current = this.data.user?.roles[0];
+        const match = roles.find((role) => role.name === current);
+        if (match) {
+          this.form.controls.rol_id.setValue(match.id);
+        }
+        this.loadingCatalogs.set(false);
       },
       error: (error: unknown) => {
         this.errorMessage.set(apiErrorMessage(error));
-        this.loadingSucursales.set(false);
+        this.loadingCatalogs.set(false);
       },
     });
   }
@@ -80,21 +101,29 @@ export class UsuarioDialog implements OnInit {
       return;
     }
 
-    const { name, acronym, email, branch_id, authorized, is_active } =
+    const { name, acronym, email, branch_id, rol_id, authorized, is_active } =
       this.form.getRawValue();
     const request = this.isEdit
       ? this.userService.update(this.data.user!.id, {
           name,
           acronym,
           email,
-          branch_id,
+          branch_id: branch_id!,
+          rol_id: rol_id!,
           authorized,
           is_active,
         })
-      : this.userService.create({ name, acronym, email, branch_id });
+      : this.userService.create({
+          name,
+          acronym,
+          email,
+          branch_id: branch_id!,
+          rol_id: rol_id!,
+          authorized: false,
+        });
 
     return request.pipe(
-      tap((user) => this.dialogRef.close(user)),
+      tap((result) => this.dialogRef.close(result)),
       catchError((error: unknown) => {
         this.errorMessage.set(apiErrorMessage(error));
         return EMPTY;

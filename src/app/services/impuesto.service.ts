@@ -4,6 +4,7 @@ import {
   CreateImpuestoRequest,
   Impuesto,
   UpdateImpuestoRequest,
+  SaveResult,
 } from '@interfaces';
 import { Observable } from 'rxjs';
 import { apiUrl } from './api';
@@ -21,14 +22,14 @@ export class ImpuestoService {
     return this.http.get<Impuesto[]>(apiUrl('api/lista-impuestos'));
   }
 
-  /** `POST /api/crear-impuestos`. */
-  create(body: CreateImpuestoRequest): Observable<Impuesto> {
-    return this.http.post<Impuesto>(apiUrl('api/crear-impuestos'), body);
+  /** `POST /api/crear-impuesto`. */
+  create(body: CreateImpuestoRequest): Observable<SaveResult> {
+    return this.http.post<SaveResult>(apiUrl('api/crear-impuesto'), body);
   }
 
   /** `PATCH /api/actualizar-impuesto/{id}`. */
-  update(id: number, body: UpdateImpuestoRequest): Observable<Impuesto> {
-    return this.http.patch<Impuesto>(
+  update(id: number, body: UpdateImpuestoRequest): Observable<SaveResult> {
+    return this.http.patch<SaveResult>(
       apiUrl(`api/actualizar-impuesto/${id}`),
       body,
     );

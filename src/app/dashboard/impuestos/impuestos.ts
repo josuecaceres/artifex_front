@@ -40,10 +40,19 @@ export class Impuestos implements AfterViewInit {
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Impuesto>([]);
+
+  /** `rate` llega como texto (`"13.0000"`): se muestra y ordena como número. */
+  protected rate(impuesto: Impuesto): number {
+    return Number(impuesto.rate);
+  }
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
   ngAfterViewInit(): void {
+    this.dataSource.sortingDataAccessor = (impuesto, column) =>
+      column === 'rate'
+        ? Number(impuesto.rate)
+        : String(impuesto[column as keyof Impuesto]);
     this.dataSource.sort = this.sort();
     this.dataSource.paginator = this.paginator();
     this.load();

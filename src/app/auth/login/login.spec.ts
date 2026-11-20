@@ -88,11 +88,32 @@ describe('Login', () => {
       user_name: 'usuario',
       password: 'secreta',
     });
-    request.flush({ token: 'abc' });
+    request.flush({ token: 'abc', user: { id: 1, name: 'x', email: 'x@y.z' } });
     await fixture.whenStable();
 
     expect(TestBed.inject(AuthService).isAuthenticated()).toBeTrue();
     expect(navigate).toHaveBeenCalledWith('/dashboard');
+  });
+
+  it('si el usuario aún no creó su contraseña (200 sin token) lo guía a crearla y no navega', async () => {
+    type('user_name', 'nuevo');
+    type('password', 'cualquiera');
+
+    await submit();
+    http.expectOne(apiUrl('api/login')).flush({
+      require_password_setup: true,
+      user_id: 9,
+      message: 'Debe crear su contraseña',
+    });
+    await fixture.whenStable();
+
+    const alert = element.querySelector('[role="status"]');
+    expect(alert?.textContent).toContain('Aún no creaste tu contraseña');
+    expect(alert?.querySelector('a')?.getAttribute('href')).toBe(
+      '/auth/forgot-password',
+    );
+    expect(navigate).not.toHaveBeenCalled();
+    expect(TestBed.inject(AuthService).isAuthenticated()).toBeFalse();
   });
 
   it('muestra el mensaje del backend cuando falla (IP no autorizada)', async () => {
