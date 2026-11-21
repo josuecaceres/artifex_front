@@ -26,13 +26,15 @@ export const routes: Routes = [
     path: 'not-found',
     title: 'Página no encontrada',
     loadComponent: () =>
-      import('./not-found/not-found').then((m) => m.NotFound),
+      import('./presentation/not-found/not-found').then((m) => m.NotFound),
   },
   {
     path: 'not-authorized',
     title: 'Sin acceso',
     loadComponent: () =>
-      import('./not-authorized/not-authorized').then((m) => m.NotAuthorized),
+      import('./presentation/not-authorized/not-authorized').then(
+        (m) => m.NotAuthorized,
+      ),
   },
   ...devRoutes,
   { path: '**', redirectTo: 'not-found' },

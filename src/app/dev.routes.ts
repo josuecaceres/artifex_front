@@ -9,6 +9,6 @@ export const devRoutes: Routes = [
   {
     path: 'kit',
     title: 'Kit de componentes',
-    loadComponent: () => import('./kit/kit').then((m) => m.Kit),
+    loadComponent: () => import('./presentation/kit/kit').then((m) => m.Kit),
   },
 ];

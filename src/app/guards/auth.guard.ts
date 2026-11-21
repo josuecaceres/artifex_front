@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '@services';
+import { AuthService } from '@auth/services';
 
 /**
  * Deja pasar solo con sesión iniciada. Sin sesión, redirige al login y guarda

@@ -1,4 +1,4 @@
-import type { LoginRequest } from '@interfaces';
+import type { LoginRequest } from '@auth/interfaces';
 
 /**
  * Plantilla de `dev-login.ts` (ese archivo NO se versiona: está en .gitignore).

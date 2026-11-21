@@ -21,8 +21,10 @@ import {
   ConfirmService,
   copyrightText,
   isMenuGroup,
+  ThemeMode,
+  ThemeService,
 } from '@shared';
-import { AuthService, ThemeMode, ThemeService } from '@services';
+import { AuthService } from '@auth/services';
 import { filter, map } from 'rxjs';
 
 /**

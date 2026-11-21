@@ -18,12 +18,12 @@
     "paths": {
       "@shared": ["./src/app/shared"],
       "@shared/*": ["./src/app/shared/*"],
-      "@interfaces": ["./src/app/interfaces"],
-      "@interfaces/*": ["./src/app/interfaces/*"],
-      "@services": ["./src/app/services"],
-      "@services/*": ["./src/app/services/*"],
       "@guards": ["./src/app/guards"],
-      "@guards/*": ["./src/app/guards/*"]
+      "@guards/*": ["./src/app/guards/*"],
+      "@auth/*": ["./src/app/auth/*"],
+      "@usuarios-sistema/*": ["./src/app/dashboard/usuarios-sistema/*"],
+      "@empresa/*": ["./src/app/dashboard/empresa/*"],
+      "@inventario/*": ["./src/app/dashboard/inventario/*"]
     }
   },
   "angularCompilerOptions": {

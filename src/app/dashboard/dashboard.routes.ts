@@ -22,53 +22,61 @@ export const DASHBOARD_ROUTES: Routes = [
         path: 'usuarios',
         title: 'Usuarios',
         loadComponent: () =>
-          import('./usuarios/usuarios').then((m) => m.Usuarios),
+          import('./usuarios-sistema/usuarios/usuarios').then(
+            (m) => m.Usuarios,
+          ),
       },
       {
         path: 'roles',
         title: 'Roles y permisos',
-        loadComponent: () => import('./roles/roles').then((m) => m.Roles),
+        loadComponent: () =>
+          import('./usuarios-sistema/roles/roles').then((m) => m.Roles),
       },
       {
         path: 'empresas',
         title: 'Empresas',
         loadComponent: () =>
-          import('./empresas/empresas').then((m) => m.Empresas),
+          import('./empresa/empresas/empresas').then((m) => m.Empresas),
       },
       {
         path: 'sucursales',
         title: 'Sucursales',
         loadComponent: () =>
-          import('./sucursales/sucursales').then((m) => m.Sucursales),
+          import('./empresa/sucursales/sucursales').then((m) => m.Sucursales),
       },
       {
         path: 'proveedores',
         title: 'Proveedores',
         loadComponent: () =>
-          import('./proveedores/proveedores').then((m) => m.Proveedores),
+          import('./inventario/proveedores/proveedores').then(
+            (m) => m.Proveedores,
+          ),
       },
       {
         path: 'marcas',
         title: 'Marcas',
-        loadComponent: () => import('./marcas/marcas').then((m) => m.Marcas),
+        loadComponent: () =>
+          import('./inventario/marcas/marcas').then((m) => m.Marcas),
       },
       {
         path: 'impuestos',
         title: 'Impuestos',
         loadComponent: () =>
-          import('./impuestos/impuestos').then((m) => m.Impuestos),
+          import('./inventario/impuestos/impuestos').then((m) => m.Impuestos),
       },
       {
         path: 'categorias',
         title: 'Categorías',
         loadComponent: () =>
-          import('./categorias/categorias').then((m) => m.Categorias),
+          import('./inventario/categorias/categorias').then(
+            (m) => m.Categorias,
+          ),
       },
       {
         path: 'unidades',
         title: 'Unidades de medida',
         loadComponent: () =>
-          import('./unidades/unidades').then((m) => m.Unidades),
+          import('./inventario/unidades/unidades').then((m) => m.Unidades),
       },
     ],
   },

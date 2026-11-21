@@ -18,7 +18,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS } from '@angular/material/slide-toggle';
 import { provideRouter } from '@angular/router';
 import { SpanishPaginatorIntl } from '@shared';
-import { apiInterceptor, devLoginInitializer } from '@services';
+import { apiInterceptor, devLoginInitializer } from '@shared';
 
 import { routes } from './app.routes';
 

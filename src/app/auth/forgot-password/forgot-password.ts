@@ -5,8 +5,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { apiErrorMessage, UserService } from '@services';
 import {
+  apiErrorMessage,
   FaIconComponent,
   MaterialModule,
   SubmitLock,
@@ -14,6 +14,7 @@ import {
   faCircleCheck,
   faTriangleExclamation,
 } from '@shared';
+import { UserService } from '@usuarios-sistema/services';
 import { EMPTY, catchError, tap } from 'rxjs';
 
 /**

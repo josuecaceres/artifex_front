@@ -1,4 +1,4 @@
-import type { LoginRequest } from '@interfaces';
+import type { LoginRequest } from '@auth/interfaces';
 
 /** Reemplaza a `dev-login.ts` en el build de producción: nunca hay acceso automático. */
 export const devLogin: LoginRequest | null = null;

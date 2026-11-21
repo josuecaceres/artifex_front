@@ -15,9 +15,10 @@ import {
   SubmitLock,
   SubmitResult,
   copyrightText,
+  apiErrorMessage,
 } from '@shared';
-import { isLoginSuccess } from '@interfaces';
-import { AuthService, apiErrorMessage } from '@services';
+import { isLoginSuccess } from '@auth/interfaces';
+import { AuthService } from '@auth/services';
 import { EMPTY, catchError, tap } from 'rxjs';
 
 /** Pantalla de acceso (`/auth/login`). */

@@ -6,7 +6,8 @@ import {
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { apiUrl, AuthService } from '@services';
+import { apiUrl } from '@shared';
+import { AuthService } from '@auth/services';
 import { Login } from './login';
 
 describe('Login', () => {
