@@ -50,6 +50,12 @@
   }
 }
 
+// Confirmación (`ConfirmService`): su título también va capitalizado, no en
+// mayúsculas.
+.app-confirm-dialog .mat-mdc-dialog-title {
+  text-transform: none;
+}
+
 .app-form-dialog .app-form {
   --app-form-columns: 1;
   display: grid;

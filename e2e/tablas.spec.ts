@@ -74,6 +74,25 @@ test('el título y los encabezados van capitalizados y en negrita (no en mayúsc
   await expect(header).toHaveCSS('font-weight', '700');
 });
 
+test('la confirmación de cerrar sesión se titula "Confirmación", sin mayúsculas forzadas', async ({
+  page,
+}, testInfo) => {
+  await openUnits(page);
+
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click();
+  const dialog = page.getByRole('alertdialog').or(page.getByRole('dialog'));
+  const title = dialog.getByRole('heading', { name: 'Confirmación' });
+  await expect(title).toBeVisible();
+  await expect(title).toHaveText('Confirmación');
+  await expect(title).toHaveCSS('text-transform', 'none');
+  await takeScreenshot(page, testInfo, 'confirmacion');
+
+  // "No" cierra sin cerrar la sesión.
+  await dialog.getByRole('button', { name: 'No' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(/\/dashboard\/unidades$/);
+});
+
 test('el riel muestra los textos del menú tal cual, sin mayúsculas forzadas (la marca sí)', async ({
   page,
 }, testInfo) => {

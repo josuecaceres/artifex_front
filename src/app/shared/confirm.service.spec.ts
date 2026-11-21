@@ -30,12 +30,15 @@ describe('ConfirmService', () => {
     );
   }
 
-  it('muestra el texto con título y botones por defecto (Confirmar, No, Sí)', async () => {
+  it('muestra el texto con título y botones por defecto (Confirmación, No, Sí)', async () => {
     const answer = service.ask('¿Seguro?');
     await nextFrame();
 
     const dialog = document.querySelector('app-confirm-dialog')!;
-    expect(dialog.querySelector('h2')?.textContent?.trim()).toBe('Confirmar');
+    expect(dialog.querySelector('h2')?.textContent?.trim()).toBe(
+      'Confirmación',
+    );
+    expect(document.querySelector('.app-confirm-dialog')).not.toBeNull();
     expect(dialog.textContent).toContain('¿Seguro?');
     expect(dialogButtons().map((b) => b.textContent?.trim())).toEqual([
       'No',

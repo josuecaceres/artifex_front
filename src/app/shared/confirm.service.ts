@@ -28,7 +28,11 @@ export class ConfirmService {
   async ask(options: string | ConfirmOptions): Promise<boolean> {
     const ref = this.dialog.open<ConfirmDialog, unknown, boolean>(
       ConfirmDialog,
-      { data: confirmData(options), width: '440px' },
+      {
+        data: confirmData(options),
+        width: '440px',
+        panelClass: 'app-confirm-dialog',
+      },
     );
     return (
       (await firstValueFrom(ref.afterClosed(), { defaultValue: false })) ===

@@ -9,7 +9,7 @@ import { MaterialModule } from './material.module';
 export interface ConfirmOptions {
   /** Pregunta que se muestra al usuario. */
   message: string;
-  /** Título del diálogo. Por defecto "Confirmar". */
+  /** Título del diálogo. Por defecto "Confirmación". */
   title?: string;
   /** Texto del botón que acepta. Por defecto "Sí". */
   confirmLabel?: string;
@@ -24,7 +24,7 @@ export type ConfirmData = Required<ConfirmOptions>;
 export function confirmData(options: string | ConfirmOptions): ConfirmData {
   const given = typeof options === 'string' ? { message: options } : options;
   return {
-    title: 'Confirmar',
+    title: 'Confirmación',
     confirmLabel: 'Sí',
     cancelLabel: 'No',
     ...given,
