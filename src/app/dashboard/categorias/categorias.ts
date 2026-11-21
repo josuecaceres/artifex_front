@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Categoria } from '@interfaces';
+import { Categoria, SaveResult } from '@interfaces';
 import { CategoriaService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,23 +26,31 @@ import { CategoriaDialog, CategoriaDialogData } from './categoria-dialog';
 /** Administración de categorías (`/dashboard/categorias`). */
 @Component({
   selector: 'app-categorias',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './categorias.html',
   styleUrl: './categorias.scss',
 })
 export class Categorias implements AfterViewInit {
   private readonly categoriaService = inject(CategoriaService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = ['name', 'is_active', 'actions'];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Categoria>([]);
+  protected readonly view = new TableView(this.dataSource, [
+    { id: 'name', label: 'Nombre', text: (row) => row.name },
+    {
+      id: 'is_active',
+      label: 'Activa',
+      text: (row) => (row.is_active ? 'Sí' : 'No'),
+    },
+  ]);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -61,8 +72,9 @@ export class Categorias implements AfterViewInit {
     this.dialog
       .open(CategoriaDialog, { data, width: '420px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

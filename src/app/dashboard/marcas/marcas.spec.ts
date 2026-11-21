@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { Marca } from '@interfaces';
 import { apiUrl } from '@services';
 import { Marcas } from './marcas';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Marcas', () => {
   let fixture: ComponentFixture<Marcas>;
@@ -60,3 +61,5 @@ describe('Marcas', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Marcas', Marcas, 'Nueva marca');

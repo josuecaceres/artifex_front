@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { Unidad } from '@interfaces';
 import { apiUrl } from '@services';
 import { Unidades } from './unidades';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Unidades', () => {
   let fixture: ComponentFixture<Unidades>;
@@ -62,3 +63,5 @@ describe('Unidades', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Unidades', Unidades, 'Nueva unidad');

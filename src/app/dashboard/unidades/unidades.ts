@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Unidad } from '@interfaces';
+import { Unidad, SaveResult } from '@interfaces';
 import { UnidadService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,23 +26,32 @@ import { UnidadDialog, UnidadDialogData } from './unidad-dialog';
 /** Administración de unidades de medida (`/dashboard/unidades`). */
 @Component({
   selector: 'app-unidades',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './unidades.html',
   styleUrl: './unidades.scss',
 })
 export class Unidades implements AfterViewInit {
   private readonly unidadService = inject(UnidadService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = ['name', 'code', 'is_active', 'actions'];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Unidad>([]);
+  protected readonly view = new TableView(this.dataSource, [
+    { id: 'name', label: 'Nombre', text: (row) => row.name },
+    { id: 'code', label: 'Código', text: (row) => row.code },
+    {
+      id: 'is_active',
+      label: 'Activa',
+      text: (row) => (row.is_active ? 'Sí' : 'No'),
+    },
+  ]);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -61,8 +73,9 @@ export class Unidades implements AfterViewInit {
     this.dialog
       .open(UnidadDialog, { data, width: '420px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

@@ -15,10 +15,42 @@
   flex: 1;
 }
 
+.app-topbar__theme {
+  gap: 8px;
+}
+
+// El mismo ámbar de las líneas del dibujo de acceso: igual en ambos temas.
+.app-topbar__theme-icon {
+  color: var(--app-line-warn);
+}
+
+// Opción de tema ya elegida: relleno suave (como las opciones de los select) y
+// su marca; las clases viven aquí porque el contenido del menú se declara en
+// esta plantilla aunque se pinte en el overlay.
+.is-selected {
+  background: color-mix(in srgb, var(--app-selected) 50%, var(--app-surface));
+}
+
+.app-topbar__check {
+  margin-left: auto;
+  padding-left: 16px;
+}
+
+// El área de contenido es una columna que ocupa todo el alto: el contenido de
+// la pantalla crece hasta el borde inferior (así el indicador de carga se centra
+// en el espacio libre). La barra superior no se encoge.
+.app-shell__content {
+  display: flex;
+  flex-direction: column;
+}
+
+// El contenido ocupa todo el ancho: basta con el padding (sin ancho máximo ni
+// márgenes laterales automáticos, que dejaban las tablas muy reducidas).
 .app-shell__main {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
   box-sizing: border-box;
-  max-width: 1320px;
-  margin: 0 auto;
   padding: 32px;
 }
 
@@ -27,6 +59,10 @@
   gap: 10px;
   padding-inline: 8px;
   color: var(--app-rail-ink);
+  // Mismo relleno de hover que el resto de los enlaces del riel.
+  --mat-button-text-state-layer-color: var(--app-rail-selected);
+  --mat-button-text-hover-state-layer-opacity: 1;
+  --mat-button-text-focus-state-layer-opacity: 1;
 
   &:hover {
     color: #fff;

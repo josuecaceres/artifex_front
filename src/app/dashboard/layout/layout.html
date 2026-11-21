@@ -1,6 +1,19 @@
 <mat-sidenav-container class="app-shell">
   <mat-sidenav class="app-rail" mode="side" opened disableClose>
-    <div class="app-rail__brand">Artifex</div>
+    <div class="app-rail__brand">
+      @if (!logoFailed()) {
+        <img
+          class="app-rail__logo"
+          [src]="brand.imageUrl"
+          alt=""
+          (error)="logoFailed.set(true)"
+        />
+      }
+      <div class="app-rail__brand-text">
+        <span class="app-rail__name">{{ brand.name }}</span>
+        <span class="app-rail__version">{{ brand.version }}</span>
+      </div>
+    </div>
 
     <mat-accordion class="app-rail__accordion" displayMode="flat">
       <mat-nav-list class="app-rail__nav" aria-label="Navegación principal">
@@ -39,7 +52,19 @@
     </mat-accordion>
 
     <div class="app-rail__footer">
-      <span class="app-label">Sesión</span>
+      <div class="app-rail__user">
+        <span class="app-rail__avatar" aria-hidden="true">
+          <fa-icon [icon]="icons.user" />
+        </span>
+        <div class="app-rail__user-text">
+          <strong class="app-rail__user-name">{{ userName() }}</strong>
+          @if (roleLabel(); as role) {
+            <span class="app-rail__user-role" [attr.title]="role">{{
+              role
+            }}</span>
+          }
+        </div>
+      </div>
       <button
         mat-button
         type="button"
@@ -49,23 +74,39 @@
         <fa-icon [icon]="icons.logout" />
         Cerrar sesión
       </button>
+      <small class="app-rail__copyright">{{ copyright }}</small>
     </div>
   </mat-sidenav>
 
   <mat-sidenav-content class="app-shell__content">
     <mat-toolbar class="app-topbar">
       <span class="app-topbar__spacer"></span>
-      <mat-button-toggle-group
-        aria-label="Tema de la aplicación"
-        [value]="theme.mode()"
-        (change)="theme.setMode($event.value)"
+      <button
+        mat-stroked-button
+        type="button"
+        class="app-topbar__theme"
+        [matMenuTriggerFor]="themeMenu"
       >
+        <fa-icon class="app-topbar__theme-icon" [icon]="themeIcon()" />
+        Tema
+      </button>
+      <mat-menu #themeMenu="matMenu" xPosition="before">
         @for (mode of themeModes; track mode.value) {
-          <mat-button-toggle [value]="mode.value">{{
-            mode.label
-          }}</mat-button-toggle>
+          <button
+            mat-menu-item
+            type="button"
+            role="menuitemradio"
+            [class.is-selected]="theme.mode() === mode.value"
+            [attr.aria-checked]="theme.mode() === mode.value"
+            (click)="theme.setMode(mode.value)"
+          >
+            <span>{{ mode.label }}</span>
+            @if (theme.mode() === mode.value) {
+              <fa-icon class="app-topbar__check" [icon]="icons.check" />
+            }
+          </button>
         }
-      </mat-button-toggle-group>
+      </mat-menu>
     </mat-toolbar>
 
     <main class="app-shell__main">

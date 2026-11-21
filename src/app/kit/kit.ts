@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   DOCUMENT,
+  computed,
   inject,
   signal,
   viewChild,
@@ -17,13 +18,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {
+  ConfirmService,
   FaIconComponent,
   LempiraPipe,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faArrowRightFromBracket,
   faBell,
   faBoxArchive,
   faCalendarDays,
+  faCheck,
   faCircleCheck,
   faCopy,
   faDownload,
@@ -33,10 +39,13 @@ import {
   faGear,
   faHouse,
   faMagnifyingGlass,
+  faMoon,
   faPen,
   faPlus,
+  faSun,
   faTable,
   faTriangleExclamation,
+  faUser,
   faUsers,
 } from '@shared';
 import { ThemeMode, ThemeService } from '@services';
@@ -158,7 +167,13 @@ const ROWS: KitRow[] = [
  */
 @Component({
   selector: 'app-kit',
-  imports: [FaIconComponent, LempiraPipe, ReactiveFormsModule, MaterialModule],
+  imports: [
+    FaIconComponent,
+    LempiraPipe,
+    ReactiveFormsModule,
+    MaterialModule,
+    TableToolbar,
+  ],
   templateUrl: './kit.html',
   styleUrl: './kit.scss',
 })
@@ -166,6 +181,8 @@ export class Kit implements AfterViewInit {
   private readonly document = inject(DOCUMENT);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
   private readonly fb = inject(NonNullableFormBuilder);
   protected readonly theme = inject(ThemeService);
 
@@ -197,7 +214,12 @@ export class Kit implements AfterViewInit {
     edit: faPen,
     copy: faCopy,
     archive: faBoxArchive,
+    check: faCheck,
+    user: faUser,
   };
+  protected readonly themeIcon = computed(() =>
+    this.theme.resolved() === 'dark' ? faMoon : faSun,
+  );
   protected readonly iconCatalog = [
     { name: 'Inicio', icon: faHouse },
     { name: 'Registros', icon: faTable },
@@ -214,14 +236,14 @@ export class Kit implements AfterViewInit {
   ];
 
   protected readonly statusLabel: Record<string, string> = STATUS_LABEL;
-  protected readonly columns = [
-    'code',
-    'description',
-    'owner',
-    'status',
-    'amount',
-  ];
   protected readonly dataSource = new MatTableDataSource<KitRow>(ROWS);
+  protected readonly tableView = new TableView(this.dataSource, [
+    { id: 'code', label: 'Código', text: (row) => row.code },
+    { id: 'description', label: 'Descripción', text: (row) => row.description },
+    { id: 'owner', label: 'Responsable', text: (row) => row.owner },
+    { id: 'status', label: 'Estado', text: (row) => STATUS_LABEL[row.status] },
+    { id: 'amount', label: 'Monto', text: (row) => String(row.amount) },
+  ]);
 
   protected readonly areas = [
     'Almacén norte',
@@ -269,6 +291,22 @@ export class Kit implements AfterViewInit {
 
   protected openDialog(): void {
     this.dialog.open(KitDialog, { data: { code: 'OP-2841' }, width: '440px' });
+  }
+
+  /** Muestra la confirmación global (`ConfirmService`) y avisa qué se respondió. */
+  protected async askConfirm(): Promise<void> {
+    const accepted = await this.confirm.ask('¿Seguro que quieres continuar?');
+    this.snackBar.open(
+      accepted ? 'Respondiste «Sí».' : 'Respondiste «No».',
+      '',
+      {
+        duration: 3000,
+      },
+    );
+  }
+
+  protected showToast(): void {
+    this.toast.success('Category created successfully');
   }
 
   protected notify(): void {

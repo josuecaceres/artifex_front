@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Sucursal } from '@interfaces';
+import { Sucursal, SaveResult } from '@interfaces';
 import { apiErrorMessage, SucursalService } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,32 +26,48 @@ import { SucursalDialog, SucursalDialogData } from './sucursal-dialog';
 /** Administración de sucursales y establecimientos (`/dashboard/sucursales`). */
 @Component({
   selector: 'app-sucursales',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './sucursales.html',
   styleUrl: './sucursales.scss',
 })
 export class Sucursales implements AfterViewInit {
   private readonly sucursalService = inject(SucursalService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = [
-    'name',
-    'tipo_establecimiento_name',
-    'departamento_name',
-    'municipio_name',
-    'phone',
-    'email',
-    'is_active',
-    'actions',
-  ];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Sucursal>([]);
+  protected readonly view = new TableView(this.dataSource, [
+    { id: 'name', label: 'Nombre', text: (row) => row.name },
+    {
+      id: 'tipo_establecimiento_name',
+      label: 'Tipo',
+      text: (row) => row.tipo_establecimiento_name ?? '',
+    },
+    {
+      id: 'departamento_name',
+      label: 'Departamento',
+      text: (row) => row.departamento_name ?? '',
+    },
+    {
+      id: 'municipio_name',
+      label: 'Municipio',
+      text: (row) => row.municipio_name ?? '',
+    },
+    { id: 'phone', label: 'Teléfono', text: (row) => row.phone },
+    { id: 'email', label: 'Correo', text: (row) => row.email },
+    {
+      id: 'is_active',
+      label: 'Activa',
+      text: (row) => (row.is_active ? 'Sí' : 'No'),
+    },
+  ]);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -70,8 +89,9 @@ export class Sucursales implements AfterViewInit {
     this.dialog
       .open(SucursalDialog, { data, width: '560px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

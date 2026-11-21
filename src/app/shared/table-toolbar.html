@@ -1,0 +1,64 @@
+<div class="app-toolbar">
+  <div class="app-toolbar__start">
+    <ng-content />
+    <mat-form-field class="app-toolbar__search" subscriptSizing="dynamic">
+      <fa-icon matPrefix [icon]="icons.search" />
+      <input
+        matInput
+        type="text"
+        autocomplete="off"
+        placeholder="Buscar…"
+        aria-label="Buscar en la tabla"
+        [value]="view().query()"
+        (input)="onSearch($event)"
+      />
+      @if (view().query()) {
+        <button
+          matSuffix
+          mat-icon-button
+          type="button"
+          aria-label="Limpiar búsqueda"
+          (click)="clear()"
+        >
+          <fa-icon [icon]="icons.clear" />
+        </button>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="app-toolbar__end">
+    <button
+      mat-stroked-button
+      type="button"
+      class="app-toolbar__columns"
+      [matMenuTriggerFor]="columnsMenu"
+    >
+      Columnas
+      <fa-icon [icon]="icons.chevron" />
+    </button>
+    <mat-menu #columnsMenu="matMenu" xPosition="before">
+      @for (column of view().options; track column.id) {
+        <button
+          mat-menu-item
+          type="button"
+          role="menuitemcheckbox"
+          disabledInteractive
+          [attr.aria-checked]="view().isVisible(column.id)"
+          [disabled]="!view().canToggle(column.id)"
+          (click)="toggle($event, column.id)"
+        >
+          <mat-pseudo-checkbox
+            [state]="view().isVisible(column.id) ? 'checked' : 'unchecked'"
+            [disabled]="!view().canToggle(column.id)"
+          />
+          <span>{{ column.label }}</span>
+        </button>
+      }
+    </mat-menu>
+
+    <button mat-stroked-button type="button" class="app-toolbar__export">
+      <fa-icon [icon]="icons.download" />
+      Exportar
+    </button>
+  </div>
+</div>

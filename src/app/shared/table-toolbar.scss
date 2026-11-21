@@ -1,0 +1,47 @@
+.app-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.app-toolbar__start,
+.app-toolbar__end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-toolbar__start {
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+// Buscador: del alto de los botones (44 px) en vez de los 48 px de los campos.
+.app-toolbar__search {
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
+  flex: 0 1 360px;
+  min-width: 220px;
+
+  fa-icon {
+    padding-inline: 14px 4px;
+  }
+}
+
+.app-toolbar__columns,
+.app-toolbar__export {
+  gap: 10px;
+}
+
+.app-toolbar__columns fa-icon {
+  font-size: 12px;
+}
+
+// Menú "Columnas": el contenido se declara en esta plantilla, así que estos
+// estilos también alcanzan al menú aunque se pinte en el overlay.
+.mat-mdc-menu-item {
+  gap: 12px;
+}

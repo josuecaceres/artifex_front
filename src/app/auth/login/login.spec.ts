@@ -69,6 +69,24 @@ describe('Login', () => {
     ).toContain('¿Olvidaste tu contraseña?');
   });
 
+  it('muestra el logo de la marca (imagen) en lugar del dibujo y el aviso de derechos con el año actual', () => {
+    const logo = element.querySelector<HTMLImageElement>('img.hero__logo');
+
+    expect(logo?.getAttribute('src')).toBe('images/thumbnail.png');
+    expect(logo?.alt).toContain('Artifex');
+    expect(element.querySelector('.hero svg')).toBeNull();
+    expect(element.querySelector('.hero__copyright')?.textContent).toContain(
+      `© ${new Date().getFullYear()} Artifex`,
+    );
+  });
+
+  it('si el logo no carga, lo oculta en vez de dejar una imagen rota', async () => {
+    element.querySelector('img.hero__logo')!.dispatchEvent(new Event('error'));
+    await fixture.whenStable();
+
+    expect(element.querySelector('img.hero__logo')).toBeNull();
+  });
+
   it('con campos vacíos no llama a la API y muestra los errores', async () => {
     await submit();
 

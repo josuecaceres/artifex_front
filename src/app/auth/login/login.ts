@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
+  BRAND,
   FaIconComponent,
   MaterialModule,
   faEye,
@@ -13,6 +14,7 @@ import {
   faTriangleExclamation,
   SubmitLock,
   SubmitResult,
+  copyrightText,
 } from '@shared';
 import { isLoginSuccess } from '@interfaces';
 import { AuthService, apiErrorMessage } from '@services';
@@ -37,6 +39,10 @@ export class Login {
   private readonly route = inject(ActivatedRoute);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
+  protected readonly brand = BRAND;
+  protected readonly copyright = copyrightText();
+  /** El logo no cargó (archivo ausente): se oculta en vez de mostrar un icono roto. */
+  protected readonly logoFailed = signal(false);
   protected readonly icons = {
     eye: faEye,
     eyeSlash: faEyeSlash,

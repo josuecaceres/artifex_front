@@ -1,3 +1,6 @@
+export * from './brand';
+export * from './confirm-dialog';
+export * from './confirm.service';
 export * from './icons';
 export * from './lempira.pipe';
 export * from './material.module';
@@ -5,4 +8,7 @@ export * from './menu-items';
 export * from './spanish-paginator-intl';
 export * from './status-page';
 export * from './submit-lock';
+export * from './table-toolbar';
+export * from './table-view';
+export * from './toast.service';
 export * from './ubicacion-fields';

@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { Impuesto } from '@interfaces';
 import { apiUrl } from '@services';
 import { Impuestos } from './impuestos';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Impuestos', () => {
   let fixture: ComponentFixture<Impuestos>;
@@ -81,3 +82,5 @@ describe('Impuestos', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Impuestos', Impuestos, 'Nuevo impuesto');

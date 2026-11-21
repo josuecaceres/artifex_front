@@ -15,8 +15,15 @@
       }
     </mat-nav-list>
     <div class="app-rail__footer">
-      <span class="app-label">Sesión</span>
-      <strong>M. Rojas</strong>
+      <div class="app-rail__user">
+        <span class="app-rail__avatar" aria-hidden="true">
+          <fa-icon [icon]="icons.user" />
+        </span>
+        <div class="app-rail__user-text">
+          <strong class="app-rail__user-name">M. Rojas</strong>
+          <span class="app-rail__user-role">System Admin</span>
+        </div>
+      </div>
     </div>
   </mat-sidenav>
 
@@ -24,17 +31,32 @@
     <mat-toolbar>
       <span>Kit de componentes</span>
       <span class="kit__spacer"></span>
-      <mat-button-toggle-group
-        aria-label="Tema de la aplicación"
-        [value]="theme.mode()"
-        (change)="theme.setMode($event.value)"
+      <button
+        mat-stroked-button
+        type="button"
+        class="kit__theme"
+        [matMenuTriggerFor]="themeMenu"
       >
+        <fa-icon class="kit__theme-icon" [icon]="themeIcon()" />
+        Tema
+      </button>
+      <mat-menu #themeMenu="matMenu" xPosition="before">
         @for (mode of themeModes; track mode.value) {
-          <mat-button-toggle [value]="mode.value">{{
-            mode.label
-          }}</mat-button-toggle>
+          <button
+            mat-menu-item
+            type="button"
+            role="menuitemradio"
+            [class.is-selected]="theme.mode() === mode.value"
+            [attr.aria-checked]="theme.mode() === mode.value"
+            (click)="theme.setMode(mode.value)"
+          >
+            <span>{{ mode.label }}</span>
+            @if (theme.mode() === mode.value) {
+              <fa-icon class="kit__check" [icon]="icons.check" />
+            }
+          </button>
         }
-      </mat-button-toggle-group>
+      </mat-menu>
     </mat-toolbar>
 
     <main class="kit__main">
@@ -226,6 +248,12 @@
 
       <section id="tabla" class="kit__section">
         <h2>Tabla</h2>
+        <app-table-toolbar [view]="tableView">
+          <button mat-flat-button type="button">
+            <fa-icon [icon]="icons.plus" />
+            Nuevo registro
+          </button>
+        </app-table-toolbar>
         <div class="kit__table">
           <table
             mat-table
@@ -233,6 +261,20 @@
             [dataSource]="dataSource"
             aria-label="Registros de ejemplo"
           >
+            <ng-container matColumnDef="actions" sticky>
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let row">
+                <div class="app-actions">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [attr.aria-label]="'Editar ' + row.code"
+                  >
+                    <fa-icon [icon]="icons.edit" />
+                  </button>
+                </div>
+              </td>
+            </ng-container>
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
               <td mat-cell *matCellDef="let row">{{ row.code }}</td>
@@ -271,10 +313,13 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr
+              mat-header-row
+              *matHeaderRowDef="tableView.displayedColumns()"
+            ></tr>
             <tr
               mat-row
-              *matRowDef="let row; columns: columns"
+              *matRowDef="let row; columns: tableView.displayedColumns()"
               [class.app-row-attention]="row.status === 'crit'"
             ></tr>
           </table>
@@ -340,6 +385,12 @@
           </button>
           <button mat-flat-button (click)="openDialog()">Abrir diálogo</button>
           <button mat-stroked-button (click)="notify()">Mostrar aviso</button>
+          <button mat-stroked-button (click)="showToast()">
+            Mostrar toast de éxito
+          </button>
+          <button mat-stroked-button (click)="askConfirm()">
+            Pedir confirmación
+          </button>
         </div>
       </section>
     </main>

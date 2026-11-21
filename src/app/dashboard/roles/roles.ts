@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { RoleWithPermissions } from '@interfaces';
+import { RoleWithPermissions, SaveResult } from '@interfaces';
 import { apiErrorMessage, RoleService } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,17 +26,17 @@ import { RolDialog, RolDialogData } from './rol-dialog';
 /** Administración de roles y permisos (`/dashboard/roles`). */
 @Component({
   selector: 'app-roles',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './roles.html',
   styleUrl: './roles.scss',
 })
 export class Roles implements AfterViewInit {
   private readonly roleService = inject(RoleService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = ['name', 'permissions', 'actions'];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
@@ -42,6 +45,14 @@ export class Roles implements AfterViewInit {
   protected readonly dataSource = new MatTableDataSource<RoleWithPermissions>(
     [],
   );
+  protected readonly view = new TableView(this.dataSource, [
+    { id: 'name', label: 'Rol', text: (row) => row.name },
+    {
+      id: 'permissions',
+      label: 'Permisos',
+      text: (row) => String(row.permissions.length),
+    },
+  ]);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -63,8 +74,9 @@ export class Roles implements AfterViewInit {
     this.dialog
       .open(RolDialog, { data, width: '480px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { AppUser } from '@interfaces';
 import { apiUrl } from '@services';
 import { Usuarios } from './usuarios';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Usuarios', () => {
   let fixture: ComponentFixture<Usuarios>;
@@ -71,6 +72,85 @@ describe('Usuarios', () => {
     expect(element.textContent).toContain('Pendiente');
   });
 
+  describe('búsqueda y columnas', () => {
+    async function loadUsers(): Promise<HTMLElement> {
+      await createComponent();
+      http.expectOne(apiUrl('api/users')).flush(users);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      return fixture.nativeElement as HTMLElement;
+    }
+
+    const bodyRows = (element: HTMLElement) =>
+      Array.from(element.querySelectorAll('tr.mat-mdc-row'));
+
+    async function search(element: HTMLElement, text: string): Promise<void> {
+      const input = element.querySelector<HTMLInputElement>(
+        '.app-toolbar__search input',
+      )!;
+      input.value = text;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+    }
+
+    it('el buscador deja solo las filas que coinciden', async () => {
+      const element = await loadUsers();
+      expect(bodyRows(element).length).toBe(2);
+
+      await search(element, 'sucursal central');
+
+      expect(bodyRows(element).length).toBe(1);
+      expect(bodyRows(element)[0].textContent).toContain('M. Rojas');
+    });
+
+    it('busca también por lo que muestra la celda ("Pendiente")', async () => {
+      const element = await loadUsers();
+
+      await search(element, 'pendiente');
+
+      expect(bodyRows(element).length).toBe(1);
+      expect(bodyRows(element)[0].textContent).toContain('system admin');
+    });
+
+    it('sin coincidencias avisa con el texto buscado', async () => {
+      const element = await loadUsers();
+
+      await search(element, 'zzz');
+
+      expect(element.textContent).toContain('Sin resultados para «zzz».');
+      expect(element.textContent).not.toContain('No hay usuarios todavía.');
+    });
+
+    it('ocultar una columna en el menú la quita de la tabla', async () => {
+      const element = await loadUsers();
+      const headers = () =>
+        Array.from(element.querySelectorAll('th')).map((th) =>
+          th.textContent?.trim(),
+        );
+      expect(headers()).toContain('Siglas');
+
+      element
+        .querySelector<HTMLButtonElement>('.app-toolbar__columns')!
+        .click();
+      await fixture.whenStable();
+      const siglas = Array.from(
+        document.querySelectorAll<HTMLButtonElement>(
+          '[role="menuitemcheckbox"]',
+        ),
+      ).find((item) => item.textContent?.trim() === 'Siglas')!;
+      siglas.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(headers()).not.toContain('Siglas');
+      expect(headers()[0]).toBe('Acciones');
+      document
+        .querySelectorAll('.cdk-overlay-container')
+        .forEach((container) => (container.innerHTML = ''));
+    });
+  });
+
   it('muestra el mensaje de error si la lista falla', async () => {
     await createComponent();
     http
@@ -86,3 +166,5 @@ describe('Usuarios', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Usuarios', Usuarios, 'Nuevo usuario');

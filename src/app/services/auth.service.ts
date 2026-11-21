@@ -11,11 +11,12 @@ import { apiUrl } from './api';
 
 const TOKEN_KEY = 'app-token';
 const USER_KEY = 'app-user';
+const ROLES_KEY = 'app-roles';
 
 /**
- * Sesión del usuario. El token (y, si llega, el usuario) se guardan en
- * `localStorage` para sobrevivir a recargas; el interceptor de la API envía
- * el token como `Authorization: Bearer`.
+ * Sesión del usuario. El token (y, si llegan, el usuario y sus roles) se
+ * guardan en `localStorage` para sobrevivir a recargas; el interceptor de la
+ * API envía el token como `Authorization: Bearer`.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -23,9 +24,15 @@ export class AuthService {
   private readonly document = inject(DOCUMENT);
   private readonly tokenState = signal<string | null>(this.readToken());
   private readonly userState = signal<AuthUser | null>(this.readUser());
+  private readonly rolesState = signal<string[]>(this.readRoles());
 
   readonly token = this.tokenState.asReadonly();
   readonly user = this.userState.asReadonly();
+  /**
+   * Nombres de los roles del usuario (`roles` del login). Vacío en una sesión
+   * iniciada antes de que se guardaran: se llenan en el siguiente login.
+   */
+  readonly roles = this.rolesState.asReadonly();
   readonly isAuthenticated = computed(() => this.tokenState() !== null);
 
   /**
@@ -42,6 +49,7 @@ export class AuthService {
           if (response.user) {
             this.setUser(response.user);
           }
+          this.setRoles(response.roles ?? []);
         } else if (!response?.require_password_setup) {
           throw new Error('La respuesta de login no incluye el token.');
         }
@@ -72,13 +80,20 @@ export class AuthService {
     this.write((storage) => storage.setItem(USER_KEY, JSON.stringify(user)));
   }
 
+  setRoles(roles: string[]): void {
+    this.rolesState.set(roles);
+    this.write((storage) => storage.setItem(ROLES_KEY, JSON.stringify(roles)));
+  }
+
   /** Cierra la sesión solo en este navegador, sin avisar al backend. */
   clearSession(): void {
     this.tokenState.set(null);
     this.userState.set(null);
+    this.rolesState.set([]);
     this.write((storage) => {
       storage.removeItem(TOKEN_KEY);
       storage.removeItem(USER_KEY);
+      storage.removeItem(ROLES_KEY);
     });
   }
 
@@ -96,6 +111,18 @@ export class AuthService {
       return raw ? (JSON.parse(raw) as AuthUser) : null;
     } catch {
       return null;
+    }
+  }
+
+  private readRoles(): string[] {
+    try {
+      const raw = this.document.defaultView?.localStorage.getItem(ROLES_KEY);
+      const roles: unknown = raw ? JSON.parse(raw) : [];
+      return Array.isArray(roles)
+        ? roles.filter((role): role is string => typeof role === 'string')
+        : [];
+    } catch {
+      return [];
     }
   }
 

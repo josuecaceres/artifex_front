@@ -23,14 +23,16 @@ describe('AuthService', () => {
     return TestBed.inject(AuthService);
   }
 
-  beforeEach(() => {
-    localStorage.removeItem('app-token');
-    localStorage.removeItem('app-user');
-  });
+  function clearStorage(): void {
+    ['app-token', 'app-user', 'app-roles'].forEach((key) =>
+      localStorage.removeItem(key),
+    );
+  }
+
+  beforeEach(clearStorage);
   afterEach(() => {
     http.verify();
-    localStorage.removeItem('app-token');
-    localStorage.removeItem('app-user');
+    clearStorage();
   });
 
   it('empieza sin sesión', () => {
@@ -83,7 +85,45 @@ describe('AuthService', () => {
     expect(restored.user()?.name).toBe('M. Rojas');
   });
 
+  it('guarda y restaura los roles de la sesión, y los borra al cerrarla', () => {
+    const service = createService();
+    expect(service.roles()).toEqual([]);
+
+    service.setRoles(['System Admin']);
+    expect(service.roles()).toEqual(['System Admin']);
+
+    TestBed.resetTestingModule();
+    const restored = createService();
+    expect(restored.roles()).toEqual(['System Admin']);
+
+    restored.clearSession();
+    expect(restored.roles()).toEqual([]);
+    expect(localStorage.getItem('app-roles')).toBeNull();
+  });
+
+  it('ignora roles guardados que no son una lista de textos', () => {
+    localStorage.setItem('app-roles', '{"x":1}');
+    expect(createService().roles()).toEqual([]);
+
+    TestBed.resetTestingModule();
+    localStorage.setItem('app-roles', '["Cajero", 3]');
+    expect(createService().roles()).toEqual(['Cajero']);
+  });
+
   describe('login', () => {
+    it('guarda los roles que trae el login', () => {
+      const service = createService();
+
+      service.login({ user_name: 'usuario', password: 'secreta' }).subscribe();
+      http.expectOne(apiUrl('api/login')).flush({
+        token: 't',
+        user: { id: 1, name: 'M. Rojas', email: 'm.rojas@ejemplo.com' },
+        roles: ['System Admin', 'Cajero'],
+      });
+
+      expect(service.roles()).toEqual(['System Admin', 'Cajero']);
+    });
+
     it('envía las credenciales a /api/login y deja la sesión iniciada', () => {
       const service = createService();
       const credentials = { user_name: 'usuario', password: 'secreta' };

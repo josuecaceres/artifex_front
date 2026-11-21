@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Empresa } from '@interfaces';
+import { Empresa, SaveResult } from '@interfaces';
 import { apiErrorMessage, EmpresaService } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,29 +26,33 @@ import { EmpresaDialog, EmpresaDialogData } from './empresa-dialog';
 /** Administración de empresas (`/dashboard/empresas`). */
 @Component({
   selector: 'app-empresas',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './empresas.html',
   styleUrl: './empresas.scss',
 })
 export class Empresas implements AfterViewInit {
   private readonly empresaService = inject(EmpresaService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = [
-    'comercial_name',
-    'nit',
-    'nrc',
-    'email',
-    'actions',
-  ];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Empresa>([]);
+  protected readonly view = new TableView(this.dataSource, [
+    {
+      id: 'comercial_name',
+      label: 'Nombre comercial',
+      text: (row) => row.comercial_name,
+    },
+    { id: 'nit', label: 'NIT', text: (row) => row.nit },
+    { id: 'nrc', label: 'NRC', text: (row) => row.nrc },
+    { id: 'email', label: 'Correo', text: (row) => row.email },
+  ]);
   protected readonly loading = signal(true);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -67,8 +74,9 @@ export class Empresas implements AfterViewInit {
     this.dialog
       .open(EmpresaDialog, { data, width: '480px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

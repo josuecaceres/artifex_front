@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { Sucursal } from '@interfaces';
 import { apiUrl } from '@services';
 import { Sucursales } from './sucursales';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Sucursales', () => {
   let fixture: ComponentFixture<Sucursales>;
@@ -84,3 +85,5 @@ describe('Sucursales', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Sucursales', Sucursales, 'Nueva sucursal');

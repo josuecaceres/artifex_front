@@ -9,11 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Impuesto } from '@interfaces';
+import { Impuesto, SaveResult } from '@interfaces';
 import { ImpuestoService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
   MaterialModule,
+  TableToolbar,
+  TableView,
+  ToastService,
   faPen,
   faPlus,
   faTriangleExclamation,
@@ -23,23 +26,37 @@ import { ImpuestoDialog, ImpuestoDialogData } from './impuesto-dialog';
 /** Administración de impuestos (`/dashboard/impuestos`). */
 @Component({
   selector: 'app-impuestos',
-  imports: [MaterialModule, FaIconComponent],
+  imports: [MaterialModule, FaIconComponent, TableToolbar],
   templateUrl: './impuestos.html',
   styleUrl: './impuestos.scss',
 })
 export class Impuestos implements AfterViewInit {
   private readonly impuestoService = inject(ImpuestoService);
   private readonly dialog = inject(MatDialog);
+  private readonly toast = inject(ToastService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = ['name', 'code', 'rate', 'is_active', 'actions'];
   protected readonly icons = {
     add: faPlus,
     edit: faPen,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<Impuesto>([]);
+  protected readonly view = new TableView(this.dataSource, [
+    { id: 'name', label: 'Nombre', text: (row) => row.name },
+    { id: 'code', label: 'Código', text: (row) => row.code },
+    {
+      id: 'rate',
+      label: 'Tasa',
+      text: (row) => `${Number(row.rate)}${row.is_percentage ? '%' : ''}`,
+    },
+    {
+      id: 'is_active',
+      label: 'Activo',
+      text: (row) => (row.is_active ? 'Sí' : 'No'),
+    },
+  ]);
 
   /** `rate` llega como texto (`"13.0000"`): se muestra y ordena como número. */
   protected rate(impuesto: Impuesto): number {
@@ -70,8 +87,9 @@ export class Impuestos implements AfterViewInit {
     this.dialog
       .open(ImpuestoDialog, { data, width: '420px' })
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: SaveResult | undefined) => {
         if (result) {
+          this.toast.success(result.message);
           this.load();
         }
       });

@@ -10,9 +10,9 @@ html {
       footer-container-height: 52px,
       header-headline-color: var(--app-muted),
       header-headline-font: var(--app-font-display),
-      header-headline-size: 13px,
-      header-headline-weight: 600,
-      header-headline-tracking: 0.12em,
+      header-headline-size: 15px,
+      header-headline-weight: 700,
+      header-headline-tracking: 0.02em,
       row-item-label-text-color: var(--app-ink),
       row-item-label-text-font: var(--app-font-body),
       row-item-label-text-size: 15px,
@@ -88,8 +88,54 @@ html {
   );
 }
 
-.mat-mdc-header-row .mat-mdc-header-cell {
-  text-transform: uppercase;
+// Encabezados de tabla: capitalizados (solo la inicial) y en negrita; el
+// tamaño, peso y tracking están en `mat.table-overrides`.
+
+// Columna de acciones de las tablas: primera, fija (`sticky` en el
+// `matColumnDef`) y con los botones centrados en fila (flex), de modo que
+// aunque haya varios sigan a la vista. Sin línea divisoria. Las celdas fijas
+// necesitan fondo opaco (el de la tabla es transparente) para no dejar ver lo
+// que pasa por debajo al hacer scroll horizontal.
+.mat-column-actions {
+  width: 104px;
+  min-width: 104px;
+  text-align: center;
+
+  &.mat-mdc-header-cell,
+  &.mat-mdc-cell {
+    background: var(--app-bg);
+  }
+}
+
+.app-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+// Las pantallas del dashboard llenan el alto del área de contenido (el host de
+// la pantalla y su `.page` crecen), para poder centrar el indicador de carga.
+.app-shell__main > :not(router-outlet) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1 1 auto;
+}
+
+// Indicador de carga de las pantallas con tabla: centrado, vertical y
+// horizontalmente, en el espacio que ocupará la tabla (los márgenes automáticos
+// absorben el espacio libre de la columna).
+.page > .mat-mdc-progress-spinner {
+  margin: auto;
+}
+
+// Título de las pantallas con tabla: capitalizado, no en mayúsculas.
+.page__head h1 {
+  text-transform: none;
 }
 
 // Ordenamiento: el encabezado activo se lee más fuerte.
@@ -161,32 +207,6 @@ html {
 .app-status--crit {
   --app-status-color: var(--app-crit);
   --app-status-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 2.6l5.8 10.2H2.2z' stroke='black' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-// Selector segmentado (tema, vistas): vive en la barra superior, del mismo
-// marino que el riel (ver `--app-rail-*` en `_surfaces.scss`); activo con el
-// mismo relleno que el enlace activo del riel, sin marca de verificación.
-html {
-  @include mat.button-toggle-overrides(
-    (
-      shape: var(--app-radius-control),
-      height: 40px,
-      background-color: transparent,
-      text-color: var(--app-rail-ink),
-      state-layer-color: #fff,
-      selected-state-background-color: var(--app-rail-selected),
-      selected-state-text-color: #fff,
-      divider-color: var(--app-rail-border),
-      label-text-font: var(--app-font-body),
-      label-text-size: 14px,
-      label-text-weight: 600,
-      label-text-tracking: 0,
-    )
-  );
-}
-
-.mat-button-toggle-group {
-  border-color: var(--app-rail-border);
 }
 
 table.mat-mdc-table {

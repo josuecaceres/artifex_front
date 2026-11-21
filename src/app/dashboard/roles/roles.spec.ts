@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { RoleWithPermissions } from '@interfaces';
 import { apiUrl } from '@services';
 import { Roles } from './roles';
+import { describeTableScreen } from '../table-screen.testing.spec';
 
 describe('Roles', () => {
   let fixture: ComponentFixture<Roles>;
@@ -74,3 +75,5 @@ describe('Roles', () => {
     expect(element.textContent).toContain('Su IP no está autorizada.');
   });
 });
+
+describeTableScreen('Roles', Roles, 'Nuevo rol');

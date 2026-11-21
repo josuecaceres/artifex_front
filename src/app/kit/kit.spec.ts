@@ -31,6 +31,70 @@ describe('Kit', () => {
     document.documentElement.removeAttribute('data-theme');
   });
 
+  it('muestra el usuario con avatar, nombre y rol en el pie del riel', () => {
+    const footer = element.querySelector('.app-rail__footer')!;
+
+    expect(footer.querySelector('.app-rail__avatar svg')).not.toBeNull();
+    expect(footer.querySelector('.app-rail__user-name')?.textContent).toBe(
+      'M. Rojas',
+    );
+    expect(footer.querySelector('.app-rail__user-role')?.textContent).toBe(
+      'System Admin',
+    );
+  });
+
+  it('abre la confirmación global desde "Pedir confirmación"', async () => {
+    const button = Array.from(
+      element.querySelectorAll<HTMLButtonElement>('#superpuestos button'),
+    ).find((b) => b.textContent?.includes('Pedir confirmación'))!;
+
+    button.click();
+    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(document.querySelector('app-confirm-dialog')).not.toBeNull();
+
+    document
+      .querySelector<HTMLButtonElement>('app-confirm-dialog button')!
+      .click();
+    // La respuesta llega como promesa (al terminar la animación de cierre) y
+    // abre un aviso: se espera a que aparezca para que no ocurra con el
+    // inyector ya destruido.
+    for (
+      let i = 0;
+      i < 80 && !document.querySelector('mat-snack-bar-container');
+      i++
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    expect(
+      document.querySelector('mat-snack-bar-container')?.textContent,
+    ).toContain('Respondiste «No».');
+  });
+
+  it('la tabla del kit tiene la barra con buscador y la columna de acciones primero', () => {
+    expect(element.querySelector('#tabla app-table-toolbar')).not.toBeNull();
+    expect(element.querySelector('#tabla th')?.textContent?.trim()).toBe(
+      'Acciones',
+    );
+  });
+
+  it('el botón "Mostrar toast de éxito" abre el aviso global', async () => {
+    const button = Array.from(
+      element.querySelectorAll<HTMLButtonElement>('#superpuestos button'),
+    ).find((b) => b.textContent?.includes('Mostrar toast de éxito'))!;
+
+    button.click();
+    for (let i = 0; i < 40 && !document.querySelector('.app-toast'); i++) {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    expect(document.querySelector('.app-toast')?.textContent).toContain(
+      'Category created successfully',
+    );
+  });
+
   it('muestra las secciones del kit en el riel', () => {
     const items = element.querySelectorAll('.app-rail__nav button');
 
@@ -75,11 +139,13 @@ describe('Kit', () => {
   });
 
   it('cambia el tema desde el selector', async () => {
-    const buttons = element.querySelectorAll<HTMLButtonElement>(
-      'mat-button-toggle button',
+    element.querySelector<HTMLButtonElement>('.kit__theme')!.click();
+    await fixture.whenStable();
+    const options = document.querySelectorAll<HTMLButtonElement>(
+      '[role="menuitemradio"]',
     );
 
-    buttons[2].click();
+    options[2].click();
     await fixture.whenStable();
 
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');

@@ -53,6 +53,8 @@ async function saveDialog(page: Page): Promise<void> {
   await dialog(page).getByRole('button', { name: 'Guardar' }).click();
   // La API de desarrollo a veces tarda más de 5 s en responder al guardar.
   await expect(dialog(page)).toBeHidden({ timeout: 20_000 });
+  // Al guardar bien aparece el aviso global con el message de la API.
+  await expect(page.locator('.app-toast')).toBeVisible();
 }
 
 test.describe('módulos contra la API real', () => {

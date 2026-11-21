@@ -87,12 +87,12 @@ html {
     )
   );
 
-  // La barra superior es del mismo marino que el riel (ver `--app-rail-*`),
-  // así se leen como una sola pieza en vez de dos superficies distintas.
+  // La barra superior es del color del contenido de la página (se distingue
+  // por su borde inferior fino), no del marino del riel.
   @include mat.toolbar-overrides(
     (
-      container-background-color: var(--app-rail),
-      container-text-color: var(--app-rail-ink),
+      container-background-color: var(--app-bg),
+      container-text-color: var(--app-ink),
       standard-height: 64px,
       title-text-font: var(--app-font-display),
       title-text-size: 20px,
@@ -152,8 +152,22 @@ html {
   gap: 8px;
 }
 
+// Aviso global (`ToastService`): una superficie con contorno fino, como los
+// menús y diálogos, no el fondo oscuro por defecto de Material. El verde del
+// icono viene del propio componente.
+.app-toast {
+  --mat-snack-bar-container-color: var(--app-surface);
+  --mat-snack-bar-supporting-text-color: var(--app-ink);
+  margin: 12px 24px;
+
+  .mdc-snackbar__surface {
+    border: 1px solid var(--app-border);
+    box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.3);
+  }
+}
+
 .mat-toolbar {
-  border-bottom: 1px solid var(--app-rail-border);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .mat-mdc-card-actions {

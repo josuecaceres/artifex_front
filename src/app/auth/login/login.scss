@@ -30,10 +30,21 @@
   text-transform: uppercase;
 }
 
-.hero__lines {
+// Logo de la marca (public/images/thumbnail.png): se reemplaza el archivo, no
+// el código.
+.hero__logo {
+  align-self: center;
   width: 100%;
-  max-width: 520px;
+  max-width: 280px;
   height: auto;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+.hero__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .hero__text {
@@ -42,30 +53,9 @@
   font-size: 17px;
 }
 
-.line--crit {
-  stroke: var(--app-line-crit);
-}
-
-.line--ok {
-  stroke: var(--app-line-ok);
-}
-
-.line--warn {
-  stroke: var(--app-line-warn);
-}
-
-.line--action {
-  stroke: var(--app-line-action);
-}
-
-.station {
-  fill: var(--app-rail);
-  stroke: var(--app-on-action);
-}
-
-.hub {
-  fill: var(--app-on-action);
-  stroke: var(--app-rail);
+.hero__copyright {
+  margin: 0;
+  font-size: 13px;
 }
 
 .panel {
@@ -116,8 +106,8 @@
     padding: 20px 24px;
   }
 
-  .hero__lines,
-  .hero__text {
+  .hero__logo,
+  .hero__foot {
     display: none;
   }
 

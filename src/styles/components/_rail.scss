@@ -11,10 +11,11 @@
   --mat-list-list-item-label-text-color: var(--app-rail-ink);
   --mat-list-list-item-hover-label-text-color: #fff;
   --mat-list-list-item-focus-label-text-color: #fff;
-  --mat-list-list-item-hover-state-layer-color: #fff;
-  --mat-list-list-item-hover-state-layer-opacity: 0.08;
-  --mat-list-list-item-focus-state-layer-color: #fff;
-  --mat-list-list-item-focus-state-layer-opacity: 0.12;
+  // Sin velo de hover/foco: un velo opaco taparía el texto. El hover y el foco
+  // rellenan con el tono del elemento seleccionado mediante `background`
+  // (regla del final de esta hoja).
+  --mat-list-list-item-hover-state-layer-opacity: 0;
+  --mat-list-list-item-focus-state-layer-opacity: 0;
   --mat-list-active-indicator-color: transparent;
   --mat-list-list-item-container-shape: var(--app-radius-control);
   --mat-list-list-item-one-line-container-height: 44px;
@@ -28,8 +29,10 @@
   --mat-expansion-header-text-color: var(--app-rail-ink);
   --mat-expansion-header-description-color: var(--app-rail-ink);
   --mat-expansion-header-indicator-color: var(--app-rail-ink);
-  --mat-expansion-header-hover-state-layer-color: #fff;
-  --mat-expansion-header-focus-state-layer-color: #fff;
+  // Material usa estos tokens como color de fondo directo (no como velo): el
+  // mismo relleno del elemento seleccionado.
+  --mat-expansion-header-hover-state-layer-color: var(--app-rail-selected);
+  --mat-expansion-header-focus-state-layer-color: var(--app-rail-selected);
   --mat-expansion-header-collapsed-state-height: 44px;
   --mat-expansion-header-expanded-state-height: 44px;
   --mat-expansion-header-text-font: var(--app-font-display);
@@ -45,10 +48,32 @@
     flex-direction: column;
   }
 
+  // Logo (public/images/thumbnail.png) al lado del nombre y la versión.
   &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 0 8px 20px;
     margin-bottom: 12px;
     border-bottom: 1px solid var(--app-rail-border);
+  }
+
+  &__logo {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--app-radius-control);
+    object-fit: contain;
+  }
+
+  &__brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__name {
     color: #fff;
     font-family: var(--app-font-display);
     font-size: 22px;
@@ -56,6 +81,12 @@
     letter-spacing: 0.06em;
     line-height: 1;
     text-transform: uppercase;
+  }
+
+  &__version {
+    color: var(--app-rail-ink);
+    font-size: 12px;
+    line-height: 1;
   }
 
   &__nav {
@@ -110,7 +141,9 @@
       text-transform: uppercase;
     }
 
-    &.mat-expanded mat-panel-title {
+    &.mat-expanded mat-panel-title,
+    .mat-expansion-panel-header:hover mat-panel-title,
+    .mat-expansion-panel-header.cdk-keyboard-focused mat-panel-title {
       color: #fff;
     }
   }
@@ -140,16 +173,60 @@
   flex-direction: column;
   gap: 2px;
 
-  .app-label {
-    color: var(--app-rail-ink);
+  // Usuario con la sesión activa: avatar provisional, nombre y rol.
+  .app-rail__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 8px;
   }
 
-  strong {
+  .app-rail__avatar {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--app-rail-selected);
     color: #fff;
+    font-size: 18px;
+  }
+
+  .app-rail__user-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .app-rail__user-name {
+    overflow: hidden;
+    color: #fff;
+    font-size: 14px;
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .app-rail__user-role {
+    overflow: hidden;
+    color: var(--app-rail-ink);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .app-rail__copyright {
+    padding: 12px 8px 0;
+    color: var(--app-rail-ink);
+    font-size: 12px;
   }
 }
 
+.app-rail .app-rail__nav .mat-mdc-list-item.mdc-list-item:hover,
+.app-rail .app-rail__nav .mat-mdc-list-item.mdc-list-item:focus-visible,
 .app-rail .app-rail__nav .mat-mdc-list-item.mdc-list-item.is-active,
 .app-rail
   .app-rail__nav
