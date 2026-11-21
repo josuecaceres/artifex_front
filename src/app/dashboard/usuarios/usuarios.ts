@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AppUser, SaveResult } from '@interfaces';
 import { apiErrorMessage, UserService } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -83,7 +85,11 @@ export class Usuarios implements AfterViewInit {
 
   private openDialog(data: UsuarioDialogData): void {
     this.dialog
-      .open(UsuarioDialog, { data, width: '480px' })
+      .open(UsuarioDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(data.user ? 2 : 1, '480px'),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

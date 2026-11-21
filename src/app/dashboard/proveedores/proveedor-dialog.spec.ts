@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { ProveedorDialog } from './proveedor-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('ProveedorDialog', () => {
   let fixture: ComponentFixture<ProveedorDialog>;
@@ -159,5 +160,11 @@ describe('ProveedorDialog', () => {
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,
     ).toBe('Proveedor de Insumos S.A.');
+  });
+  it('al crear: distribución del formulario (3 columnas, interruptores al final)', async () => {
+    await createComponent();
+    await flushCatalogs();
+
+    expectFormLayout(element, 3);
   });
 });

@@ -8,7 +8,7 @@
   #lock="appSubmitLock"
   novalidate
 >
-  <mat-dialog-content>
+  <mat-dialog-content class="app-form" [class.app-form--2]="isEdit">
     @if (errorMessage(); as message) {
       <div class="app-alert" role="alert">
         <fa-icon class="app-alert__icon" [icon]="icons.warning" />
@@ -32,7 +32,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="app-form__full">
       <mat-label>Correo electrónico</mat-label>
       <input matInput type="email" formControlName="email" />
       @if (form.controls.email.hasError("required")) {
@@ -71,12 +71,14 @@
     </mat-form-field>
 
     @if (isEdit) {
-      <mat-slide-toggle formControlName="authorized">
-        Autorizado
-      </mat-slide-toggle>
-      <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
+      <div class="app-form__switches">
+        <mat-slide-toggle formControlName="authorized">
+          Autorizado
+        </mat-slide-toggle>
+        <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
+      </div>
     } @else {
-      <p class="hint">
+      <p class="hint app-form__full">
         El usuario crea su contraseña desde «¿Olvidaste tu contraseña?» en el
         inicio de sesión. Después podrás autorizarlo editándolo aquí.
       </p>

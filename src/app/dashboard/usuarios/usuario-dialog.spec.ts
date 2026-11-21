@@ -9,6 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AppUser, Role, Sucursal } from '@interfaces';
 import { apiUrl } from '@services';
 import { UsuarioDialog } from './usuario-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('UsuarioDialog', () => {
   let fixture: ComponentFixture<UsuarioDialog>;
@@ -191,5 +192,16 @@ describe('UsuarioDialog', () => {
 
     expect(element.textContent).toContain('Ya existe un registro');
     expect(element.textContent).not.toContain('SQLSTATE');
+  });
+  it('al crear: distribución del formulario (1 columna, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 1);
+  });
+
+  it('al editar: distribución del formulario (2 columnas, interruptores al final)', async () => {
+    await createComponent({ user });
+
+    expectFormLayout(element, 2);
   });
 });

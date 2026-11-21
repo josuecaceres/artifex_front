@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Empresa, SaveResult } from '@interfaces';
 import { apiErrorMessage, EmpresaService } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -72,7 +74,11 @@ export class Empresas implements AfterViewInit {
 
   private openDialog(data: EmpresaDialogData): void {
     this.dialog
-      .open(EmpresaDialog, { data, width: '480px' })
+      .open(EmpresaDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(2),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

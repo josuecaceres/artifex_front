@@ -8,7 +8,7 @@
   #lock="appSubmitLock"
   novalidate
 >
-  <mat-dialog-content>
+  <mat-dialog-content class="app-form app-form--3">
     @if (errorMessage(); as message) {
       <div class="app-alert" role="alert">
         <fa-icon class="app-alert__icon" [icon]="icons.warning" />
@@ -24,43 +24,39 @@
       }
     </mat-form-field>
 
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>NIT</mat-label>
-        <input matInput formControlName="nit" />
-        @if (form.controls.nit.hasError("required")) {
-          <mat-error>Ingresa el NIT.</mat-error>
-        }
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>NIT</mat-label>
+      <input matInput formControlName="nit" />
+      @if (form.controls.nit.hasError("required")) {
+        <mat-error>Ingresa el NIT.</mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>NRC</mat-label>
-        <input matInput formControlName="nrc" />
-        @if (form.controls.nrc.hasError("required")) {
-          <mat-error>Ingresa el NRC.</mat-error>
-        }
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <mat-label>NRC</mat-label>
+      <input matInput formControlName="nrc" />
+      @if (form.controls.nrc.hasError("required")) {
+        <mat-error>Ingresa el NRC.</mat-error>
+      }
+    </mat-form-field>
 
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Teléfono</mat-label>
-        <input matInput formControlName="phone" />
-        @if (form.controls.phone.hasError("required")) {
-          <mat-error>Ingresa el teléfono.</mat-error>
-        }
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" />
+      @if (form.controls.phone.hasError("required")) {
+        <mat-error>Ingresa el teléfono.</mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Correo electrónico</mat-label>
-        <input matInput type="email" formControlName="email" />
-        @if (form.controls.email.hasError("required")) {
-          <mat-error>Ingresa el correo.</mat-error>
-        } @else if (form.controls.email.hasError("email")) {
-          <mat-error>Escribe un correo válido.</mat-error>
-        }
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError("required")) {
+        <mat-error>Ingresa el correo.</mat-error>
+      } @else if (form.controls.email.hasError("email")) {
+        <mat-error>Escribe un correo válido.</mat-error>
+      }
+    </mat-form-field>
 
     <mat-form-field>
       <mat-label>Persona de contacto</mat-label>
@@ -70,6 +66,12 @@
       }
     </mat-form-field>
 
+    <div class="app-field-group-label">Ubicación</div>
+    <app-ubicacion-fields
+      [departamento]="form.controls.departmento_id"
+      [municipio]="form.controls.municipio_id"
+    />
+
     <mat-form-field>
       <mat-label>Dirección</mat-label>
       <input matInput formControlName="address_complement" />
@@ -77,12 +79,6 @@
         <mat-error>Ingresa la dirección.</mat-error>
       }
     </mat-form-field>
-
-    <div class="app-field-group-label">Ubicación</div>
-    <app-ubicacion-fields
-      [departamento]="form.controls.departmento_id"
-      [municipio]="form.controls.municipio_id"
-    />
 
     <div class="app-field-group-label">Pago y retención</div>
     <mat-form-field>
@@ -93,28 +89,27 @@
       }
     </mat-form-field>
 
-    <div class="field-row">
+    <mat-form-field>
+      <mat-label>% de retención</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        formControlName="withholding_percent"
+      />
+      @if (form.controls.withholding_percent.invalid) {
+        <mat-error>Ingresa el porcentaje.</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="app-form__switches">
       <mat-slide-toggle formControlName="has_withholding">
         Aplica retención
       </mat-slide-toggle>
-
-      <mat-form-field>
-        <mat-label>% de retención</mat-label>
-        <input
-          matInput
-          type="number"
-          min="0"
-          formControlName="withholding_percent"
-        />
-        @if (form.controls.withholding_percent.invalid) {
-          <mat-error>Ingresa el porcentaje.</mat-error>
-        }
-      </mat-form-field>
+      @if (isEdit) {
+        <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
+      }
     </div>
-
-    @if (isEdit) {
-      <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
-    }
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Proveedor, SaveResult } from '@interfaces';
 import { ProveedorService, apiErrorMessage } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -73,7 +75,11 @@ export class Proveedores implements AfterViewInit {
 
   private openDialog(data: ProveedorDialogData): void {
     this.dialog
-      .open(ProveedorDialog, { data, width: '560px' })
+      .open(ProveedorDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(3),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

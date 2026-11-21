@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { EmpresaDialog } from './empresa-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('EmpresaDialog', () => {
   let fixture: ComponentFixture<EmpresaDialog>;
@@ -134,5 +135,10 @@ describe('EmpresaDialog', () => {
       phone: '1234567890',
     });
     request.flush({ message: 'Company updated successfully' });
+  });
+  it('al crear: distribución del formulario (2 columnas, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 2);
   });
 });

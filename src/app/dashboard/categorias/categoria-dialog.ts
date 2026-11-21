@@ -9,6 +9,7 @@ import { Categoria, SaveResult } from '@interfaces';
 import { CategoriaService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -25,8 +26,8 @@ export interface CategoriaDialogData {
 @Component({
   selector: 'app-categoria-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './categoria-dialog.html',
-  styleUrl: './categoria-dialog.scss',
 })
 export class CategoriaDialog {
   private readonly dialogRef =

@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Categoria, SaveResult } from '@interfaces';
 import { CategoriaService, apiErrorMessage } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -70,7 +72,11 @@ export class Categorias implements AfterViewInit {
 
   private openDialog(data: CategoriaDialogData): void {
     this.dialog
-      .open(CategoriaDialog, { data, width: '420px' })
+      .open(CategoriaDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(1, '420px'),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

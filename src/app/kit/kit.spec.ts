@@ -95,6 +95,31 @@ describe('Kit', () => {
     );
   });
 
+  it('el botón "Diálogo de formulario" abre uno de dos columnas con los interruptores al final', async () => {
+    const button = Array.from(
+      element.querySelectorAll<HTMLButtonElement>('#superpuestos button'),
+    ).find((b) => b.textContent?.includes('Diálogo de formulario'))!;
+
+    button.click();
+    for (
+      let i = 0;
+      i < 40 && !document.querySelector('app-kit-form-dialog');
+      i++
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    const content = document.querySelector(
+      'app-kit-form-dialog mat-dialog-content',
+    )!;
+    expect(content.classList).toContain('app-form--2');
+    expect(document.querySelector('.app-form-dialog')).not.toBeNull();
+    expect(content.lastElementChild?.classList).toContain('app-form__switches');
+    document
+      .querySelectorAll('.cdk-overlay-container')
+      .forEach((container) => (container.innerHTML = ''));
+  });
+
   it('muestra las secciones del kit en el riel', () => {
     const items = element.querySelectorAll('.app-rail__nav button');
 

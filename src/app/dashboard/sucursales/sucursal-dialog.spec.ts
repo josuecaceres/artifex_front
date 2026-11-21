@@ -9,6 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Sucursal } from '@interfaces';
 import { apiUrl } from '@services';
 import { SucursalDialog } from './sucursal-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 const sucursal: Sucursal = {
   id: 1,
@@ -243,5 +244,18 @@ describe('SucursalDialog', () => {
 
     expect(element.textContent).toContain('no es válido');
     expect(element.textContent).not.toContain('SQLSTATE');
+  });
+  it('al crear: distribución del formulario (3 columnas, interruptores al final)', async () => {
+    await createComponent();
+    await flushCatalogs();
+
+    expectFormLayout(element, 3);
+  });
+
+  it('al editar: distribución del formulario (3 columnas, interruptores al final)', async () => {
+    await createComponent({ sucursal });
+    await flushCatalogs(8);
+
+    expectFormLayout(element, 3);
   });
 });

@@ -8,7 +8,7 @@
   #lock="appSubmitLock"
   novalidate
 >
-  <mat-dialog-content>
+  <mat-dialog-content class="app-form">
     @if (errorMessage(); as message) {
       <div class="app-alert" role="alert">
         <fa-icon class="app-alert__icon" [icon]="icons.warning" />
@@ -40,13 +40,14 @@
       }
     </mat-form-field>
 
-    <mat-slide-toggle formControlName="is_percentage">
-      Es un porcentaje
-    </mat-slide-toggle>
-
-    @if (isEdit) {
-      <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
-    }
+    <div class="app-form__switches">
+      <mat-slide-toggle formControlName="is_percentage">
+        Es un porcentaje
+      </mat-slide-toggle>
+      @if (isEdit) {
+        <mat-slide-toggle formControlName="is_active">Activo</mat-slide-toggle>
+      }
+    </div>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

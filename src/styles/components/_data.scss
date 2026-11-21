@@ -133,6 +133,28 @@ html {
   margin: auto;
 }
 
+// Actualizando datos con la tabla ya visible (tras guardar): velo suave sobre la
+// tabla con el indicador centrado, en vez de empujarla hacia abajo.
+.page__table-wrap {
+  position: relative;
+
+  // Sin filas que mostrar (cargando, error o lista vacía) no ocupa espacio.
+  &:has(> .page__table--hidden) {
+    display: none;
+  }
+}
+
+.page__reload {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--app-radius-panel);
+  background: color-mix(in srgb, var(--app-bg) 62%, transparent);
+}
+
 // Título de las pantallas con tabla: capitalizado, no en mayúsculas.
 .page__head h1 {
   text-transform: none;

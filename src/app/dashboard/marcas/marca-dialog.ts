@@ -9,6 +9,7 @@ import { Marca, SaveResult } from '@interfaces';
 import { MarcaService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -25,8 +26,8 @@ export interface MarcaDialogData {
 @Component({
   selector: 'app-marca-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './marca-dialog.html',
-  styleUrl: './marca-dialog.scss',
 })
 export class MarcaDialog {
   private readonly dialogRef =

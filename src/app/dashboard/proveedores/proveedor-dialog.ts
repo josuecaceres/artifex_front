@@ -9,6 +9,7 @@ import { Proveedor, SaveResult } from '@interfaces';
 import { ProveedorService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -36,8 +37,8 @@ export interface ProveedorDialogData {
     SubmitLock,
     UbicacionFields,
   ],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './proveedor-dialog.html',
-  styleUrl: './proveedor-dialog.scss',
 })
 export class ProveedorDialog {
   private readonly dialogRef =

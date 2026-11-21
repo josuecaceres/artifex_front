@@ -9,6 +9,7 @@ import { Impuesto, SaveResult } from '@interfaces';
 import { ImpuestoService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -31,8 +32,8 @@ export interface ImpuestoDialogData {
 @Component({
   selector: 'app-impuesto-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './impuesto-dialog.html',
-  styleUrl: './impuesto-dialog.scss',
 })
 export class ImpuestoDialog {
   private readonly dialogRef =

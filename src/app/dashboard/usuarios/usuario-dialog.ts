@@ -14,6 +14,7 @@ import {
 } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -37,6 +38,7 @@ export interface UsuarioDialogData {
 @Component({
   selector: 'app-usuario-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './usuario-dialog.html',
   styleUrl: './usuario-dialog.scss',
 })

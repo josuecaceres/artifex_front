@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Sucursal, SaveResult } from '@interfaces';
 import { apiErrorMessage, SucursalService } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -87,7 +89,11 @@ export class Sucursales implements AfterViewInit {
 
   private openDialog(data: SucursalDialogData): void {
     this.dialog
-      .open(SucursalDialog, { data, width: '560px' })
+      .open(SucursalDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(3),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

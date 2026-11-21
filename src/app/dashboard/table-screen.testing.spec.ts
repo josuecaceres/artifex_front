@@ -12,15 +12,20 @@ import { of } from 'rxjs';
 
 /**
  * Pruebas comunes de las pantallas con tabla del dashboard (barra de la tabla,
- * columna de acciones primero y aviso de éxito). Cada pantalla las incluye con
- * `describeTableScreen(...)` en su spec; lo propio de cada una (datos,
- * columnas, errores) sigue en su spec.
+ * columna de acciones primero, aviso de éxito, estilo del diálogo y barra oculta
+ * si el listado falla). Cada pantalla las incluye con `describeTableScreen(...)`
+ * en su spec; lo propio de cada una (datos, columnas, errores) sigue en su spec.
+ *
+ * `formDialog: false` es para las pantallas cuyo diálogo conserva su estilo
+ * propio (hoy Roles y permisos): se comprueba que NO pida el de formulario.
  */
 export function describeTableScreen(
   label: string,
   screen: Type<unknown>,
   createLabel: string,
+  options: { formDialog?: boolean } = {},
 ): void {
+  const formDialog = options.formDialog ?? true;
   describe(`${label}: tabla`, () => {
     let fixture: ComponentFixture<unknown>;
     let http: HttpTestingController;
@@ -114,6 +119,31 @@ export function describeTableScreen(
       expect(http.match(() => true).length).toBeGreaterThan(0);
     });
 
+    it(
+      formDialog
+        ? 'abre el diálogo con el estilo de formulario (opt-in)'
+        : 'abre el diálogo con su estilo propio (sin el de formulario)',
+      () => {
+        const open = spyOn(screenDialog(), 'open').and.returnValue({
+          afterClosed: () => of(undefined),
+        } as unknown as MatDialogRef<unknown, unknown>);
+
+        element
+          .querySelector<HTMLButtonElement>(
+            'app-table-toolbar .app-toolbar__start button',
+          )!
+          .click();
+
+        const config = open.calls.mostRecent().args[1]!;
+        if (formDialog) {
+          expect(config.panelClass).toBe('app-form-dialog');
+          expect(config.maxWidth).toBe('92vw');
+        } else {
+          expect(config.panelClass).toBeUndefined();
+        }
+      },
+    );
+
     it('si el diálogo se cierra sin guardar no muestra aviso ni recarga', async () => {
       const toast = spyOn(TestBed.inject(ToastService), 'success');
       spyOn(screenDialog(), 'open').and.returnValue({
@@ -129,6 +159,50 @@ export function describeTableScreen(
 
       expect(toast).not.toHaveBeenCalled();
       http.expectNone(() => true);
+    });
+  });
+
+  describe(`${label}: listado en error`, () => {
+    let fixture: ComponentFixture<unknown>;
+    let http: HttpTestingController;
+
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [screen],
+        providers: [
+          provideZonelessChangeDetection(),
+          provideRouter([]),
+          provideHttpClient(),
+          provideHttpClientTesting(),
+        ],
+      }).compileComponents();
+
+      http = TestBed.inject(HttpTestingController);
+      fixture = TestBed.createComponent(screen);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      http
+        .match(() => true)
+        .forEach((request) =>
+          request.flush(
+            { message: 'Tu plan no incluye módulo de inventario.' },
+            { status: 403, statusText: '' },
+          ),
+        );
+      fixture.detectChanges();
+      await fixture.whenStable();
+    });
+
+    afterEach(() => http.verify());
+
+    it('sin tabla no hay barra (ni botón de crear): solo el aviso', () => {
+      const element = fixture.nativeElement as HTMLElement;
+
+      expect(element.querySelector('[role="alert"]')?.textContent).toContain(
+        'Tu plan no incluye módulo de inventario.',
+      );
+      expect(element.querySelector('app-table-toolbar')).toBeNull();
+      expect(element.querySelector('.page__head h1')).not.toBeNull();
     });
   });
 }

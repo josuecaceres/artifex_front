@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { CategoriaDialog } from './categoria-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('CategoriaDialog', () => {
   let fixture: ComponentFixture<CategoriaDialog>;
@@ -96,5 +97,10 @@ describe('CategoriaDialog', () => {
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,
     ).toBe('Productos Varios');
+  });
+  it('al crear: distribución del formulario (1 columna, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 1);
   });
 });

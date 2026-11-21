@@ -1,6 +1,7 @@
 export * from './brand';
 export * from './confirm-dialog';
 export * from './confirm.service';
+export * from './form-dialog';
 export * from './icons';
 export * from './lempira.pipe';
 export * from './material.module';

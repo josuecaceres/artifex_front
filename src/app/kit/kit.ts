@@ -19,6 +19,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {
   ConfirmService,
+  FORM_DIALOG_CONFIG,
+  formDialogWidth,
   FaIconComponent,
   LempiraPipe,
   MaterialModule,
@@ -50,6 +52,7 @@ import {
 } from '@shared';
 import { ThemeMode, ThemeService } from '@services';
 import { KitDialog } from './kit-dialog';
+import { KitFormDialog } from './kit-form-dialog';
 
 type RowStatus = 'active' | 'ok' | 'warn' | 'crit';
 
@@ -307,6 +310,13 @@ export class Kit implements AfterViewInit {
 
   protected showToast(): void {
     this.toast.success('Category created successfully');
+  }
+
+  protected openFormDialog(): void {
+    this.dialog.open(KitFormDialog, {
+      ...FORM_DIALOG_CONFIG,
+      width: formDialogWidth(2),
+    });
   }
 
   protected notify(): void {

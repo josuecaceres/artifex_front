@@ -9,6 +9,7 @@ import { Empresa, SaveResult } from '@interfaces';
 import { apiErrorMessage, EmpresaService } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -29,8 +30,8 @@ export interface EmpresaDialogData {
 @Component({
   selector: 'app-empresa-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './empresa-dialog.html',
-  styleUrl: './empresa-dialog.scss',
 })
 export class EmpresaDialog {
   private readonly dialogRef =

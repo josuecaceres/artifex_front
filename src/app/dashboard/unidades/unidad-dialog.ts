@@ -9,6 +9,7 @@ import { SaveResult, Unidad } from '@interfaces';
 import { UnidadService, apiErrorMessage } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -25,8 +26,8 @@ export interface UnidadDialogData {
 @Component({
   selector: 'app-unidad-dialog',
   imports: [ReactiveFormsModule, MaterialModule, FaIconComponent, SubmitLock],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './unidad-dialog.html',
-  styleUrl: './unidad-dialog.scss',
 })
 export class UnidadDialog {
   private readonly dialogRef =

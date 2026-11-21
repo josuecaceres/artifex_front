@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { MarcaDialog } from './marca-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('MarcaDialog', () => {
   let fixture: ComponentFixture<MarcaDialog>;
@@ -92,5 +93,10 @@ describe('MarcaDialog', () => {
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,
     ).toBe('La Guangara');
+  });
+  it('al crear: distribución del formulario (1 columna, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 1);
   });
 });

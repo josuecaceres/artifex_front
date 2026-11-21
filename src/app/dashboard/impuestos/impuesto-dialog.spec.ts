@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { ImpuestoDialog } from './impuesto-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('ImpuestoDialog', () => {
   let fixture: ComponentFixture<ImpuestoDialog>;
@@ -141,5 +142,10 @@ describe('ImpuestoDialog', () => {
     const request = http.expectOne(apiUrl('api/actualizar-impuesto/1'));
     expect(request.request.body.code).toBe('A02');
     request.flush({ message: 'Tax updated successfully' });
+  });
+  it('al crear: distribución del formulario (1 columna, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 1);
   });
 });

@@ -1,18 +1,14 @@
+// Los dos selectores son celdas de la cuadrícula del formulario (`app-form`).
 :host {
-  display: block;
+  display: contents;
 }
 
 .field-row {
-  display: flex;
-  gap: 12px;
-
-  mat-form-field {
-    flex: 1;
-    min-width: 0;
-  }
+  display: contents;
 }
 
 .load-error {
+  grid-column: 1 / -1;
   margin: 0 0 8px;
   color: var(--app-crit);
 }

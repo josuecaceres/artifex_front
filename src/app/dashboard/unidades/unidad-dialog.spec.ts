@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { apiUrl } from '@services';
 import { UnidadDialog } from './unidad-dialog';
+import { expectFormLayout } from '../form-dialog.testing.spec';
 
 describe('UnidadDialog', () => {
   let fixture: ComponentFixture<UnidadDialog>;
@@ -93,5 +94,10 @@ describe('UnidadDialog', () => {
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')
         ?.value,
     ).toBe('Año Luz');
+  });
+  it('al crear: distribución del formulario (1 columna, interruptores al final)', async () => {
+    await createComponent();
+
+    expectFormLayout(element, 1);
   });
 });

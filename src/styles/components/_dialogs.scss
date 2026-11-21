@@ -1,0 +1,110 @@
+// Diálogos de formulario (crear y editar). Son opt-in: solo los que se abren con
+// `FORM_DIALOG_CONFIG` (`@shared/form-dialog.ts`, que pone la clase
+// `app-form-dialog` en el panel) los usan; el de Roles y permisos no.
+//
+// El contenido es una cuadrícula (`<mat-dialog-content class="app-form
+// app-form--2">`): hasta 5 controles, una columna; de 6 a 10, dos
+// (`app-form--2`); más de 10, tres (`app-form--3`). Reglas de contenido:
+//   - los grupos (`app-field-group-label`), avisos y `app-form__full` ocupan
+//     todas las columnas;
+//   - todos los interruptores y casillas van juntos al final, en
+//     `app-form__switches`, centrados verticalmente;
+//   - cada campo reserva siempre su línea de error o aviso (`subscriptSizing:
+//     fixed`, `FIXED_SUBSCRIPT_PROVIDER`) y entre filas hay 10 px más de
+//     respiro: esa línea y ese respiro son la separación entre campos, y el
+//     diálogo no crece cuando aparece un mensaje.
+
+.app-form-dialog {
+  // El panel de Material limita el ancho con este token (560 px por defecto).
+  --mat-dialog-container-max-width: 92vw;
+
+  // Título capitalizado, no en mayúsculas.
+  .mat-mdc-dialog-title {
+    text-transform: none;
+  }
+
+  // Sin tope propio de alto: el límite es el del panel (la ventana). Cuando no
+  // cabe, solo el contenido hace scroll: el título y los botones se quedan.
+  .mat-mdc-dialog-content {
+    min-height: 0;
+    max-height: none;
+  }
+
+  // Un respiro bajo el último control (evita un desborde de 1 px y su scroll).
+  .mat-mdc-dialog-container .mat-mdc-dialog-content {
+    padding-bottom: 4px;
+  }
+
+  .mat-mdc-dialog-actions {
+    flex: none;
+  }
+
+  // Entre la superficie del diálogo y su contenido hay el componente del
+  // diálogo y su <form>: ambos deben encogerse con el panel.
+  .mat-mdc-dialog-surface > *,
+  .mat-mdc-dialog-surface > * > form {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
+.app-form-dialog .app-form {
+  --app-form-columns: 1;
+  display: grid;
+  grid-template-columns: repeat(var(--app-form-columns), minmax(0, 1fr));
+  column-gap: 16px;
+  // 10 px de respiro entre filas, además de la línea reservada para el error o
+  // aviso de cada campo: el texto no queda pegado al campo siguiente.
+  row-gap: 10px;
+  align-items: start;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  // Lo que ocupa todas las columnas.
+  > .app-alert,
+  > .app-field-group-label,
+  > .app-form__full,
+  > .app-form__switches {
+    grid-column: 1 / -1;
+  }
+
+  > .app-field-group-label {
+    margin: 4px 0 12px;
+  }
+}
+
+.app-form-dialog .app-form--2 {
+  --app-form-columns: 2;
+}
+
+.app-form-dialog .app-form--3 {
+  --app-form-columns: 3;
+}
+
+// Con ventanas angostas las columnas se reducen: 3 → 2 → 1.
+@media (max-width: 900px) {
+  .app-form-dialog .app-form--3 {
+    --app-form-columns: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-form-dialog .app-form--2,
+  .app-form-dialog .app-form--3 {
+    --app-form-columns: 1;
+  }
+}
+
+// Interruptores y casillas del formulario, juntos y al final.
+.app-form-dialog .app-form__switches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 32px;
+  // 48 px: el área táctil del interruptor (si no, desborda y aparece scroll).
+  min-height: 48px;
+}

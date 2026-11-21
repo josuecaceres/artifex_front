@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Impuesto, SaveResult } from '@interfaces';
 import { ImpuestoService, apiErrorMessage } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -85,7 +87,11 @@ export class Impuestos implements AfterViewInit {
 
   private openDialog(data: ImpuestoDialogData): void {
     this.dialog
-      .open(ImpuestoDialog, { data, width: '420px' })
+      .open(ImpuestoDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(1, '420px'),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

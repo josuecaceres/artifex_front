@@ -20,6 +20,7 @@ import {
 } from '@services';
 import {
   FaIconComponent,
+  FIXED_SUBSCRIPT_PROVIDER,
   MaterialModule,
   SubmitLock,
   SubmitResult,
@@ -53,8 +54,8 @@ export interface SucursalDialogData {
     SubmitLock,
     UbicacionFields,
   ],
+  providers: [FIXED_SUBSCRIPT_PROVIDER],
   templateUrl: './sucursal-dialog.html',
-  styleUrl: './sucursal-dialog.scss',
 })
 export class SucursalDialog implements OnInit {
   private readonly dialogRef =

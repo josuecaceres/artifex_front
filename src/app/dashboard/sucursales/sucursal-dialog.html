@@ -8,7 +8,7 @@
   #lock="appSubmitLock"
   novalidate
 >
-  <mat-dialog-content>
+  <mat-dialog-content class="app-form app-form--3">
     @if (errorMessage(); as message) {
       <div class="app-alert" role="alert">
         <fa-icon class="app-alert__icon" [icon]="icons.warning" />
@@ -42,6 +42,12 @@
       }
     </mat-form-field>
 
+    <div class="app-field-group-label">Ubicación</div>
+    <app-ubicacion-fields
+      [departamento]="form.controls.departamento_id"
+      [municipio]="form.controls.municipio_id"
+    />
+
     <mat-form-field>
       <mat-label>Dirección</mat-label>
       <input matInput formControlName="complemento_direccion" />
@@ -50,83 +56,71 @@
       }
     </mat-form-field>
 
-    <div class="app-field-group-label">Ubicación</div>
-    <app-ubicacion-fields
-      [departamento]="form.controls.departamento_id"
-      [municipio]="form.controls.municipio_id"
-    />
-
     <div class="app-field-group-label">
       Establecimiento y facturación electrónica
     </div>
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Tipo</mat-label>
-        <mat-select formControlName="tipo_establecimiento">
-          @if (!isEdit) {
-            <mat-option [value]="null">Sin especificar</mat-option>
-          }
-          @for (tipo of tipos(); track tipo.id) {
-            <mat-option [value]="tipo.id">{{ tipo.name }}</mat-option>
-          }
-        </mat-select>
-        @if (form.controls.tipo_establecimiento.invalid) {
-          <mat-error>Elige el tipo de establecimiento.</mat-error>
+    <mat-form-field>
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo_establecimiento">
+        @if (!isEdit) {
+          <mat-option [value]="null">Sin especificar</mat-option>
         }
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Gerente</mat-label>
-        <mat-select formControlName="manager_id">
-          <mat-option [value]="null">Sin gerente</mat-option>
-          @for (usuario of usuarios(); track usuario.id) {
-            <mat-option [value]="usuario.id">{{ usuario.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Código de sucursal</mat-label>
-        <input matInput formControlName="branch_code" />
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>UUID de impresora</mat-label>
-        <input matInput formControlName="printer_uuid" />
-        @if (isEdit) {
-          <mat-hint>Vacío conserva el actual.</mat-hint>
+        @for (tipo of tipos(); track tipo.id) {
+          <mat-option [value]="tipo.id">{{ tipo.name }}</mat-option>
         }
-      </mat-form-field>
-    </div>
+      </mat-select>
+      @if (form.controls.tipo_establecimiento.invalid) {
+        <mat-error>Elige el tipo de establecimiento.</mat-error>
+      }
+    </mat-form-field>
 
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Cód. establecimiento (MH)</mat-label>
-        <input matInput formControlName="cod_estable_mh" />
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>Gerente</mat-label>
+      <mat-select formControlName="manager_id">
+        <mat-option [value]="null">Sin gerente</mat-option>
+        @for (usuario of usuarios(); track usuario.id) {
+          <mat-option [value]="usuario.id">{{ usuario.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Cód. establecimiento</mat-label>
-        <input matInput formControlName="cod_estable" />
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <mat-label>Código de sucursal</mat-label>
+      <input matInput formControlName="branch_code" />
+    </mat-form-field>
 
-    <div class="field-row">
-      <mat-form-field>
-        <mat-label>Cód. punto de venta (MH)</mat-label>
-        <input matInput formControlName="cod_pventa_mh" />
-      </mat-form-field>
+    <mat-form-field>
+      <mat-label>UUID de impresora</mat-label>
+      <input matInput formControlName="printer_uuid" />
+      @if (isEdit) {
+        <mat-hint>Vacío conserva el actual.</mat-hint>
+      }
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Cód. punto de venta</mat-label>
-        <input matInput formControlName="cod_pventa" />
-      </mat-form-field>
-    </div>
+    <mat-form-field>
+      <mat-label>Cód. establecimiento (MH)</mat-label>
+      <input matInput formControlName="cod_estable_mh" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Cód. establecimiento</mat-label>
+      <input matInput formControlName="cod_estable" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Cód. punto de venta (MH)</mat-label>
+      <input matInput formControlName="cod_pventa_mh" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Cód. punto de venta</mat-label>
+      <input matInput formControlName="cod_pventa" />
+    </mat-form-field>
 
     @if (isEdit) {
-      <mat-slide-toggle formControlName="is_active">Activa</mat-slide-toggle>
+      <div class="app-form__switches">
+        <mat-slide-toggle formControlName="is_active">Activa</mat-slide-toggle>
+      </div>
     }
   </mat-dialog-content>
 

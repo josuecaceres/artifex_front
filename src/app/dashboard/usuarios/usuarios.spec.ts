@@ -5,7 +5,9 @@ import {
 } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { AppUser } from '@interfaces';
 import { apiUrl } from '@services';
 import { Usuarios } from './usuarios';
@@ -149,6 +151,56 @@ describe('Usuarios', () => {
         .querySelectorAll('.cdk-overlay-container')
         .forEach((container) => (container.innerHTML = ''));
     });
+  });
+
+  it('al recargar con datos, muestra el velo sobre la tabla y no el indicador suelto', async () => {
+    await createComponent();
+    http.expectOne(apiUrl('api/users')).flush(users);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.page__reload')).toBeNull();
+
+    spyOn(fixture.debugElement.injector.get(MatDialog), 'open').and.returnValue(
+      {
+        afterClosed: () => of({ message: 'User updated successfully' }),
+      } as unknown as MatDialogRef<unknown, unknown>,
+    );
+    element
+      .querySelector<HTMLButtonElement>(
+        'app-table-toolbar .app-toolbar__start button',
+      )!
+      .click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // Recargando: la tabla sigue visible, con el velo encima; no hay un indicador que la empuje.
+    expect(
+      element.querySelector('.page__table-wrap .page__reload mat-spinner'),
+    ).not.toBeNull();
+    expect(element.querySelectorAll('tr.mat-mdc-row').length).toBe(2);
+    expect(element.querySelector('.page > mat-spinner')).toBeNull();
+    expect(
+      element.querySelector('.page__table')?.getAttribute('aria-busy'),
+    ).toBe('true');
+
+    http.expectOne(apiUrl('api/users')).flush(users);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(element.querySelector('.page__reload')).toBeNull();
+  });
+
+  it('la primera carga (sin datos) usa el indicador centrado, no el velo', async () => {
+    await createComponent();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('.page > mat-spinner')).not.toBeNull();
+    expect(element.querySelector('.page__reload')).toBeNull();
+
+    http.expectOne(apiUrl('api/users')).flush(users);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(element.querySelector('.page > mat-spinner')).toBeNull();
   });
 
   it('muestra el mensaje de error si la lista falla', async () => {

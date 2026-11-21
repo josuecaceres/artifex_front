@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Unidad, SaveResult } from '@interfaces';
 import { UnidadService, apiErrorMessage } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -71,7 +73,11 @@ export class Unidades implements AfterViewInit {
 
   private openDialog(data: UnidadDialogData): void {
     this.dialog
-      .open(UnidadDialog, { data, width: '420px' })
+      .open(UnidadDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(1, '420px'),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {

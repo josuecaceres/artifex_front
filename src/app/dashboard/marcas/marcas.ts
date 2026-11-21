@@ -12,7 +12,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Marca, SaveResult } from '@interfaces';
 import { MarcaService, apiErrorMessage } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
+  formDialogWidth,
   MaterialModule,
   TableToolbar,
   TableView,
@@ -70,7 +72,11 @@ export class Marcas implements AfterViewInit {
 
   private openDialog(data: MarcaDialogData): void {
     this.dialog
-      .open(MarcaDialog, { data, width: '420px' })
+      .open(MarcaDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(1, '420px'),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {
