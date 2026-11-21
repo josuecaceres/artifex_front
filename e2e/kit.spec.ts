@@ -8,7 +8,9 @@ const PAGE_BACKGROUND = {
 } as const;
 
 for (const scheme of ['light', 'dark'] as const) {
-  test(`el kit usa la paleta del tema ${scheme} @dev`, async ({ page }, testInfo) => {
+  test(`el kit usa la paleta del tema ${scheme} @dev`, async ({
+    page,
+  }, testInfo) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
@@ -16,22 +18,37 @@ for (const scheme of ['light', 'dark'] as const) {
     await page.goto('/kit', { waitUntil: 'networkidle' });
 
     await expect(page.getByRole('heading', { name: 'Estados' })).toBeVisible();
-    await expect(page.locator('body')).toHaveCSS('background-color', PAGE_BACKGROUND[scheme]);
+    await expect(page.locator('body')).toHaveCSS(
+      'background-color',
+      PAGE_BACKGROUND[scheme],
+    );
     await takeScreenshot(page, testInfo, `kit-${scheme}`);
     expect(errors).toEqual([]);
   });
 }
 
-test('el selector cambia el tema y recuerda la elección @dev', async ({ page }) => {
+test('el selector cambia el tema y recuerda la elección @dev', async ({
+  page,
+}) => {
   await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
   await page.goto('/kit', { waitUntil: 'networkidle' });
-  await expect(page.locator('body')).toHaveCSS('background-color', PAGE_BACKGROUND.light);
+  await expect(page.locator('body')).toHaveCSS(
+    'background-color',
+    PAGE_BACKGROUND.light,
+  );
 
-  await page.getByRole('radio', { name: 'Oscuro' }).click();
+  await page.getByRole('button', { name: 'Tema' }).click();
+  await page.getByRole('menuitemradio', { name: 'Oscuro' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(page.locator('body')).toHaveCSS('background-color', PAGE_BACKGROUND.dark);
+  await expect(page.locator('body')).toHaveCSS(
+    'background-color',
+    PAGE_BACKGROUND.dark,
+  );
 
   await page.reload({ waitUntil: 'networkidle' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(page.locator('body')).toHaveCSS('background-color', PAGE_BACKGROUND.dark);
+  await expect(page.locator('body')).toHaveCSS(
+    'background-color',
+    PAGE_BACKGROUND.dark,
+  );
 });

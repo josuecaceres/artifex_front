@@ -1,19 +1,119 @@
-mat-dialog-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 360px;
-  max-width: 420px;
+// Diálogo de roles y permisos. La base (título, cuadrícula `app-form`, alto,
+// línea de error reservada) viene de `_dialogs.scss`.
+
+// El nombre va centrado y no ocupa todo el ancho.
+:host .app-form mat-form-field.rol-name {
+  width: 360px;
+  max-width: 100%;
+  justify-self: center;
 }
 
-mat-form-field {
-  width: 100%;
+.rol-permisos {
+  grid-column: 1 / -1;
 }
 
-.permissions {
+// "Permisos Asignados" a la izquierda y el buscador a la derecha, en una fila.
+.rol-permisos__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.rol-permisos__title {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+// Buscador del alto de los botones (44 px), como el de las tablas.
+:host .app-form mat-form-field.rol-search {
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
+  flex: 0 1 320px;
+  width: auto;
+  min-width: 220px;
+
+  fa-icon[matPrefix] {
+    padding-inline: 14px 4px;
+  }
+}
+
+// Lista de alto fijo: lo único que hace scroll (la barra queda en el borde
+// derecho y las tarjetas, centradas).
+.rol-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 240px;
+  height: 340px;
   overflow-y: auto;
+  padding-block: 2px;
+
+  > mat-spinner,
+  > .rol-list__empty {
+    margin: auto;
+  }
+}
+
+.rol-list__empty {
+  color: var(--app-muted);
+}
+
+.rol-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 700px;
+  margin-inline: auto;
+}
+
+// Tarjeta de permiso: nombre a la izquierda e interruptor a la derecha; un clic
+// en cualquier parte la activa o desactiva.
+.rol-perm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  padding: 8px 16px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  background: var(--app-surface-2);
+  cursor: pointer;
+}
+
+.rol-perm__name {
+  min-width: 0;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.rol-totals {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  max-width: none;
+  margin: 0;
+  padding: 12px 0 16px;
+  font-size: 14px;
+  color: var(--app-muted);
+
+  strong {
+    color: var(--app-ink);
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 900px) {
+  .rol-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .rol-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

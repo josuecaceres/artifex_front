@@ -17,10 +17,14 @@ test.describe('login contra la API real', () => {
     await page.getByRole('button', { name: 'Entrar' }).click();
 
     await expect(page).toHaveURL(/\/dashboard$/);
-    await expect(page.getByRole('heading', { name: 'Panel operativo' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Panel operativo' }),
+    ).toBeVisible();
   });
 
-  test('vuelve a la dirección que se pidió antes de entrar', async ({ page }) => {
+  test('vuelve a la dirección que se pidió antes de entrar', async ({
+    page,
+  }) => {
     await page.goto('/dashboard');
     await expect(page).toHaveURL(/\/auth\/login\?returnUrl=%2Fdashboard$/);
 
@@ -31,14 +35,20 @@ test.describe('login contra la API real', () => {
     await expect(page).toHaveURL(/\/dashboard$/);
   });
 
-  test('con una contraseña incorrecta muestra el error del backend', async ({ page }) => {
+  test('con una contraseña incorrecta muestra el error del backend', async ({
+    page,
+  }) => {
     await page.goto('/auth/login');
 
     await page.getByLabel('Usuario').fill(user!);
-    await page.getByLabel('Contraseña', { exact: true }).fill('contraseña-incorrecta');
+    await page
+      .getByLabel('Contraseña', { exact: true })
+      .fill('contraseña-incorrecta');
     await page.getByRole('button', { name: 'Entrar' }).click();
 
-    await expect(page.getByRole('alert')).toContainText('Credenciales inválidas');
+    await expect(page.getByRole('alert')).toContainText(
+      'Credenciales inválidas',
+    );
     await expect(page).toHaveURL(/\/auth\/login$/);
   });
 });

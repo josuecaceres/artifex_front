@@ -36,9 +36,9 @@
   --mat-expansion-header-collapsed-state-height: 44px;
   --mat-expansion-header-expanded-state-height: 44px;
   --mat-expansion-header-text-font: var(--app-font-display);
-  --mat-expansion-header-text-size: 14px;
+  --mat-expansion-header-text-size: 16px;
   --mat-expansion-header-text-weight: 600;
-  --mat-expansion-header-text-tracking: 0.12em;
+  --mat-expansion-header-text-tracking: 0.03em;
 
   padding: 24px 16px;
   border-right: 0;
@@ -102,10 +102,9 @@
       align-items: center;
       gap: 12px;
       font-family: var(--app-font-display);
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
     .mdc-list-item.is-active,
@@ -138,7 +137,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      text-transform: uppercase;
     }
 
     &.mat-expanded mat-panel-title,

@@ -8,15 +8,21 @@ import { takeScreenshot } from './support/screenshot';
 test('el login muestra el formulario de acceso', async ({ page }, testInfo) => {
   await page.goto('/auth/login');
 
-  await expect(page.getByRole('heading', { name: 'Iniciar sesión' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Iniciar sesión' }),
+  ).toBeVisible();
   await expect(page.getByLabel('Usuario')).toBeVisible();
   await expect(page.getByLabel('Contraseña', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Entrar' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '¿Olvidaste tu contraseña?' })).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: '¿Olvidaste tu contraseña?' }),
+  ).toBeVisible();
   await takeScreenshot(page, testInfo, 'login');
 });
 
-test('con los campos vacíos muestra los errores y no navega', async ({ page }) => {
+test('con los campos vacíos muestra los errores y no navega', async ({
+  page,
+}) => {
   await page.goto('/auth/login');
 
   await page.getByRole('button', { name: 'Entrar' }).click();
@@ -37,7 +43,9 @@ test('el botón del ojo muestra y oculta la contraseña', async ({ page }) => {
   await expect(password).toHaveAttribute('type', 'password');
 });
 
-test('"¿Olvidaste tu contraseña?" lleva a la recuperación', async ({ page }) => {
+test('"¿Olvidaste tu contraseña?" lleva a la recuperación', async ({
+  page,
+}) => {
   await page.goto('/auth/login');
 
   await page.getByRole('link', { name: '¿Olvidaste tu contraseña?' }).click();
@@ -45,7 +53,9 @@ test('"¿Olvidaste tu contraseña?" lleva a la recuperación', async ({ page }) 
   await expect(page).toHaveURL(/\/auth\/forgot-password$/);
 });
 
-test('el login se ve bien en tema oscuro y en pantalla angosta', async ({ page }, testInfo) => {
+test('el login se ve bien en tema oscuro y en pantalla angosta', async ({
+  page,
+}, testInfo) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/auth/login');
   await takeScreenshot(page, testInfo, 'login-oscuro');

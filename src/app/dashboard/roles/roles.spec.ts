@@ -76,4 +76,4 @@ describe('Roles', () => {
   });
 });
 
-describeTableScreen('Roles', Roles, 'Nuevo rol', { formDialog: false });
+describeTableScreen('Roles', Roles, 'Nuevo rol');

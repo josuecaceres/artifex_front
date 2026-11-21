@@ -72,13 +72,55 @@ describe('RolDialog', () => {
 
   afterEach(() => http.verify());
 
-  it('carga el catálogo de permisos al abrir', async () => {
+  const cards = () =>
+    Array.from(element.querySelectorAll<HTMLElement>('.rol-perm'));
+  const names = () =>
+    cards().map((card) => card.querySelector('.rol-perm__name')?.textContent);
+  const switches = () =>
+    Array.from(
+      element.querySelectorAll<HTMLInputElement | HTMLButtonElement>(
+        'mat-slide-toggle button',
+      ),
+    ).map((toggle) => toggle.getAttribute('aria-checked') === 'true');
+  const totals = () =>
+    element.querySelector('.rol-totals')?.textContent?.replace(/\s+/g, ' ');
+
+  async function search(text: string): Promise<void> {
+    const input = element.querySelector<HTMLInputElement>('.rol-search input')!;
+    input.value = text;
+    input.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+  }
+
+  it('carga el catálogo de permisos al abrir, con cada palabra en mayúscula', async () => {
     await createComponent();
 
-    const labels = Array.from(element.querySelectorAll('mat-checkbox')).map(
-      (el) => el.textContent?.trim(),
-    );
-    expect(labels).toEqual(['ver usuarios', 'editar usuarios']);
+    expect(names()).toEqual(['Ver Usuarios', 'Editar Usuarios']);
+  });
+
+  it('cada interruptor tiene el nombre del permiso como nombre accesible', async () => {
+    await createComponent();
+
+    const labels = Array.from(
+      element.querySelectorAll('mat-slide-toggle button'),
+    ).map((toggle) => toggle.getAttribute('aria-label'));
+    expect(labels).toEqual(['Ver Usuarios', 'Editar Usuarios']);
+  });
+
+  it('usa el estilo de formulario: nombre centrado, 3 columnas y lista con scroll propio', async () => {
+    await createComponent();
+
+    const content = element.querySelector('mat-dialog-content')!;
+    expect(content.classList).toContain('app-form');
+    expect(element.querySelector('.rol-name')).not.toBeNull();
+    expect(element.querySelector('.rol-list')).not.toBeNull();
+    expect(
+      element.querySelector('.rol-permisos__title')?.textContent,
+    ).toContain('Permisos Asignados');
+    // El título y el buscador comparten la fila.
+    const head = element.querySelector('.rol-permisos__head')!;
+    expect(head.querySelector('.rol-permisos__title')).not.toBeNull();
+    expect(head.querySelector('.rol-search')).not.toBeNull();
   });
 
   it('precarga los permisos ya asignados en modo edición', async () => {
@@ -86,18 +128,78 @@ describe('RolDialog', () => {
       role: { id: 1, name: 'Administrador', guard_name: 'api' },
     });
 
-    const checked = Array.from(
-      element.querySelectorAll<HTMLInputElement>('mat-checkbox input'),
-    ).map((checkbox) => checkbox.checked);
-    // Solo el permiso concedido queda marcado: el id del rol (1) no debe
+    // Solo el permiso concedido queda activo: el id del rol (1) no debe
     // confundirse con el de un permiso.
-    expect(checked).toEqual([true, false]);
+    expect(switches()).toEqual([true, false]);
+  });
+
+  it('un clic en cualquier parte de la tarjeta activa y desactiva el permiso', async () => {
+    await createComponent();
+    expect(switches()).toEqual([false, false]);
+
+    cards()[0].querySelector<HTMLElement>('.rol-perm__name')!.click();
+    await fixture.whenStable();
+    expect(switches()).toEqual([true, false]);
+
+    cards()[0].click();
+    await fixture.whenStable();
+    expect(switches()).toEqual([false, false]);
+  });
+
+  it('el interruptor también alterna el permiso, una sola vez por clic', async () => {
+    await createComponent();
+
+    element.querySelector<HTMLElement>('mat-slide-toggle button')!.click();
+    await fixture.whenStable();
+
+    expect(switches()).toEqual([true, false]);
+    expect(totals()).toContain('Total seleccionados: 1');
+  });
+
+  it('muestra el total y el total seleccionado del catálogo completo', async () => {
+    await createComponent({
+      role: { id: 1, name: 'Administrador', guard_name: 'api' },
+    });
+
+    expect(totals()).toContain('Total permisos: 2');
+    expect(totals()).toContain('Total seleccionados: 1');
+
+    await search('editar');
+    // Los totales no dependen de la búsqueda.
+    expect(totals()).toContain('Total permisos: 2');
+    expect(totals()).toContain('Total seleccionados: 1');
+  });
+
+  it('el buscador filtra por nombre sin distinguir tildes ni mayúsculas', async () => {
+    await createComponent();
+
+    await search('EDITAR');
+    expect(names()).toEqual(['Editar Usuarios']);
+
+    await search('');
+    expect(names()).toEqual(['Ver Usuarios', 'Editar Usuarios']);
+  });
+
+  it('sin coincidencias avisa y conserva lo seleccionado', async () => {
+    await createComponent();
+    cards()[0].click();
+    await fixture.whenStable();
+
+    await search('zzz');
+
+    expect(element.querySelector('.rol-list')?.textContent).toContain(
+      'Sin permisos para «zzz».',
+    );
+    expect(cards().length).toBe(0);
+
+    await search('');
+    expect(switches()).toEqual([true, false]);
   });
 
   it('crea el rol con los permisos marcados', async () => {
     await createComponent();
     setValue('name', 'Cajero');
-    (element.querySelector('mat-checkbox input') as HTMLInputElement).click();
+    element.querySelector<HTMLElement>('mat-slide-toggle button')!.click();
     await fixture.whenStable();
 
     submit();

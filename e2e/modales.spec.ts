@@ -266,21 +266,96 @@ test('en una ventana baja el diálogo hace scroll solo cuando no cabe', async ({
   expect(panel!.height).toBeLessThanOrEqual(420);
 });
 
-test('Roles y permisos conserva su estilo: título en mayúsculas y sin cuadrícula', async ({
+test('Roles y permisos: nombre centrado, permisos en 3 columnas y solo la lista hace scroll', async ({
   page,
-}) => {
+}, testInfo) => {
+  const names = [
+    'autorizar usuarios',
+    'crear usuarios',
+    'ver usuarios',
+    'actualizar usuarios',
+    ...Array.from({ length: 31 }, (_, i) => `ver módulo ${i + 1}`),
+  ];
+  await page.route('**/api/lista-permisos', (route) =>
+    route.fulfill({
+      json: names.map((name, i) => ({ id: i + 1, name })),
+    }),
+  );
   await page.goto('/dashboard/roles');
   await page.getByRole('button', { name: 'Nuevo rol' }).click();
   await expect(dialog(page).getByLabel('Nombre')).toBeVisible();
+  const cards = dialog(page).locator('.rol-perm');
+  await expect(cards).toHaveCount(35);
 
-  await expect(dialog(page).locator('h2')).toHaveCSS(
-    'text-transform',
-    'uppercase',
+  // Título capitalizado, diálogo de 800 px y "Permisos Asignados" con su buscador.
+  await expect(dialog(page).locator('h2')).toHaveCSS('text-transform', 'none');
+  expect((await dialog(page).boundingBox())!.width).toBe(800);
+  await expect(dialog(page).getByText('Permisos Asignados')).toBeVisible();
+  const search = dialog(page).getByRole('textbox', { name: 'Buscar permiso' });
+  await expect(search).toBeVisible();
+
+  // Nombres con cada palabra en mayúscula.
+  await expect(cards.first()).toContainText('Autorizar Usuarios');
+
+  // Nombre centrado y más angosto que el diálogo.
+  const box = (await dialog(page).boundingBox())!;
+  const field = (await dialog(page).locator('.rol-name').boundingBox())!;
+  expect(field.width).toBeLessThan(box.width - 200);
+  expect(
+    Math.abs(field.x + field.width / 2 - (box.x + box.width / 2)),
+  ).toBeLessThan(4);
+
+  // Tres columnas de tarjetas, centradas en el diálogo.
+  const lefts = await cards.evaluateAll((els) =>
+    els.map((el) => Math.round(el.getBoundingClientRect().left)),
   );
-  await expect(dialog(page).locator('mat-dialog-content.app-form')).toHaveCount(
-    0,
+  expect(new Set(lefts).size).toBe(3);
+  const rights = await cards.evaluateAll((els) =>
+    els.map((el) => el.getBoundingClientRect().right),
   );
-  expect((await dialog(page).boundingBox())!.width).toBeLessThan(500);
+  const margenIzq = Math.min(...lefts) - box.x;
+  const margenDer = box.x + box.width - Math.max(...rights);
+  expect(Math.abs(margenIzq - margenDer)).toBeLessThan(20);
+
+  // Solo la lista hace scroll (340 px); el contenido del diálogo no.
+  const list = dialog(page).locator('.rol-list');
+  expect((await list.boundingBox())!.height).toBe(340);
+  expect(await list.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(
+    true,
+  );
+  const content = dialog(page).locator('mat-dialog-content');
+  expect(
+    await content.evaluate((el) => el.scrollHeight <= el.clientHeight),
+  ).toBe(true);
+  await takeScreenshot(page, testInfo, 'modal-roles');
+
+  // Un clic en la tarjeta activa el permiso y cuenta en el total.
+  const totals = dialog(page).locator('.rol-totals');
+  await expect(totals).toContainText('Total permisos: 35');
+  await cards.first().getByText('Autorizar Usuarios').click();
+  await expect(
+    dialog(page).getByRole('switch', { name: 'Autorizar Usuarios' }),
+  ).toBeChecked();
+  await expect(totals).toContainText('Total seleccionados: 1');
+
+  // La búsqueda filtra sin cambiar el alto de la lista ni los totales.
+  await search.fill('usuarios');
+  await expect(cards).toHaveCount(4);
+  expect((await list.boundingBox())!.height).toBe(340);
+  await expect(totals).toContainText('Total permisos: 35');
+  await takeScreenshot(page, testInfo, 'modal-roles-busqueda');
+});
+
+test('Roles y permisos: el icono de la columna Acciones es la lista', async ({
+  page,
+}) => {
+  await page.goto('/dashboard/roles');
+  const button = page.getByRole('button', { name: 'Editar Company Admin' });
+  await expect(button).toBeVisible();
+  await expect(button.locator('svg')).toHaveAttribute(
+    'data-icon',
+    'list-check',
+  );
 });
 
 test('al recargar con datos, el velo va sobre la tabla y esta no se mueve', async ({

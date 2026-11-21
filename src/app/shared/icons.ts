@@ -31,6 +31,7 @@ export {
   faFilter,
   faGear,
   faHouse,
+  faListCheck,
   faLock,
   faMagnifyingGlass,
   faMoon,

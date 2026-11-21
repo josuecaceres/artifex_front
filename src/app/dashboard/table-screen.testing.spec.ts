@@ -15,17 +15,12 @@ import { of } from 'rxjs';
  * columna de acciones primero, aviso de éxito, estilo del diálogo y barra oculta
  * si el listado falla). Cada pantalla las incluye con `describeTableScreen(...)`
  * en su spec; lo propio de cada una (datos, columnas, errores) sigue en su spec.
- *
- * `formDialog: false` es para las pantallas cuyo diálogo conserva su estilo
- * propio (hoy Roles y permisos): se comprueba que NO pida el de formulario.
  */
 export function describeTableScreen(
   label: string,
   screen: Type<unknown>,
   createLabel: string,
-  options: { formDialog?: boolean } = {},
 ): void {
-  const formDialog = options.formDialog ?? true;
   describe(`${label}: tabla`, () => {
     let fixture: ComponentFixture<unknown>;
     let http: HttpTestingController;
@@ -119,30 +114,21 @@ export function describeTableScreen(
       expect(http.match(() => true).length).toBeGreaterThan(0);
     });
 
-    it(
-      formDialog
-        ? 'abre el diálogo con el estilo de formulario (opt-in)'
-        : 'abre el diálogo con su estilo propio (sin el de formulario)',
-      () => {
-        const open = spyOn(screenDialog(), 'open').and.returnValue({
-          afterClosed: () => of(undefined),
-        } as unknown as MatDialogRef<unknown, unknown>);
+    it('abre el diálogo con el estilo de formulario (opt-in)', () => {
+      const open = spyOn(screenDialog(), 'open').and.returnValue({
+        afterClosed: () => of(undefined),
+      } as unknown as MatDialogRef<unknown, unknown>);
 
-        element
-          .querySelector<HTMLButtonElement>(
-            'app-table-toolbar .app-toolbar__start button',
-          )!
-          .click();
+      element
+        .querySelector<HTMLButtonElement>(
+          'app-table-toolbar .app-toolbar__start button',
+        )!
+        .click();
 
-        const config = open.calls.mostRecent().args[1]!;
-        if (formDialog) {
-          expect(config.panelClass).toBe('app-form-dialog');
-          expect(config.maxWidth).toBe('92vw');
-        } else {
-          expect(config.panelClass).toBeUndefined();
-        }
-      },
-    );
+      const config = open.calls.mostRecent().args[1]!;
+      expect(config.panelClass).toBe('app-form-dialog');
+      expect(config.maxWidth).toBe('92vw');
+    });
 
     it('si el diálogo se cierra sin guardar no muestra aviso ni recarga', async () => {
       const toast = spyOn(TestBed.inject(ToastService), 'success');

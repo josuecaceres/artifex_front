@@ -74,6 +74,34 @@ test('el título y los encabezados van capitalizados y en negrita (no en mayúsc
   await expect(header).toHaveCSS('font-weight', '700');
 });
 
+test('el riel muestra los textos del menú tal cual, sin mayúsculas forzadas (la marca sí)', async ({
+  page,
+}, testInfo) => {
+  await openUnits(page);
+
+  // El grupo abierto es el de la pantalla activa (Inventario).
+  const group = page.getByText('Inventario', { exact: true });
+  await expect(group).toBeVisible();
+  await expect(group).toHaveCSS('text-transform', 'none');
+  await expect(group).toHaveCSS('font-size', '16px');
+  const link = page.getByRole('link', { name: 'Unidades de medida' });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveText('Unidades de medida');
+  await expect(link.locator('.mdc-list-item__primary-text')).toHaveCSS(
+    'text-transform',
+    'none',
+  );
+  await expect(
+    page.getByText('Usuarios del sistema', { exact: true }),
+  ).toHaveCSS('text-transform', 'none');
+  // La marca conserva las mayúsculas.
+  await expect(page.getByText('Artifex', { exact: true }).first()).toHaveCSS(
+    'text-transform',
+    'uppercase',
+  );
+  await takeScreenshot(page, testInfo, 'riel-textos');
+});
+
 test('la columna "Acciones" es la primera y no tiene línea divisoria', async ({
   page,
 }) => {

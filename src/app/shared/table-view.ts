@@ -24,7 +24,7 @@ export interface TableViewControls {
 }
 
 /** Texto sin tildes ni mayúsculas, para comparar al buscar. */
-function normalize(value: string): string {
+export function normalizeText(value: string): string {
   return value
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
@@ -67,7 +67,7 @@ export class TableView<T> implements TableViewControls {
     dataSource.filterPredicate = (row, filter) =>
       this.columns
         .filter((column) => !this.hidden().has(column.id))
-        .some((column) => normalize(column.text(row)).includes(filter));
+        .some((column) => normalizeText(column.text(row)).includes(filter));
   }
 
   isVisible(id: string): boolean {
@@ -110,6 +110,6 @@ export class TableView<T> implements TableViewControls {
 
   private applyFilter(): void {
     // Se reasigna siempre: la visibilidad de las columnas también cambia qué coincide.
-    this.dataSource.filter = normalize(this.query().trim());
+    this.dataSource.filter = normalizeText(this.query().trim());
   }
 }

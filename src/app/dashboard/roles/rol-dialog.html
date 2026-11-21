@@ -6,7 +6,7 @@
   #lock="appSubmitLock"
   novalidate
 >
-  <mat-dialog-content>
+  <mat-dialog-content class="app-form">
     @if (errorMessage(); as message) {
       <div class="app-alert" role="alert">
         <fa-icon class="app-alert__icon" [icon]="icons.warning" />
@@ -14,7 +14,7 @@
       </div>
     }
 
-    <mat-form-field>
+    <mat-form-field class="rol-name">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" />
       @if (form.controls.name.hasError("required")) {
@@ -22,23 +22,76 @@
       }
     </mat-form-field>
 
-    <div class="app-field-group-label">Permisos</div>
-    @if (loadingPermissions()) {
-      <mat-spinner diameter="24" />
-    } @else {
-      <div class="permissions">
-        @for (permission of permissions(); track permission.id) {
-          <mat-checkbox
-            [checked]="isSelected(permission.id)"
-            (change)="toggle(permission.id, $event.checked)"
-          >
-            {{ permission.name }}
-          </mat-checkbox>
-        } @empty {
-          <p>No hay permisos en el catálogo todavía.</p>
+    <section class="rol-permisos" aria-labelledby="rol-permisos-title">
+      <div class="rol-permisos__head">
+        <span class="rol-permisos__title" id="rol-permisos-title">
+          Permisos Asignados
+        </span>
+        <mat-form-field class="rol-search" subscriptSizing="dynamic">
+          <fa-icon matPrefix [icon]="icons.search" />
+          <input
+            matInput
+            type="text"
+            autocomplete="off"
+            placeholder="Buscar permiso…"
+            aria-label="Buscar permiso"
+            [value]="query()"
+            (input)="onSearch($event)"
+          />
+          @if (query()) {
+            <button
+              matSuffix
+              mat-icon-button
+              type="button"
+              aria-label="Limpiar búsqueda"
+              (click)="query.set('')"
+            >
+              <fa-icon [icon]="icons.clear" />
+            </button>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="rol-list">
+        @if (loadingPermissions()) {
+          <mat-spinner diameter="32" />
+        } @else if (permissions().length === 0) {
+          <p class="rol-list__empty">No hay permisos en el catálogo todavía.</p>
+        } @else if (visiblePermissions().length === 0) {
+          <p class="rol-list__empty">Sin permisos para «{{ query() }}».</p>
+        } @else {
+          <div class="rol-grid">
+            @for (permission of visiblePermissions(); track permission.id) {
+              <div
+                class="rol-perm"
+                (click)="onCardClick($event, permission.id)"
+              >
+                <span class="rol-perm__name">{{
+                  permission.name | titlecase
+                }}</span>
+                <mat-slide-toggle
+                  [checked]="isSelected(permission.id)"
+                  [aria-label]="permission.name | titlecase"
+                  (change)="toggle(permission.id, $event.checked)"
+                />
+              </div>
+            }
+          </div>
         }
       </div>
-    }
+
+      @if (!loadingPermissions() && permissions().length > 0) {
+        <p class="rol-totals" role="status">
+          <span>
+            Total permisos: <strong>{{ permissions().length }}</strong>
+          </span>
+          <span aria-hidden="true">|</span>
+          <span>
+            Total seleccionados: <strong>{{ selectedIds().size }}</strong>
+          </span>
+        </p>
+      }
+    </section>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

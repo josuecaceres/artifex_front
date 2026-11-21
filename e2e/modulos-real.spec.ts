@@ -32,10 +32,14 @@ async function pick(page: Page, label: string, option?: string): Promise<void> {
     if ((await select.getAttribute('aria-expanded')) !== 'true') {
       await page.keyboard.press('Enter');
     }
-    await expect(select).toHaveAttribute('aria-expanded', 'true', { timeout: 1000 });
+    await expect(select).toHaveAttribute('aria-expanded', 'true', {
+      timeout: 1000,
+    });
     await expect(options.first()).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: 15_000 });
-  await (option ? options.filter({ hasText: option }).first() : options.first()).click();
+  await (
+    option ? options.filter({ hasText: option }).first() : options.first()
+  ).click();
 }
 
 /** Cambia un interruptor y espera a que su estado cambie. */
@@ -47,14 +51,16 @@ async function setSwitch(page: Page, name: string, on: boolean): Promise<void> {
   await expect(toggle).toHaveAttribute('aria-checked', String(on));
 }
 
-const row = (page: Page, text: string) => page.getByRole('row').filter({ hasText: text });
+const row = (page: Page, text: string) =>
+  page.getByRole('row').filter({ hasText: text });
 
 async function saveDialog(page: Page): Promise<void> {
   await dialog(page).getByRole('button', { name: 'Guardar' }).click();
   // La API de desarrollo a veces tarda más de 5 s en responder al guardar.
   await expect(dialog(page)).toBeHidden({ timeout: 20_000 });
   // Al guardar bien aparece el aviso global con el message de la API.
-  await expect(page.locator('.app-toast')).toBeVisible();
+  // Puede haber un aviso anterior saliendo: se toma el más reciente.
+  await expect(page.locator('.app-toast').last()).toBeVisible();
 }
 
 test.describe('módulos contra la API real', () => {
@@ -78,7 +84,9 @@ test.describe('módulos contra la API real', () => {
     await showRow(page, `ZZ E2E IVA ${tag}`);
     await expect(row(page, `ZZ E2E IVA ${tag}`)).toContainText('7%');
 
-    await page.getByRole('button', { name: `Editar ZZ E2E IVA ${tag}` }).click();
+    await page
+      .getByRole('button', { name: `Editar ZZ E2E IVA ${tag}` })
+      .click();
     await expect(dialog(page).getByLabel('Código')).toHaveValue(`E${tag}`);
     await expect(dialog(page).getByLabel('Código')).toBeEnabled();
     await dialog(page).getByLabel('Nombre').fill(`ZZ E2E IVA ${tag} ed`);
@@ -99,7 +107,9 @@ test.describe('módulos contra la API real', () => {
     await dialog(page).getByLabel('Tasa').fill('1');
     await dialog(page).getByRole('button', { name: 'Guardar' }).click();
 
-    await expect(dialog(page).getByRole('alert')).toContainText('Ya existe un registro');
+    await expect(dialog(page).getByRole('alert')).toContainText(
+      'Ya existe un registro',
+    );
     await expect(dialog(page)).not.toContainText('SQLSTATE');
   });
 
@@ -113,7 +123,9 @@ test.describe('módulos contra la API real', () => {
     // La tabla es paginada: se busca la unidad en las páginas hasta hallarla.
     await showRow(page, `ZZ E2E Unidad ${tag}`);
 
-    await page.getByRole('button', { name: `Editar ZZ E2E Unidad ${tag}` }).click();
+    await page
+      .getByRole('button', { name: `Editar ZZ E2E Unidad ${tag}` })
+      .click();
     await dialog(page).getByLabel('Nombre').fill(`ZZ E2E Unidad ${tag} ed`);
     await setSwitch(page, 'Activa', false);
     await saveDialog(page);
@@ -131,15 +143,21 @@ test.describe('módulos contra la API real', () => {
 
     await page.getByRole('button', { name: 'Nuevo rol' }).click();
     await dialog(page).getByLabel('Nombre').fill(`ZZ E2E Rol ${tag}`);
-    await dialog(page).getByRole('checkbox', { name: 'ver usuarios' }).check();
+    await dialog(page).getByRole('switch', { name: 'Ver Usuarios' }).check();
     await saveDialog(page);
     await showRow(page, `ZZ E2E Rol ${tag}`);
     await expect(row(page, `ZZ E2E Rol ${tag}`)).toContainText('1');
 
-    await page.getByRole('button', { name: `Editar ZZ E2E Rol ${tag}` }).click();
-    await expect(dialog(page).getByRole('checkbox', { name: 'ver usuarios' })).toBeChecked();
-    await expect(dialog(page).getByRole('checkbox', { name: 'crear usuarios' })).not.toBeChecked();
-    await dialog(page).getByRole('checkbox', { name: 'crear usuarios' }).check();
+    await page
+      .getByRole('button', { name: `Editar ZZ E2E Rol ${tag}` })
+      .click();
+    await expect(
+      dialog(page).getByRole('switch', { name: 'Ver Usuarios' }),
+    ).toBeChecked();
+    await expect(
+      dialog(page).getByRole('switch', { name: 'Crear Usuarios' }),
+    ).not.toBeChecked();
+    await dialog(page).getByRole('switch', { name: 'Crear Usuarios' }).check();
     await saveDialog(page);
     await showRow(page, `ZZ E2E Rol ${tag}`);
     await expect(row(page, `ZZ E2E Rol ${tag}`)).toContainText('2');
@@ -153,7 +171,9 @@ test.describe('módulos contra la API real', () => {
     await page.getByRole('button', { name: 'Nueva sucursal' }).click();
     await dialog(page).getByLabel('Nombre').fill(`ZZ E2E Sucursal ${tag}`);
     await dialog(page).getByLabel('Teléfono').fill('22223333');
-    await dialog(page).getByLabel('Correo electrónico').fill(`suc.${tag}@example.com`);
+    await dialog(page)
+      .getByLabel('Correo electrónico')
+      .fill(`suc.${tag}@example.com`);
     await dialog(page).getByLabel('Dirección').fill('Calle principal 1');
     await pick(page, 'Departamento', 'San Salvador');
     await pick(page, 'Municipio');
@@ -161,46 +181,73 @@ test.describe('módulos contra la API real', () => {
     await saveDialog(page);
 
     await showRow(page, `ZZ E2E Sucursal ${tag}`);
-    await expect(row(page, `ZZ E2E Sucursal ${tag}`)).toContainText('San Salvador');
+    await expect(row(page, `ZZ E2E Sucursal ${tag}`)).toContainText(
+      'San Salvador',
+    );
     await expect(row(page, `ZZ E2E Sucursal ${tag}`)).toContainText('Bodega');
 
-    await page.getByRole('button', { name: `Editar ZZ E2E Sucursal ${tag}` }).click();
-    await expect(dialog(page).getByRole('combobox', { name: 'Tipo' })).toContainText('Bodega');
-    await expect(dialog(page).getByRole('combobox', { name: 'Departamento' })).toContainText('San Salvador');
+    await page
+      .getByRole('button', { name: `Editar ZZ E2E Sucursal ${tag}` })
+      .click();
+    await expect(
+      dialog(page).getByRole('combobox', { name: 'Tipo' }),
+    ).toContainText('Bodega');
+    await expect(
+      dialog(page).getByRole('combobox', { name: 'Departamento' }),
+    ).toContainText('San Salvador');
     await dialog(page).getByLabel('Nombre').fill(`ZZ E2E Sucursal ${tag} ed`);
-    await dialog(page).getByLabel('UUID de impresora').fill('3f2504e0-4f89-11d3-9a0c-0305e82c3301');
+    await dialog(page)
+      .getByLabel('UUID de impresora')
+      .fill('3f2504e0-4f89-11d3-9a0c-0305e82c3301');
     await saveDialog(page);
     await showRow(page, `ZZ E2E Sucursal ${tag} ed`);
 
     // Editar de nuevo sin tocar el UUID no debe fallar ni borrarlo (se omite del cuerpo).
-    await page.getByRole('button', { name: `Editar ZZ E2E Sucursal ${tag} ed` }).click();
+    await page
+      .getByRole('button', { name: `Editar ZZ E2E Sucursal ${tag} ed` })
+      .click();
     await saveDialog(page);
   });
 
-  test('Empresas @write: crea y edita sin mostrar las credenciales', async ({ page }) => {
+  test('Empresas @write: crea y edita sin mostrar las credenciales', async ({
+    page,
+  }) => {
     await signIn(page);
     await page.goto('/dashboard/empresas');
     await expect(page.getByRole('heading', { name: 'Empresas' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Nueva empresa' }).click();
     await dialog(page).getByLabel('Nombre legal').fill(`ZZ E2E Legal ${tag}`);
-    await dialog(page).getByLabel('Nombre comercial').fill(`ZZ E2E Comercial ${tag}`);
+    await dialog(page)
+      .getByLabel('Nombre comercial')
+      .fill(`ZZ E2E Comercial ${tag}`);
     await dialog(page).getByLabel('NIT').fill(`NIT${tag}`);
     await dialog(page).getByLabel('NRC').fill(`NRC${tag}`);
     await dialog(page).getByLabel('Código de actividad').fill('47190');
-    await dialog(page).getByLabel('Descripción de actividad').fill('Venta al por menor');
-    await dialog(page).getByLabel('Correo electrónico').fill(`emp.${tag}@example.com`);
+    await dialog(page)
+      .getByLabel('Descripción de actividad')
+      .fill('Venta al por menor');
+    await dialog(page)
+      .getByLabel('Correo electrónico')
+      .fill(`emp.${tag}@example.com`);
     await dialog(page).getByLabel('Teléfono').fill('22223333');
     await dialog(page).getByRole('button', { name: 'Guardar' }).click();
     // Con una empresa ya registrada el backend responde 409 "Company already exists".
-    await expect(dialog(page).or(row(page, `ZZ E2E Comercial ${tag}`))).toBeVisible();
+    await expect(
+      dialog(page).or(row(page, `ZZ E2E Comercial ${tag}`)),
+    ).toBeVisible();
     if (await dialog(page).isVisible()) {
-      await expect(dialog(page).getByRole('alert')).toContainText('Company already exists');
+      await expect(dialog(page).getByRole('alert')).toContainText(
+        'Company already exists',
+      );
       await dialog(page).getByRole('button', { name: 'Cancelar' }).click();
     }
 
     // Editar la empresa de pruebas existente: los campos de credenciales vienen vacíos
-    await page.getByRole('button', { name: /^Editar / }).first().click();
+    await page
+      .getByRole('button', { name: /^Editar / })
+      .first()
+      .click();
     await expect(dialog(page).getByLabel('Llave de la API')).toHaveValue('');
     await expect(dialog(page).getByLabel('Contraseña privada')).toHaveValue('');
     await saveDialog(page);
@@ -231,12 +278,16 @@ test.describe('módulos contra la API real', () => {
     // El usuario nuevo intenta entrar: el backend responde 200 sin token y la app lo guía.
     const ctx = await browser.newContext();
     const userPage = await ctx.newPage();
-    await userPage.addInitScript(() => localStorage.setItem('app-dev-login', 'off'));
+    await userPage.addInitScript(() =>
+      localStorage.setItem('app-dev-login', 'off'),
+    );
     await userPage.goto('/auth/login');
     await userPage.getByLabel('Usuario').fill(acronym);
     await userPage.getByLabel('Contraseña', { exact: true }).fill('cualquiera');
     await userPage.getByRole('button', { name: 'Entrar' }).click();
-    await expect(userPage.getByRole('status')).toContainText('Aún no creaste tu contraseña');
+    await expect(userPage.getByRole('status')).toContainText(
+      'Aún no creaste tu contraseña',
+    );
     await userPage.getByRole('link', { name: 'Créala aquí' }).click();
 
     await userPage.getByLabel('Nombre').fill(name);
@@ -244,22 +295,30 @@ test.describe('módulos contra la API real', () => {
     await userPage.getByLabel('Correo electrónico').fill(email);
     await userPage.getByLabel('Contraseña nueva').fill(newPassword);
     await userPage.getByLabel('Confirmar contraseña').fill(newPassword);
-    await userPage.getByRole('button', { name: 'Actualizar contraseña' }).click();
-    await expect(userPage.getByRole('status')).toContainText('Solicitud recibida');
+    await userPage
+      .getByRole('button', { name: 'Actualizar contraseña' })
+      .click();
+    await expect(userPage.getByRole('status')).toContainText(
+      'Solicitud recibida',
+    );
 
     // Con la contraseña creada pero sin autorizar, el backend rechaza el acceso.
     await userPage.goto('/auth/login');
     await userPage.getByLabel('Usuario').fill(acronym);
     await userPage.getByLabel('Contraseña', { exact: true }).fill(newPassword);
     await userPage.getByRole('button', { name: 'Entrar' }).click();
-    await expect(userPage.getByRole('alert')).toContainText('pendiente de autorización');
+    await expect(userPage.getByRole('alert')).toContainText(
+      'pendiente de autorización',
+    );
 
     // El administrador lo autoriza.
     await page.reload();
     await showRow(page, name);
     await expect(row(page, name)).toContainText('Pendiente');
     await page.getByRole('button', { name: `Editar ${name}` }).click();
-    await expect(dialog(page).getByRole('combobox', { name: 'Rol' })).toContainText('Company Admin');
+    await expect(
+      dialog(page).getByRole('combobox', { name: 'Rol' }),
+    ).toContainText('Company Admin');
     await setSwitch(page, 'Autorizado', true);
     await saveDialog(page);
     await showRow(page, name);
@@ -284,12 +343,16 @@ test.describe('módulos de inventario sin plan contratado', () => {
     ['marcas', 'Marcas'],
     ['categorias', 'Categorías'],
   ]) {
-    test(`${titulo} muestra el aviso del plan en vez de fallar`, async ({ page }) => {
+    test(`${titulo} muestra el aviso del plan en vez de fallar`, async ({
+      page,
+    }) => {
       await signIn(page);
       await page.goto(`/dashboard/${ruta}`);
 
       await expect(page.getByRole('heading', { name: titulo })).toBeVisible();
-      await expect(page.getByRole('alert')).toContainText('Tu plan no incluye módulo de inventario');
+      await expect(page.getByRole('alert')).toContainText(
+        'Tu plan no incluye módulo de inventario',
+      );
       await expect(page).toHaveURL(new RegExp(`/dashboard/${ruta}$`)); // no cierra la sesión
     });
   }

@@ -12,16 +12,18 @@ import { MatTableDataSource } from '@angular/material/table';
 import { RoleWithPermissions, SaveResult } from '@interfaces';
 import { apiErrorMessage, RoleService } from '@services';
 import {
+  FORM_DIALOG_CONFIG,
   FaIconComponent,
   MaterialModule,
   TableToolbar,
   TableView,
   ToastService,
-  faPen,
+  formDialogWidth,
+  faListCheck,
   faPlus,
   faTriangleExclamation,
 } from '@shared';
-import { RolDialog, RolDialogData } from './rol-dialog';
+import { ROL_DIALOG_WIDTH, RolDialog, RolDialogData } from './rol-dialog';
 
 /** Administración de roles y permisos (`/dashboard/roles`). */
 @Component({
@@ -39,7 +41,7 @@ export class Roles implements AfterViewInit {
 
   protected readonly icons = {
     add: faPlus,
-    edit: faPen,
+    edit: faListCheck,
     warning: faTriangleExclamation,
   };
   protected readonly dataSource = new MatTableDataSource<RoleWithPermissions>(
@@ -72,7 +74,11 @@ export class Roles implements AfterViewInit {
 
   private openDialog(data: RolDialogData): void {
     this.dialog
-      .open(RolDialog, { data, width: '480px' })
+      .open(RolDialog, {
+        ...FORM_DIALOG_CONFIG,
+        data,
+        width: formDialogWidth(1, ROL_DIALOG_WIDTH),
+      })
       .afterClosed()
       .subscribe((result: SaveResult | undefined) => {
         if (result) {
