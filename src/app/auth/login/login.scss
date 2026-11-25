@@ -20,24 +20,17 @@
   color: var(--app-rail-ink);
 }
 
-.hero__brand {
-  margin: 0;
-  color: var(--app-on-action);
-  font-family: var(--app-font-display);
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 // Logo de la marca (public/images/thumbnail.png): se reemplaza el archivo, no
-// el código.
+// el código. El archivo va recortado a su dibujo (sin margen transparente) para
+// que el tamaño en pantalla sea el del dibujo. Centrado en el espacio libre
+// sobre el pie del panel.
 .hero__logo {
   align-self: center;
+  margin-block: auto;
   width: 100%;
-  max-width: 280px;
+  max-width: 360px;
   height: auto;
-  max-height: 280px;
+  max-height: 360px;
   object-fit: contain;
 }
 
@@ -106,9 +99,14 @@
     padding: 20px 24px;
   }
 
-  .hero__logo,
   .hero__foot {
     display: none;
+  }
+
+  // Sin el título, el logo pequeño y centrado es la marca de la barra.
+  .hero__logo {
+    max-width: 72px;
+    max-height: 72px;
   }
 
   .panel {

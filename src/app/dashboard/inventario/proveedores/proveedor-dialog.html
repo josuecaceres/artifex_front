@@ -68,14 +68,14 @@
 
     <div class="app-field-group-label">Ubicación</div>
     <app-ubicacion-fields
-      [departamento]="form.controls.departmento_id"
+      [departamento]="form.controls.departamento_id"
       [municipio]="form.controls.municipio_id"
     />
 
     <mat-form-field>
       <mat-label>Dirección</mat-label>
-      <input matInput formControlName="address_complement" />
-      @if (form.controls.address_complement.hasError("required")) {
+      <input matInput formControlName="complemento_direccion" />
+      @if (form.controls.complemento_direccion.hasError("required")) {
         <mat-error>Ingresa la dirección.</mat-error>
       }
     </mat-form-field>

@@ -71,12 +71,12 @@ export class ProveedorDialog {
       this.data.proveedor?.payment_name ?? '',
       Validators.required,
     ],
-    address_complement: [
-      this.data.proveedor?.address_complement ?? '',
+    complemento_direccion: [
+      this.data.proveedor?.complemento_direccion ?? '',
       Validators.required,
     ],
-    departmento_id: this.fb.control<number | null>(
-      this.data.proveedor?.departmento_id ?? null,
+    departamento_id: this.fb.control<number | null>(
+      this.data.proveedor?.departamento_id ?? null,
       Validators.required,
     ),
     municipio_id: this.fb.control<number | null>(
@@ -106,8 +106,8 @@ export class ProveedorDialog {
       email,
       contact_person,
       payment_name,
-      address_complement,
-      departmento_id,
+      complemento_direccion,
+      departamento_id,
       municipio_id,
       has_withholding,
       withholding_percent,
@@ -121,8 +121,8 @@ export class ProveedorDialog {
       email,
       contact_person,
       payment_name,
-      address_complement,
-      departmento_id: departmento_id!,
+      complemento_direccion,
+      departamento_id: departamento_id!,
       municipio_id: municipio_id!,
       has_withholding,
       withholding_percent,

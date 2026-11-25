@@ -96,8 +96,8 @@ describe('ProveedorDialog', () => {
     setValue('phone', '98765432');
     setValue('email', 'contacto@proveedor.com');
     setValue('contact_person', 'Juan Pérez');
-    setValue('address_complement', 'Col. Centro, 2da avenida, bloque A');
-    form().controls.departmento_id.setValue(1);
+    setValue('complemento_direccion', 'Col. Centro, 2da avenida, bloque A');
+    form().controls.departamento_id.setValue(1);
     http
       .expectOne(apiUrl('api/departamentos/1/municipios'))
       .flush([{ id: 5, name: 'La Paz Oeste' }]);
@@ -116,8 +116,8 @@ describe('ProveedorDialog', () => {
       phone: '98765432',
       email: 'contacto@proveedor.com',
       contact_person: 'Juan Pérez',
-      address_complement: 'Col. Centro, 2da avenida, bloque A',
-      departmento_id: 1,
+      complemento_direccion: 'Col. Centro, 2da avenida, bloque A',
+      departamento_id: 1,
       municipio_id: 5,
       payment_name: 'Transferencia Bancaria',
       has_withholding: false,
@@ -139,9 +139,9 @@ describe('ProveedorDialog', () => {
         has_withholding: true,
         withholding_percent: 10,
         payment_name: 'Transferencia Bancaria',
-        departmento_id: 1,
+        departamento_id: 1,
         municipio_id: 5,
-        address_complement: 'Col. Centro, 2da avenida, bloque A',
+        complemento_direccion: 'Col. Centro, 2da avenida, bloque A',
         phone: '98765432',
         email: 'contacto@proveedor.com',
         contact_person: 'Juan Pérez',
@@ -154,7 +154,7 @@ describe('ProveedorDialog', () => {
     expect(element.querySelector('h2')?.textContent).toContain(
       'Editar proveedor',
     );
-    expect(form().controls.departmento_id.value).toBe(1);
+    expect(form().controls.departamento_id.value).toBe(1);
     expect(form().controls.municipio_id.value).toBe(5);
     expect(
       element.querySelector<HTMLInputElement>('[formcontrolname="name"]')

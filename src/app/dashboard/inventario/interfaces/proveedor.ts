@@ -1,8 +1,8 @@
 /**
- * Proveedor (`GET /api/lista-proveedores`). `departmento_id` está escrito
- * así (sin la segunda "a") porque es el nombre exacto que espera la API,
- * confirmado en la colección de Postman: no es un error de este archivo.
- * La forma de la respuesta no está confirmada todavía contra la API real.
+ * Proveedor (`GET /api/lista-proveedores`). El campo `departamento_id` antes
+ * se llamaba `departmento_id` (sin la segunda "a") en la API; el backend lo
+ * corrigió. La forma de la respuesta no está confirmada todavía contra la
+ * API real.
  */
 export interface Proveedor {
   id: number;
@@ -12,9 +12,9 @@ export interface Proveedor {
   has_withholding: boolean;
   withholding_percent: number;
   payment_name: string;
-  departmento_id: number;
+  departamento_id: number;
   municipio_id: number;
-  address_complement: string;
+  complemento_direccion: string;
   phone: string;
   email: string;
   contact_person: string;
@@ -29,9 +29,9 @@ export interface CreateProveedorRequest {
   has_withholding: boolean;
   withholding_percent: number;
   payment_name: string;
-  departmento_id: number;
+  departamento_id: number;
   municipio_id: number;
-  address_complement: string;
+  complemento_direccion: string;
   phone: string;
   email: string;
   contact_person: string;

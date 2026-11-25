@@ -46,6 +46,9 @@ testem.log
 # Credenciales de desarrollo para el acceso automático (la plantilla dev-login.example.ts sí se versiona)
 /src/environments/dev-login.ts
 
+# Export OpenAPI de Apidog (puede traer tokens o credenciales reales en los ejemplos)
+/api-contract
+
 # System files
 .DS_Store
 Thumbs.db
